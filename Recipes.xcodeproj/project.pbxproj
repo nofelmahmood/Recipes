@@ -14,6 +14,7 @@
 		3E10E3621B91EC1D00AA3F52 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E10E3611B91EC1D00AA3F52 /* Assets.xcassets */; };
 		3E10E3651B91EC1D00AA3F52 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E10E3631B91EC1D00AA3F52 /* LaunchScreen.storyboard */; };
 		3E10E3701B91EC1D00AA3F52 /* RecipesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E10E36F1B91EC1D00AA3F52 /* RecipesTests.swift */; };
+		3E6A6FB91B91ED1B007B72DD /* RecipeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6A6FB81B91ED1B007B72DD /* RecipeStore.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,7 @@
 		3E10E36B1B91EC1D00AA3F52 /* RecipesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecipesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E10E36F1B91EC1D00AA3F52 /* RecipesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesTests.swift; sourceTree = "<group>"; };
 		3E10E3711B91EC1D00AA3F52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3E6A6FB81B91ED1B007B72DD /* RecipeStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,13 +81,13 @@
 		3E10E3561B91EC1D00AA3F52 /* Recipes */ = {
 			isa = PBXGroup;
 			children = (
+				3E6A6FBA1B91ED2F007B72DD /* CoreData */,
 				3E10E3571B91EC1D00AA3F52 /* AppDelegate.swift */,
 				3E10E3591B91EC1D00AA3F52 /* ViewController.swift */,
 				3E10E35B1B91EC1D00AA3F52 /* Main.storyboard */,
 				3E10E3611B91EC1D00AA3F52 /* Assets.xcassets */,
 				3E10E3631B91EC1D00AA3F52 /* LaunchScreen.storyboard */,
 				3E10E3661B91EC1D00AA3F52 /* Info.plist */,
-				3E10E35E1B91EC1D00AA3F52 /* Recipes.xcdatamodeld */,
 			);
 			path = Recipes;
 			sourceTree = "<group>";
@@ -97,6 +99,15 @@
 				3E10E3711B91EC1D00AA3F52 /* Info.plist */,
 			);
 			path = RecipesTests;
+			sourceTree = "<group>";
+		};
+		3E6A6FBA1B91ED2F007B72DD /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				3E6A6FB81B91ED1B007B72DD /* RecipeStore.swift */,
+				3E10E35E1B91EC1D00AA3F52 /* Recipes.xcdatamodeld */,
+			);
+			name = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,6 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E10E35A1B91EC1D00AA3F52 /* ViewController.swift in Sources */,
+				3E6A6FB91B91ED1B007B72DD /* RecipeStore.swift in Sources */,
 				3E10E3581B91EC1D00AA3F52 /* AppDelegate.swift in Sources */,
 				3E10E3601B91EC1D00AA3F52 /* Recipes.xcdatamodeld in Sources */,
 			);
@@ -391,6 +403,7 @@
 				3E10E3761B91EC1D00AA3F52 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3E10E3771B91EC1D00AA3F52 /* Build configuration list for PBXNativeTarget "RecipesTests" */ = {
 			isa = XCConfigurationList;
@@ -399,6 +412,7 @@
 				3E10E3791B91EC1D00AA3F52 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
