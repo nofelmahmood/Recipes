@@ -1,5 +1,5 @@
 //
-//  RecipeStore.swift
+//  Recipe.swift
 //  Recipes
 //
 //  Created by Nofel Mahmood on 29/08/2015.
@@ -9,7 +9,8 @@
 import Foundation
 import CoreData
 
-class RecipeStore: NSIncrementalStore
-{
-    
+class Recipe: NSManagedObject {
+
+// Insert code here to add functionality to your managed object subclass
+
 }
