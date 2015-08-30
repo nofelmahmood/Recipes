@@ -13,17 +13,17 @@ import Foundation
 import CoreData
 
 extension Recipe {
-
-    @NSManaged var createdAt: NSDate?
-    @NSManaged var difficulty: NSNumber?
-    @NSManaged var favorite: NSNumber?
-    @NSManaged var id: NSNumber?
-    @NSManaged var instructions: String?
-    @NSManaged var name: String?
-    @NSManaged var specification: String?
-    @NSManaged var updatedAt: NSDate?
-    @NSManaged var photo_URL: String?
-    @NSManaged var photo_thumbnailURL: String?
-    @NSManaged var photo: NSData?
-
+  
+  @NSManaged var createdAt: NSDate?
+  @NSManaged var difficulty: NSNumber?
+  @NSManaged var favorite: NSNumber?
+  @NSManaged var id: NSNumber?
+  @NSManaged var instructions: String?
+  @NSManaged var name: String?
+  @NSManaged var specification: String?
+  @NSManaged var updatedAt: NSDate?
+  @NSManaged var photo_URL: String?
+  @NSManaged var photo_thumbnailURL: String?
+  @NSManaged var photo: NSData?
+    
 }

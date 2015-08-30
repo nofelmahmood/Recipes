@@ -9,8 +9,17 @@
 import Foundation
 import CoreData
 
+enum RecipeDifficultyDescription: Int {
+  case Easy = 1
+  case Medium = 2
+  case Hard = 3
+}
+
 class Recipe: NSManagedObject {
-
-// Insert code here to add functionality to your managed object subclass
-
+  
+  // Insert code here to add functionality to your managed object subclass
+  func difficultyDescription() -> String {
+    return "\(RecipeDifficultyDescription(rawValue: self.difficulty!.integerValue)!)"
+  }
+  
 }

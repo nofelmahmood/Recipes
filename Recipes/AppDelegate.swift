@@ -17,13 +17,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
-    
+//    
 //    let url = NSURL(string: "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Users.rawValue)")
 //    let urlRequest = NSMutableURLRequest(URL: url!)
 //    urlRequest.HTTPMethod = "POST"
 //    urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
 //    let session = NSURLSession.sharedSession()
-//    let userDictionary = ["user": ["email": "awlaUSer@example.com", "password" :"secret", "password_confirmation": "secret", "seed_recipes": true]]
+//    let userDictionary = ["user": ["email": "awlaUSerIsnow@example.com", "password" :"secret", "password_confirmation": "secret", "seed_recipes": true]]
 //    
 //    guard let json = try? NSJSONSerialization.dataWithJSONObject(userDictionary, options: NSJSONWritingOptions(rawValue: 0)) else {
 //      print("Json Error")
@@ -43,10 +43,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //      NSUserDefaults.standardUserDefaults().setObject(token, forKey: ApiTokenKey)
 //      NSUserDefaults.standardUserDefaults().synchronize()
 //      print(token)
-    
-    
+//    
+//    
 //    }
-    
+//    
 //    dataTask.resume()
     print(NSUserDefaults.standardUserDefaults().objectForKey(ApiTokenKey))
 
