@@ -8,19 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		3E10E3581B91EC1D00AA3F52 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E10E3571B91EC1D00AA3F52 /* AppDelegate.swift */; };
-		3E10E35A1B91EC1D00AA3F52 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E10E3591B91EC1D00AA3F52 /* ViewController.swift */; };
 		3E10E35D1B91EC1D00AA3F52 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E10E35B1B91EC1D00AA3F52 /* Main.storyboard */; };
 		3E10E3601B91EC1D00AA3F52 /* Recipes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3E10E35E1B91EC1D00AA3F52 /* Recipes.xcdatamodeld */; };
 		3E10E3621B91EC1D00AA3F52 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E10E3611B91EC1D00AA3F52 /* Assets.xcassets */; };
 		3E10E3651B91EC1D00AA3F52 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E10E3631B91EC1D00AA3F52 /* LaunchScreen.storyboard */; };
 		3E10E3701B91EC1D00AA3F52 /* RecipesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E10E36F1B91EC1D00AA3F52 /* RecipesTests.swift */; };
+		3E264B151B92F29100298796 /* RecipesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E264B141B92F29100298796 /* RecipesViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		3E6A6FB91B91ED1B007B72DD /* RecipeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6A6FB81B91ED1B007B72DD /* RecipeStore.swift */; settings = {ASSET_TAGS = (); }; };
 		3E6A6FBC1B91ED99007B72DD /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6A6FBB1B91ED99007B72DD /* CoreDataStack.swift */; settings = {ASSET_TAGS = (); }; };
 		3E6A6FBE1B91EDC6007B72DD /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E6A6FBD1B91EDC6007B72DD /* CoreData.framework */; };
-		3E6A6FCD1B91F078007B72DD /* Recipe+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6A6FC91B91F078007B72DD /* Recipe+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
-		3E6A6FCE1B91F078007B72DD /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6A6FCA1B91F078007B72DD /* Recipe.swift */; settings = {ASSET_TAGS = (); }; };
-		3E6A6FCF1B91F078007B72DD /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6A6FCB1B91F078007B72DD /* Photo+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
-		3E6A6FD01B91F078007B72DD /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6A6FCC1B91F078007B72DD /* Photo.swift */; settings = {ASSET_TAGS = (); }; };
+		3E7D61791B931FC300A8386E /* Recipe+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7D61771B931FC300A8386E /* Recipe+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
+		3E7D617A1B931FC300A8386E /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7D61781B931FC300A8386E /* Recipe.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +34,6 @@
 /* Begin PBXFileReference section */
 		3E10E3541B91EC1D00AA3F52 /* Recipes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Recipes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E10E3571B91EC1D00AA3F52 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		3E10E3591B91EC1D00AA3F52 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3E10E35C1B91EC1D00AA3F52 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3E10E35F1B91EC1D00AA3F52 /* Recipes.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Recipes.xcdatamodel; sourceTree = "<group>"; };
 		3E10E3611B91EC1D00AA3F52 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -45,13 +42,12 @@
 		3E10E36B1B91EC1D00AA3F52 /* RecipesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecipesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E10E36F1B91EC1D00AA3F52 /* RecipesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesTests.swift; sourceTree = "<group>"; };
 		3E10E3711B91EC1D00AA3F52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3E264B141B92F29100298796 /* RecipesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesViewController.swift; sourceTree = "<group>"; };
 		3E6A6FB81B91ED1B007B72DD /* RecipeStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeStore.swift; sourceTree = "<group>"; };
 		3E6A6FBB1B91ED99007B72DD /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		3E6A6FBD1B91EDC6007B72DD /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		3E6A6FC91B91F078007B72DD /* Recipe+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Recipe+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		3E6A6FCA1B91F078007B72DD /* Recipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
-		3E6A6FCB1B91F078007B72DD /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		3E6A6FCC1B91F078007B72DD /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		3E7D61771B931FC300A8386E /* Recipe+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Recipe+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		3E7D61781B931FC300A8386E /* Recipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,7 +76,9 @@
 				3E10E36E1B91EC1D00AA3F52 /* RecipesTests */,
 				3E10E3551B91EC1D00AA3F52 /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		3E10E3551B91EC1D00AA3F52 /* Products */ = {
 			isa = PBXGroup;
@@ -96,8 +94,8 @@
 			children = (
 				3E6A6FBF1B91EDCA007B72DD /* Frameworks */,
 				3E6A6FBA1B91ED2F007B72DD /* CoreData */,
+				3E264B0F1B92E3C200298796 /* ViewControllers */,
 				3E10E3571B91EC1D00AA3F52 /* AppDelegate.swift */,
-				3E10E3591B91EC1D00AA3F52 /* ViewController.swift */,
 				3E10E35B1B91EC1D00AA3F52 /* Main.storyboard */,
 				3E10E3611B91EC1D00AA3F52 /* Assets.xcassets */,
 				3E10E3631B91EC1D00AA3F52 /* LaunchScreen.storyboard */,
@@ -113,6 +111,14 @@
 				3E10E3711B91EC1D00AA3F52 /* Info.plist */,
 			);
 			path = RecipesTests;
+			sourceTree = "<group>";
+		};
+		3E264B0F1B92E3C200298796 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				3E264B141B92F29100298796 /* RecipesViewController.swift */,
+			);
+			name = ViewControllers;
 			sourceTree = "<group>";
 		};
 		3E6A6FBA1B91ED2F007B72DD /* CoreData */ = {
@@ -137,10 +143,8 @@
 		3E6A6FC01B91EFFA007B72DD /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				3E6A6FC91B91F078007B72DD /* Recipe+CoreDataProperties.swift */,
-				3E6A6FCA1B91F078007B72DD /* Recipe.swift */,
-				3E6A6FCB1B91F078007B72DD /* Photo+CoreDataProperties.swift */,
-				3E6A6FCC1B91F078007B72DD /* Photo.swift */,
+				3E7D61771B931FC300A8386E /* Recipe+CoreDataProperties.swift */,
+				3E7D61781B931FC300A8386E /* Recipe.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -246,13 +250,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E6A6FBC1B91ED99007B72DD /* CoreDataStack.swift in Sources */,
-				3E10E35A1B91EC1D00AA3F52 /* ViewController.swift in Sources */,
-				3E6A6FCE1B91F078007B72DD /* Recipe.swift in Sources */,
-				3E6A6FD01B91F078007B72DD /* Photo.swift in Sources */,
+				3E264B151B92F29100298796 /* RecipesViewController.swift in Sources */,
+				3E7D617A1B931FC300A8386E /* Recipe.swift in Sources */,
 				3E6A6FB91B91ED1B007B72DD /* RecipeStore.swift in Sources */,
-				3E6A6FCD1B91F078007B72DD /* Recipe+CoreDataProperties.swift in Sources */,
+				3E7D61791B931FC300A8386E /* Recipe+CoreDataProperties.swift in Sources */,
 				3E10E3581B91EC1D00AA3F52 /* AppDelegate.swift in Sources */,
-				3E6A6FCF1B91F078007B72DD /* Photo+CoreDataProperties.swift in Sources */,
 				3E10E3601B91EC1D00AA3F52 /* Recipes.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
