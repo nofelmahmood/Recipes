@@ -11,6 +11,10 @@ import CoreData
 
 let RecipeTableViewCellIdentifier = "RecipeTableViewCell"
 
+enum RecipesSegue: String {
+  case RecipesSearch = "RecipesSearchViewController"
+}
+
 extension RecipesViewController: UITableViewDataSource {
   func numberOfSectionsInTableView(tableView: UITableView) -> Int {
     return 1
@@ -26,15 +30,24 @@ extension RecipesViewController: UITableViewDataSource {
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeTableViewCell
     let recipe = self.recipes![indexPath.row]
-    cell.recipe = recipe
-    cell.updateCellFromRecipe()
-    if let photo = recipe.photo {
-      cell.backgroundImageView.image = UIImage(data: photo)
+    cell.updateCellFromRecipe(recipe)
+    if let image = self.cachedImages[indexPath.row] {
+      cell.backgroundImageView.image = image
     } else {
+      cell.backgroundImageView.image = nil
       let photoURL = NSURL(string: recipe.photo_thumbnailURL!)
       let photoURLRequest = NSURLRequest(URL: photoURL!)
       let photoDownloadTask = NSURLSession.sharedSession().downloadTaskWithRequest(photoURLRequest, completionHandler: { (location, response, error) -> Void in
-        recipe.photo = NSData(contentsOfURL: location!)
+        let photoData = NSData(contentsOfURL: location!)
+        if let photoData = photoData {
+          self.recipes![indexPath.row].photo = photoData
+          self.cachedImages[indexPath.row] = UIImage(data: self.recipes![indexPath.row].photo!)
+          NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+            self.tableView.beginUpdates()
+            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Fade)
+            self.tableView.endUpdates()
+          })
+        }
       })
       photoDownloadTask.resume()
     }
@@ -61,7 +74,9 @@ extension RecipesViewController: UITableViewDelegate {
 class RecipesViewController: UIViewController {
   
   @IBOutlet var tableView: UITableView!
+  
   var recipes: [Recipe]?
+  var cachedImages = [Int: UIImage]()
   
   func prepareDataSource(completionBlock: (() -> Void)?) throws {
     let fetchRequest = NSFetchRequest(entityName: RecipeEntityName)
@@ -76,7 +91,6 @@ class RecipesViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
     // Do any additional setup after loading the view.
     NSUserDefaults.standardUserDefaults().setObject("6f18c4ae7aaf0fd69d57", forKey: ApiTokenKey)
     NSUserDefaults.standardUserDefaults().synchronize()
@@ -99,15 +113,24 @@ class RecipesViewController: UIViewController {
     // Dispose of any resources that can be recreated.
   }
   
+  // MARK: IBAction
+  @IBAction func searchBarButtonDidPress(sender: AnyObject?) {
+    self.performSegueWithIdentifier(RecipesSegue.RecipesSearch.rawValue, sender: self)
+  }
   
-  /*
   // MARK: - Navigation
   
   // In a storyboard-based application, you will often want to do a little preparation before navigation
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
   // Get the new view controller using segue.destinationViewController.
   // Pass the selected object to the new view controller.
+    if segue.identifier == RecipesSegue.RecipesSearch.rawValue {
+      guard let recipesSearchViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? RecipesSearchViewController else {
+        return
+      }
+      recipesSearchViewController.recipes = self.recipes
+    }
   }
-  */
+
   
 }

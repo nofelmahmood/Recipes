@@ -11,7 +11,7 @@ import UIKit
 class RecipeTableViewCell: UITableViewCell {
   
   @IBOutlet var nameLabel: UILabel!
-  @IBOutlet var descriptionLabel: UILabel!
+  @IBOutlet var difficultyLabel: UILabel!
   @IBOutlet var favoriteButton: UIButton!
   @IBOutlet var backgroundImageView: UIImageView!
   @IBOutlet var backgroundImageViewWrapper: UIView!
@@ -26,11 +26,13 @@ class RecipeTableViewCell: UITableViewCell {
     
   }
   
-  func updateCellFromRecipe() {
+  func updateCellFromRecipe(recipe: Recipe) {
+    self.recipe = recipe
     self.nameLabel.text = recipe.name!
-    self.descriptionLabel.text = recipe.specification!
+    self.difficultyLabel.text = self.recipe.difficultyDescription()
     self.favoriteButton.selected = recipe.favorite!.boolValue
   }
+
   
   @IBAction func favoriteButtonTapped(sender: AnyObject?) {
     self.favoriteButton.selected = !self.favoriteButton.selected
