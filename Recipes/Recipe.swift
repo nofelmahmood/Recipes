@@ -18,6 +18,12 @@ enum RecipeDifficultyDescription: Int {
 class Recipe: NSManagedObject {
   
   // Insert code here to add functionality to your managed object subclass
+  var instructionsList: [String]? {
+    return self.instructions?.componentsSeparatedByString(",").filter {
+      return !$0.isEmpty
+    }
+  }
+  
   func difficultyDescription() -> String {
     return "\(RecipeDifficultyDescription(rawValue: self.difficulty!.integerValue)!)"
   }

@@ -12,7 +12,8 @@ import CoreData
 let RecipeTableViewCellIdentifier = "RecipeTableViewCell"
 
 enum RecipesSegue: String {
-  case RecipesSearch = "RecipesSearchViewController"
+  case RecipesSearch = "RecipesSearch"
+  case RecipeModifier = "RecipeModifier"
 }
 
 extension RecipesViewController: UITableViewDataSource {
@@ -67,6 +68,10 @@ extension RecipesViewController: UITableViewDelegate {
       let y = ((offsetY - cell.frame.origin.y) / h) * 10
       cell.backgroundImageView.frame = CGRectMake(x, y, w, h)
     }
+  }
+  
+  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    self.performSegueWithIdentifier(RecipesSegue.RecipeModifier.rawValue, sender: self)
   }
 }
 
@@ -129,6 +134,16 @@ class RecipesViewController: UIViewController {
         return
       }
       recipesSearchViewController.recipes = self.recipes
+    }
+    else if segue.identifier == RecipesSegue.RecipeModifier.rawValue {
+      guard let recipesModifierViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? RecipeModifierViewController else {
+        return
+      }
+      guard let indexPathforSelectedRow = self.tableView.indexPathForSelectedRow else {
+        return
+      }
+      let recipe = self.recipes![indexPathforSelectedRow.row]
+      recipesModifierViewController.recipe = recipe
     }
   }
 

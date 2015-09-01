@@ -8,6 +8,10 @@
 
 import UIKit
 
+enum RecipeSearchSegue: String {
+  case RecipeModifier = "RecipeModifier"
+}
+
 let RecipeSearchTableViewCellIdentifier = "RecipeSearchTableViewCell"
 
 extension RecipesSearchViewController: UISearchControllerDelegate {
@@ -63,6 +67,12 @@ extension RecipesSearchViewController: UITableViewDataSource {
       cell.photoImageView.image = UIImage(data: photo)
     }
     return cell
+  }
+}
+
+extension RecipesSearchViewController: UITableViewDelegate {
+  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    self.performSegueWithIdentifier(RecipeSearchSegue.RecipeModifier.rawValue, sender: self)
   }
 }
 

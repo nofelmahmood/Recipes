@@ -48,8 +48,12 @@ enum PhotoApiObjectAttributesMapping: String {
 }
 
 let ApiTokenKey = "~!@ApiTokenKey"
+let ApiDateFormatString = "YYYY'-'MM'-'DD'T'HH:mm:ss.SSS'Z'"
+
 let RecipeEntityName = "Recipe"
 let PhotoEntityName = "Photo"
+
+
 
 
 class RecipeStore: NSIncrementalStore
@@ -90,10 +94,10 @@ class RecipeStore: NSIncrementalStore
       let requestURL = NSURL(string: "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)")
       if let requestURL = requestURL {
         let urlRequest = NSMutableURLRequest(URL: requestURL)
-        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.addValue("application/json", forHTTPHeaderField: "Accept")
+        urlRequest.addValue("application/json", forHTTPHeaderField: HTTPHeader.ContentType.rawValue)
+        urlRequest.addValue("application/json", forHTTPHeaderField: HTTPHeader.Accept.rawValue)
         let token = NSUserDefaults.standardUserDefaults().objectForKey(ApiTokenKey)
-        urlRequest.addValue("Token token=\"\(token!)\"", forHTTPHeaderField: "Authorization")
+        urlRequest.addValue("Token token=\"\(token!)\"", forHTTPHeaderField: HTTPHeader.Authorization.rawValue)
         var response: NSURLResponse?
         guard let data = try? NSURLConnection.sendSynchronousRequest(urlRequest, returningResponse: &response) else {
           return []
@@ -107,7 +111,7 @@ class RecipeStore: NSIncrementalStore
           
           var fetchedObjects = [NSManagedObject]()
           for recipeKeyValue in recipesKeyValues {
-            let id = recipeKeyValue["id"]
+            let id = recipeKeyValue[RecipeApiObjectAttributesMapping.id.rawValue]
             if let id = id as? NSNumber {
               let managedObjectID = self.newObjectIDForEntity(request.entity!, referenceObject: id)
               let managedObject = context.objectWithID(managedObjectID)
@@ -135,7 +139,7 @@ class RecipeStore: NSIncrementalStore
       if let cachedValue = self.cache[referenceObject] {
         var valuesByKeys = [String: AnyObject]()
         let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "YYYY'-'MM'-'DD'T'HH:mm:ss.SSS'Z'"
+        dateFormatter.dateFormat = ApiDateFormatString
         dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
         for (key, value) in cachedValue {
           if let attribute = RecipeApiObjectAttributesMapping(rawValue: key) {
