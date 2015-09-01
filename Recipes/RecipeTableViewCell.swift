@@ -26,12 +26,18 @@ class RecipeTableViewCell: UITableViewCell {
     
   }
   
-  func updateCellFromRecipe(recipe: Recipe) {
+  func updateCellFromRecipe(recipe: Recipe, scope: RecipesScope) {
     self.recipe = recipe
     self.nameLabel.text = recipe.name!
     self.difficultyLabel.text = self.recipe.difficultyDescription()
     self.favoriteButton.selected = recipe.favorite!.boolValue
+    if scope == RecipesScope.All {
+      self.favoriteButton.hidden = false
+    } else if scope == RecipesScope.Favories {
+      self.favoriteButton.hidden = true
+    }
   }
+
 
   
   @IBAction func favoriteButtonTapped(sender: AnyObject?) {

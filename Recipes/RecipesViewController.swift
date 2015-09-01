@@ -16,6 +16,11 @@ enum RecipesSegue: String {
   case RecipeModifier = "RecipeModifier"
 }
 
+enum RecipesScope: String {
+  case All = "All"
+  case Favories = "Favorites"
+}
+
 extension RecipesViewController: UITableViewDataSource {
   func numberOfSectionsInTableView(tableView: UITableView) -> Int {
     return 1
@@ -31,7 +36,7 @@ extension RecipesViewController: UITableViewDataSource {
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeTableViewCell
     let recipe = self.recipes![indexPath.row]
-    cell.updateCellFromRecipe(recipe)
+    cell.updateCellFromRecipe(recipe, scope: self.selectedScope())
     if let image = self.cachedImages[indexPath.row] {
       cell.backgroundImageView.image = image
     } else {
@@ -118,6 +123,16 @@ class RecipesViewController: UIViewController {
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
+  }
+  
+  // MARK: Recipes Scope
+  func selectedScope() -> RecipesScope {
+    switch(self.segmentedControl.selectedSegmentIndex) {
+    case 1:
+      return RecipesScope.Favories
+    default:
+      return RecipesScope.All
+    }
   }
   
   // MARK: IBAction
