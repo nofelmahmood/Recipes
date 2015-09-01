@@ -37,7 +37,7 @@ extension RecipesViewController: UITableViewDataSource {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeTableViewCell
     let recipe = self.recipes![indexPath.row]
     cell.updateCellFromRecipe(recipe, scope: self.selectedScope())
-    if let image = self.cachedImages[indexPath.row] {
+    if let image = self.cachedImages[recipe.id!.intValue] {
       cell.backgroundImageView.image = image
     } else {
       cell.backgroundImageView.image = nil
@@ -47,7 +47,7 @@ extension RecipesViewController: UITableViewDataSource {
         let photoData = NSData(contentsOfURL: location!)
         if let photoData = photoData {
           self.recipes![indexPath.row].photo = photoData
-          self.cachedImages[indexPath.row] = UIImage(data: self.recipes![indexPath.row].photo!)
+          self.cachedImages[recipe.id!.intValue] = UIImage(data: photoData)
           NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
             self.tableView.beginUpdates()
             self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Fade)
@@ -88,7 +88,7 @@ class RecipesViewController: UIViewController {
   
   var recipes: [Recipe]?
   var fetchedRecipes: [Recipe]?
-  var cachedImages = [Int: UIImage]()
+  var cachedImages = [Int32: UIImage]()
   
   func prepareDataSource(completionBlock: (() -> Void)?) throws {
     let fetchRequest = NSFetchRequest(entityName: RecipeEntityName)
