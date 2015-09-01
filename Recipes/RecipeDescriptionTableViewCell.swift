@@ -8,6 +8,20 @@
 
 import UIKit
 
+// MARK: UITextViewDelegate
+extension RecipeDescriptionTableViewCell: UITextViewDelegate {
+  func textViewShouldBeginEditing(textView: UITextView) -> Bool {
+    return true
+  }
+  
+  func textViewDidBeginEditing(textView: UITextView) {
+    guard let indexPath = self.tableView()?.indexPathForCell(self) else {
+      return
+    }
+    self.tableView()?.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+  }
+}
+
 class RecipeDescriptionTableViewCell: UITableViewCell {
   
   @IBOutlet var descriptionTextView: UITextView!
@@ -17,12 +31,16 @@ class RecipeDescriptionTableViewCell: UITableViewCell {
     // Initialization code
     self.editingAccessoryType = UITableViewCellAccessoryType.None
     self.accessoryType = UITableViewCellAccessoryType.None
+    self.descriptionTextView.delegate = self
     self.descriptionTextView.editable = false
     self.descriptionTextView.selectable = false
   }
   
   override func setEditing(editing: Bool, animated: Bool) {
-    self.descriptionTextView.editable = false
+    self.descriptionTextView.editable = editing
+    if !editing {
+      self.descriptionTextView.resignFirstResponder()
+    }
   }
   override func setSelected(selected: Bool, animated: Bool) {
     super.setSelected(selected, animated: animated)

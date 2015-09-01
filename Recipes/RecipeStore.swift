@@ -53,9 +53,6 @@ let ApiDateFormatString = "YYYY'-'MM'-'DD'T'HH:mm:ss.SSS'Z'"
 let RecipeEntityName = "Recipe"
 let PhotoEntityName = "Photo"
 
-
-
-
 class RecipeStore: NSIncrementalStore
 {
   var cache = [NSNumber: [String: AnyObject]]()
@@ -102,13 +99,10 @@ class RecipeStore: NSIncrementalStore
         guard let data = try? NSURLConnection.sendSynchronousRequest(urlRequest, returningResponse: &response) else {
           return []
         }
-
         guard let json = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0)) else {
           return []
         }
-
         if let recipesKeyValues = json as? [[String: AnyObject]] {
-          
           var fetchedObjects = [NSManagedObject]()
           for recipeKeyValue in recipesKeyValues {
             let id = recipeKeyValue[RecipeApiObjectAttributesMapping.id.rawValue]

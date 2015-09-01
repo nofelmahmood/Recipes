@@ -35,9 +35,6 @@
                                                     <subviews>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gom-IY-avS">
                                                             <rect key="frame" x="20" y="20" width="400" height="161"/>
-                                                            <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                                                <rect key="frame" x="0.0" y="0.0" width="240" height="200"/>
-                                                            </variation>
                                                         </imageView>
                                                         <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f8p-cO-6LO">
                                                             <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
@@ -49,9 +46,6 @@
                                                                         <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                                                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="18"/>
                                                                         <nil key="highlightedColor"/>
-                                                                        <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                                                            <rect key="frame" x="8" y="2" width="224" height="25"/>
-                                                                        </variation>
                                                                     </label>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L1V-fu-RPl">
                                                                         <rect key="frame" x="-23" y="-15" width="46" height="30"/>
@@ -74,9 +68,6 @@
                                                                                 <include reference="55C-wj-4PG"/>
                                                                                 <include reference="8eg-6D-ZKE"/>
                                                                             </mask>
-                                                                        </variation>
-                                                                        <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                                                            <rect key="frame" x="197" y="14" width="35" height="35"/>
                                                                         </variation>
                                                                         <connections>
                                                                             <action selector="favoriteButtonTapped:" destination="Zsb-dt-fVS" eventType="touchUpInside" id="PJw-Wu-KqQ"/>
@@ -211,9 +202,6 @@
                                                                     <exclude reference="x3H-TH-csp"/>
                                                                 </mask>
                                                             </variation>
-                                                            <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                                                <rect key="frame" x="0.0" y="146" width="240" height="54"/>
-                                                            </variation>
                                                         </visualEffectView>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -253,9 +241,6 @@
                                                             <include reference="vy3-PT-3eF"/>
                                                             <include reference="z1W-1p-n0e"/>
                                                         </mask>
-                                                    </variation>
-                                                    <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                                        <rect key="frame" x="0.0" y="0.0" width="240" height="200"/>
                                                     </variation>
                                                 </view>
                                             </subviews>
@@ -297,23 +282,53 @@
                                     <outlet property="delegate" destination="xQV-RP-pL6" id="pwG-Gb-Dum"/>
                                 </connections>
                             </tableView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Edp-jU-aWf">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="gVo-si-nfR"/>
+                                    <barButtonItem width="300" style="plain" id="fcf-pB-NTT">
+                                        <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="vaa-HA-z6G">
+                                            <rect key="frame" x="-60" y="-14" width="121" height="29"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="All"/>
+                                                <segment title="Favorites"/>
+                                            </segments>
+                                            <color key="tintColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
+                                            <connections>
+                                                <action selector="scopeSegmentedControlSelectionDidChange:" destination="xQV-RP-pL6" eventType="valueChanged" id="JnI-gF-wgg"/>
+                                            </connections>
+                                        </segmentedControl>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Yuq-VP-eiu"/>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Edp-jU-aWf" firstAttribute="leading" secondItem="L4u-wF-v1G" secondAttribute="leading" id="26G-jV-LuP"/>
                             <constraint firstItem="dT3-xi-Eos" firstAttribute="leading" secondItem="L4u-wF-v1G" secondAttribute="leading" id="4CK-Xs-FnH"/>
+                            <constraint firstItem="A3y-hZ-9S8" firstAttribute="top" secondItem="Edp-jU-aWf" secondAttribute="bottom" id="5bO-zR-InU"/>
                             <constraint firstItem="dT3-xi-Eos" firstAttribute="top" secondItem="L4u-wF-v1G" secondAttribute="top" id="OGx-kg-aZV"/>
+                            <constraint firstAttribute="trailing" secondItem="Edp-jU-aWf" secondAttribute="trailing" id="TIs-rE-tM7"/>
                             <constraint firstAttribute="trailing" secondItem="dT3-xi-Eos" secondAttribute="trailing" id="cod-2q-2ec"/>
                             <constraint firstItem="A3y-hZ-9S8" firstAttribute="top" secondItem="dT3-xi-Eos" secondAttribute="bottom" id="nxV-5l-ArK"/>
+                            <constraint firstItem="Edp-jU-aWf" firstAttribute="top" secondItem="dT3-xi-Eos" secondAttribute="bottom" id="p1D-cr-MLx"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="dT3-xi-Eos"/>
+                                <exclude reference="Edp-jU-aWf"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="nxV-5l-ArK"/>
                                 <exclude reference="4CK-Xs-FnH"/>
                                 <exclude reference="OGx-kg-aZV"/>
                                 <exclude reference="cod-2q-2ec"/>
+                                <exclude reference="26G-jV-LuP"/>
+                                <exclude reference="TIs-rE-tM7"/>
+                                <exclude reference="p1D-cr-MLx"/>
+                                <exclude reference="5bO-zR-InU"/>
+                                <exclude reference="nxV-5l-ArK"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -321,10 +336,22 @@
                                 <include reference="dT3-xi-Eos"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="nxV-5l-ArK"/>
                                 <include reference="4CK-Xs-FnH"/>
                                 <include reference="OGx-kg-aZV"/>
                                 <include reference="cod-2q-2ec"/>
+                                <include reference="nxV-5l-ArK"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="Edp-jU-aWf"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="26G-jV-LuP"/>
+                                <include reference="TIs-rE-tM7"/>
+                                <include reference="p1D-cr-MLx"/>
+                                <include reference="5bO-zR-InU"/>
+                                <exclude reference="nxV-5l-ArK"/>
                             </mask>
                         </variation>
                     </view>
@@ -340,6 +367,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="segmentedControl" destination="vaa-HA-z6G" id="Ufz-EW-ZZt"/>
                         <outlet property="tableView" destination="dT3-xi-Eos" id="3Lf-KY-4GX"/>
                         <segue destination="UEd-LK-BLk" kind="show" id="v0R-qR-cJB"/>
                         <segue destination="PwC-Nt-C7j" kind="presentation" identifier="RecipesSearch" id="Wl7-rf-sm7"/>
@@ -348,11 +376,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xyk-KV-Jnv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2187" y="-87.75"/>
+            <point key="canvasLocation" x="2058" y="-159"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="3DU-aD-GJ6">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Kty-vc-HJC" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="UEd-LK-BLk" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="FD2-Tv-ADA"/>
@@ -407,7 +436,6 @@
                         </variation>
                     </view>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Kty-vc-HJC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2661" y="880"/>
         </scene>
@@ -466,9 +494,6 @@
                                                         <mask key="constraints">
                                                             <include reference="XKV-6A-Ona"/>
                                                         </mask>
-                                                    </variation>
-                                                    <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                                        <rect key="frame" x="78" y="8" width="154" height="29"/>
                                                     </variation>
                                                 </label>
                                             </subviews>
@@ -902,7 +927,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <textAttributes key="titleTextAttributes">
                             <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="23"/>
-                            <color key="textColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="textColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -923,6 +948,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

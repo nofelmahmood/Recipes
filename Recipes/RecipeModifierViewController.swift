@@ -48,7 +48,7 @@ extension RecipeModifierViewController: UITableViewDataSource {
     } else if indexPath.section == 2 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeInstructionTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeInstructionTableViewCell
       let instruction = self.recipeInstructions![indexPath.row]
-      cell.instructionTextView.text = "\(instruction). This is the instruction you have been waiting for. You can either die as a hero or you can live long enough to become a villian and I can do those things you fucking bastard"
+      cell.instructionTextView.text = "\(instruction). This is the instruction you have been waiting for. You can either die as a hero or you can live long enough to become a villian and I can do those things."
       cell.instructionNumberLabel.text = "\(indexPath.row + 1)"
       return cell
     }
@@ -118,6 +118,20 @@ class RecipeModifierViewController: UIViewController {
     }
   }
   
+  override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
+    // Keyboard Notifications
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    
+  }
+  
+  override func viewWillDisappear(animated: Bool) {
+    super.viewWillDisappear(animated)
+    NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+    NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+  }
+  
   override func viewDidAppear(animated: Bool) {
     self.tableView.reloadData()
   }
@@ -136,12 +150,42 @@ class RecipeModifierViewController: UIViewController {
     if editing {
       self.navigationItem.setLeftBarButtonItem(UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: Selector(RecipeModifierBarButtonItemActionName)), animated: true)
       self.navigationItem.setRightBarButtonItem(nil, animated: true)
+      self.recipeNameTextField.becomeFirstResponder()
     } else {
       self.navigationItem.setLeftBarButtonItem(UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: Selector(RecipeModifierBarButtonItemActionName)), animated: true)
       self.navigationItem.setRightBarButtonItem(UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: Selector(RecipeModifierBarButtonItemActionName)), animated: true)
     }
   }
   
+  // MARK: Keyboard
+  func keyboardWillShow(notification: NSNotification) {
+    guard let userInfo = notification.userInfo else {
+      return
+    }
+    var keyboardFrame = userInfo["UIKeyboardFrameEndUserInfoKey"]!.CGRectValue
+    keyboardFrame = self.tableView.convertRect(keyboardFrame, fromView: nil)
+    let intersect = CGRectIntersection(keyboardFrame, self.tableView.bounds)
+    if !CGRectIsNull(intersect) {
+      let duration = userInfo["UIKeyboardAnimationDurationUserInfoKey"]!.doubleValue
+      UIView.animateWithDuration(duration, animations: { () -> Void in
+        self.tableView.contentInset = UIEdgeInsetsMake(0, 0, intersect.size.height, 0)
+        self.tableView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, intersect.size.height, 0)
+      })
+    }
+  }
+  
+  func keyboardWillHide(notification: NSNotification) {
+    guard let userInfo = notification.userInfo else {
+      return
+    }
+    let duration = userInfo["UIKeyboardAnimationDurationUserInfoKey"]!.doubleValue
+    UIView.animateWithDuration(duration) { () -> Void in
+      self.tableView.contentInset = UIEdgeInsetsZero
+      self.tableView.scrollIndicatorInsets = UIEdgeInsetsZero
+    }
+  }
+  
+
   // MARK: IBAction
   @IBAction func didPressBarButtonItem(sender: AnyObject) {
     if self.editing && self.navigationItem.leftBarButtonItem! == sender as! NSObject {

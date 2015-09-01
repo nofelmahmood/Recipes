@@ -79,15 +79,18 @@ extension RecipesViewController: UITableViewDelegate {
 class RecipesViewController: UIViewController {
   
   @IBOutlet var tableView: UITableView!
+  @IBOutlet var segmentedControl: UISegmentedControl!
   
   var recipes: [Recipe]?
+  var fetchedRecipes: [Recipe]?
   var cachedImages = [Int: UIImage]()
   
   func prepareDataSource(completionBlock: (() -> Void)?) throws {
     let fetchRequest = NSFetchRequest(entityName: RecipeEntityName)
     let asynchronousFetchRequest = NSAsynchronousFetchRequest(fetchRequest: fetchRequest) { (result) -> Void in
       if let finalResult = result.finalResult as? [Recipe] {
-        self.recipes = finalResult
+        self.fetchedRecipes = finalResult
+        self.recipes = self.fetchedRecipes
       }
       completionBlock?()
     }
@@ -107,8 +110,7 @@ class RecipesViewController: UIViewController {
         self.tableView.reloadData()
       })
     })
-    }
-    catch {
+    } catch {
       print("Error preparing DataSource for RecipesViewController")
     }
   }
@@ -119,10 +121,23 @@ class RecipesViewController: UIViewController {
   }
   
   // MARK: IBAction
-  @IBAction func searchBarButtonDidPress(sender: AnyObject?) {
+  @IBAction func searchBarButtonDidPress(sender: AnyObject) {
     self.performSegueWithIdentifier(RecipesSegue.RecipesSearch.rawValue, sender: self)
   }
   
+  @IBAction func scopeSegmentedControlSelectionDidChange(sender: AnyObject) {
+    switch(self.segmentedControl.selectedSegmentIndex) {
+    case 0:
+      self.recipes = fetchedRecipes
+    case 1:
+      self.recipes = fetchedRecipes?.filter {
+        return $0.favorite!.boolValue
+      }
+    default:
+      break
+    }
+    self.tableView.reloadData()
+  }
   // MARK: - Navigation
   
   // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -134,8 +149,7 @@ class RecipesViewController: UIViewController {
         return
       }
       recipesSearchViewController.recipes = self.recipes
-    }
-    else if segue.identifier == RecipesSegue.RecipeModifier.rawValue {
+    } else if segue.identifier == RecipesSegue.RecipeModifier.rawValue {
       guard let recipesModifierViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? RecipeModifierViewController else {
         return
       }
@@ -146,6 +160,4 @@ class RecipesViewController: UIViewController {
       recipesModifierViewController.recipe = recipe
     }
   }
-
-  
 }

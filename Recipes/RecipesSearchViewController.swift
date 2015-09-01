@@ -37,9 +37,7 @@ extension RecipesSearchViewController: UISearchResultsUpdating {
     }
     
     self.searchResults = recipes.filter({ (recipe) -> Bool in
-      let rec: Recipe = recipe
-      if rec.name!.rangeOfString(searchString, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil
-      {
+      if recipe.name!.rangeOfString(searchString, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil {
         return true
       }
       return false
