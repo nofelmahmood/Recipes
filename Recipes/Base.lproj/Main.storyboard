@@ -1009,11 +1009,88 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="accessoryView" destination="BXh-m1-gXV" id="AOY-cB-fb6"/>
                         <outlet property="recipeNameTextField" destination="7Hf-K3-j7f" id="upG-Qe-Icf"/>
                         <outlet property="tableView" destination="nay-l3-E3A" id="oF4-RY-WtY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RgQ-qt-S5D" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="BXh-m1-gXV">
+                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <toolbar opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y8M-Uu-2HH">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="44" id="CTW-Qj-hNu"/>
+                            </constraints>
+                            <items>
+                                <barButtonItem title="Previous" id="srh-oW-fKD">
+                                    <connections>
+                                        <action selector="didPressBarButtonItem:" destination="RgQ-qt-S5D" id="iy4-aB-SFt"/>
+                                    </connections>
+                                </barButtonItem>
+                                <barButtonItem style="plain" systemItem="flexibleSpace" id="cO3-d2-pnz">
+                                    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </barButtonItem>
+                                <barButtonItem title="Next" id="Bfr-O6-SWs">
+                                    <connections>
+                                        <action selector="didPressBarButtonItem:" destination="RgQ-qt-S5D" id="lXy-qs-cPQ"/>
+                                    </connections>
+                                </barButtonItem>
+                            </items>
+                            <color key="tintColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <variation key="default">
+                                <mask key="constraints">
+                                    <exclude reference="CTW-Qj-hNu"/>
+                                </mask>
+                            </variation>
+                            <variation key="heightClass=regular-widthClass=compact">
+                                <mask key="constraints">
+                                    <include reference="CTW-Qj-hNu"/>
+                                </mask>
+                            </variation>
+                        </toolbar>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="Y8M-Uu-2HH" firstAttribute="leading" secondItem="BXh-m1-gXV" secondAttribute="leading" id="2ng-nu-niI"/>
+                        <constraint firstItem="Y8M-Uu-2HH" firstAttribute="top" secondItem="BXh-m1-gXV" secondAttribute="top" id="8Tt-BV-bqa"/>
+                        <constraint firstAttribute="bottom" secondItem="Y8M-Uu-2HH" secondAttribute="bottom" id="BRd-8D-Djf"/>
+                        <constraint firstAttribute="trailing" secondItem="Y8M-Uu-2HH" secondAttribute="trailing" id="If8-RK-Izq"/>
+                        <constraint firstItem="Y8M-Uu-2HH" firstAttribute="top" secondItem="BXh-m1-gXV" secondAttribute="top" id="aNo-U5-8wa"/>
+                        <constraint firstAttribute="bottom" secondItem="Y8M-Uu-2HH" secondAttribute="bottom" id="kXI-Cy-IV2"/>
+                        <constraint firstAttribute="trailing" secondItem="Y8M-Uu-2HH" secondAttribute="trailing" id="wDx-EH-2ED"/>
+                    </constraints>
+                    <variation key="default">
+                        <mask key="subviews">
+                            <exclude reference="Y8M-Uu-2HH"/>
+                        </mask>
+                        <mask key="constraints">
+                            <exclude reference="2ng-nu-niI"/>
+                            <exclude reference="8Tt-BV-bqa"/>
+                            <exclude reference="BRd-8D-Djf"/>
+                            <exclude reference="If8-RK-Izq"/>
+                            <exclude reference="aNo-U5-8wa"/>
+                            <exclude reference="kXI-Cy-IV2"/>
+                            <exclude reference="wDx-EH-2ED"/>
+                        </mask>
+                    </variation>
+                    <variation key="heightClass=regular-widthClass=compact">
+                        <mask key="subviews">
+                            <include reference="Y8M-Uu-2HH"/>
+                        </mask>
+                        <mask key="constraints">
+                            <include reference="2ng-nu-niI"/>
+                            <include reference="8Tt-BV-bqa"/>
+                            <include reference="BRd-8D-Djf"/>
+                            <include reference="If8-RK-Izq"/>
+                            <exclude reference="aNo-U5-8wa"/>
+                            <exclude reference="kXI-Cy-IV2"/>
+                            <exclude reference="wDx-EH-2ED"/>
+                        </mask>
+                    </variation>
+                </view>
             </objects>
             <point key="canvasLocation" x="4011" y="-374.25"/>
         </scene>

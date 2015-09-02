@@ -136,6 +136,9 @@ class RecipeModifierViewController: UIViewController {
   
   @IBOutlet var tableView: UITableView!
   @IBOutlet var recipeNameTextField: UITextField!
+  @IBOutlet var accessoryView: UIView!
+  
+  var modifierInputAccessoryViewController: RecipeModifierInputAccessoryViewController?
   
   var recipe: Recipe?
   var cachedImage: UIImage?
@@ -145,6 +148,8 @@ class RecipeModifierViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
+    self.accessoryView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 44)
+    self.recipeNameTextField.inputAccessoryView = self.accessoryView
     self.setEditing(false, animated: true)
     tableView.estimatedRowHeight = 44.0
     tableView.rowHeight = UITableViewAutomaticDimension
@@ -182,13 +187,11 @@ class RecipeModifierViewController: UIViewController {
   override func viewDidAppear(animated: Bool) {
     self.tableView.reloadData()
   }
-
   
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
   }
-  
   
   func didRequestImagePickerForPhotoLibrary(sender: AnyObject) {
     if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary) {

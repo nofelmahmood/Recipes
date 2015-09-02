@@ -37,8 +37,6 @@ extension RecipesViewController: UITableViewDataSource {
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeTableViewCell
     let recipe = self.recipes![indexPath.row]
-    print(recipe.photo_thumbnailURL!)
-    print(recipe.photo_URL!)
     cell.updateCellFromRecipe(recipe, scope: self.selectedScope())
     if let image = self.cachedImages[recipe.id!.intValue] {
       cell.backgroundImageView.image = image
@@ -47,7 +45,10 @@ extension RecipesViewController: UITableViewDataSource {
       let photoURL = NSURL(string: recipe.photo_thumbnailURL!)
       let photoURLRequest = NSURLRequest(URL: photoURL!)
       let photoDownloadTask = NSURLSession.sharedSession().downloadTaskWithRequest(photoURLRequest, completionHandler: { (location, response, error) -> Void in
-        let photoData = NSData(contentsOfURL: location!)
+        guard let location = location else {
+          return
+        }
+        let photoData = NSData(contentsOfURL: location)
         if let photoData = photoData {
           recipe.photo = photoData
           self.cachedImages[recipe.id!.intValue] = UIImage(data: photoData)
