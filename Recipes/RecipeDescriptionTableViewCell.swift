@@ -38,7 +38,8 @@ class RecipeDescriptionTableViewCell: UITableViewCell {
   
   override func setEditing(editing: Bool, animated: Bool) {
     self.descriptionTextView.editable = editing
-    if !editing {
+    if editing {
+    } else {
       self.descriptionTextView.resignFirstResponder()
     }
   }

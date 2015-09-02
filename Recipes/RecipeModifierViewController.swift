@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MobileCoreServices
 
 let RecipePhotoTableViewCellIdentifier = "RecipePhotoTableViewCell"
 let RecipeDescriptionTableViewCellIdentifier = "RecipeDescriptionTableViewCellI"
@@ -35,8 +36,11 @@ extension RecipeModifierViewController: UITableViewDataSource {
     
     if indexPath.section == 0 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipePhotoTableViewCellIdentifier, forIndexPath: indexPath) as! RecipePhotoTableViewCell
-      if let photo = self.recipe?.photo {
-        cell.photoImageView.image = UIImage(data: photo)
+      cell.cameraButton.addTarget(self, action: "didRequestImagePickerForCamera:", forControlEvents: UIControlEvents.TouchUpInside)
+      cell.photoLibraryButton.addTarget(self, action: "didRequestImagePickerForPhotoLibrary:", forControlEvents: UIControlEvents.TouchUpInside)
+      if let image = self.cachedImage {
+        cell.photoImageView.image = image
+        cell.photoImageView.contentMode = UIViewContentMode.ScaleAspectFill
       }
       return cell
     } else if indexPath.section == 1 {
@@ -67,7 +71,6 @@ extension RecipeModifierViewController: UITableViewDelegate {
     selectedCell.contentView.alpha = 1.0
     selectedCell.instructionTextView.textColor = UIColor.blackColor()
     selectedCell.instructionTextView.font = UIFont(name: "Avenir Book", size: 23.0)
-    
     UIView.animateWithDuration(0.5, animations: { () -> Void in
       for visibleCell in tableView.visibleCells {
         guard visibleCell != selectedCell else {
@@ -90,7 +93,44 @@ extension RecipeModifierViewController: UITableViewDelegate {
   func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
     return false
   }
+  
+  func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    if indexPath.section == 2 {
+      return true
+    }
+    return false
+  }
+  
+  func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    if editingStyle == UITableViewCellEditingStyle.Delete {
+      print("Delete row")
+    }
+  }
 }
+
+// MARK: UIImagePickerControllerDelegate
+extension RecipeModifierViewController: UIImagePickerControllerDelegate {
+
+  func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+    picker.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    NSOperationQueue().addOperationWithBlock {
+      self.recipe?.photo = UIImageJPEGRepresentation(image,0.5)
+      self.cachedImage = UIImage.scaledUIImageToSize(image, size: CGSize(width: 200, height: 200))
+      NSOperationQueue.mainQueue().addOperationWithBlock {
+        self.tableView.beginUpdates()
+        self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
+        self.tableView.endUpdates()
+      }
+    }
+  }
+}
+
+// MARK: UINavigationControllerDelegate
+// UIImagePickerControllerDelegate requires to implement this protocol
+extension RecipeModifierViewController: UINavigationControllerDelegate {
+  
+}
+
 
 class RecipeModifierViewController: UIViewController {
   
@@ -98,6 +138,7 @@ class RecipeModifierViewController: UIViewController {
   @IBOutlet var recipeNameTextField: UITextField!
   
   var recipe: Recipe?
+  var cachedImage: UIImage?
   var recipeInstructions: [String]?
   var cookingMode = false
   
@@ -115,6 +156,12 @@ class RecipeModifierViewController: UIViewController {
       self.recipeInstructions = recipeInstructions
       self.recipeInstructions!.append("Here's Another Step. Stay Healthy")
       self.recipeInstructions!.append("Stay fine. This is a very important step. This must be done in order to keep the food well cooked. This would allow you to stay fit")
+    }
+    
+    if let photo = self.recipe?.photo {
+      if let image = UIImage(data: photo) {
+        self.cachedImage = UIImage.scaledUIImageToSize(image, size: CGSize(width: 200, height: 200))
+      }
     }
   }
   
@@ -140,6 +187,27 @@ class RecipeModifierViewController: UIViewController {
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
+  }
+  
+  
+  func didRequestImagePickerForPhotoLibrary(sender: AnyObject) {
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary) {
+      let imagePickerController = UIImagePickerController()
+      imagePickerController.sourceType = .PhotoLibrary
+      imagePickerController.delegate = self
+      imagePickerController.mediaTypes = [kUTTypeImage as String]
+      self.presentViewController(imagePickerController, animated: true, completion: nil)
+    }
+  }
+  
+  func didRequestImagePickerForCamera(sender: AnyObject) {
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera) {
+      let imagePickerController = UIImagePickerController()
+      imagePickerController.sourceType = .Camera
+      imagePickerController.delegate = self
+      imagePickerController.cameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Photo
+      self.presentViewController(imagePickerController, animated: true, completion: nil)
+    }
   }
   
   // MARK: Editing
@@ -184,7 +252,6 @@ class RecipeModifierViewController: UIViewController {
       self.tableView.scrollIndicatorInsets = UIEdgeInsetsZero
     }
   }
-  
 
   // MARK: IBAction
   @IBAction func didPressBarButtonItem(sender: AnyObject) {

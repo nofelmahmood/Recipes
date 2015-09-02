@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3E060D431B95988400C71B5F /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E060D421B95988400C71B5F /* AppDefaults.swift */; settings = {ASSET_TAGS = (); }; };
+		3E060D451B95DD0500C71B5F /* UIImage+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E060D441B95DD0500C71B5F /* UIImage+Helper.swift */; settings = {ASSET_TAGS = (); }; };
 		3E10E3581B91EC1D00AA3F52 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E10E3571B91EC1D00AA3F52 /* AppDelegate.swift */; };
 		3E10E35D1B91EC1D00AA3F52 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E10E35B1B91EC1D00AA3F52 /* Main.storyboard */; };
 		3E10E3601B91EC1D00AA3F52 /* Recipes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3E10E35E1B91EC1D00AA3F52 /* Recipes.xcdatamodeld */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		3E060D421B95988400C71B5F /* AppDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
+		3E060D441B95DD0500C71B5F /* UIImage+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Helper.swift"; sourceTree = "<group>"; };
 		3E10E3541B91EC1D00AA3F52 /* Recipes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Recipes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E10E3571B91EC1D00AA3F52 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E10E35C1B91EC1D00AA3F52 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 			children = (
 				3EB7B7601B95840300DBF9C1 /* UITableViewCell+Helper.swift */,
 				3E060D421B95988400C71B5F /* AppDefaults.swift */,
+				3E060D441B95DD0500C71B5F /* UIImage+Helper.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -332,6 +335,7 @@
 				3E7D61791B931FC300A8386E /* Recipe+CoreDataProperties.swift in Sources */,
 				3E10E3581B91EC1D00AA3F52 /* AppDelegate.swift in Sources */,
 				3E10E3601B91EC1D00AA3F52 /* Recipes.xcdatamodeld in Sources */,
+				3E060D451B95DD0500C71B5F /* UIImage+Helper.swift in Sources */,
 				3E7D61831B9424DD00A8386E /* RecipeSearchTableViewCell.swift in Sources */,
 				3E7D618E1B944FEE00A8386E /* RecipeCookingLevelTableViewCell.swift in Sources */,
 				3E7D61881B94434100A8386E /* RecipeDescriptionTableViewCell.swift in Sources */,
@@ -465,10 +469,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Recipes/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hyper.Recipes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -477,10 +482,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Recipes/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hyper.Recipes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

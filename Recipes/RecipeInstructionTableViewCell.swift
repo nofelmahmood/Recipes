@@ -40,8 +40,15 @@ class RecipeInstructionTableViewCell: UITableViewCell {
   
   override func setEditing(editing: Bool, animated: Bool) {
     self.instructionTextView.editable = editing
-    if !editing {
+    if editing {
+      UIView.animateWithDuration(0.2, animations: { () -> Void in
+        self.instructionNumberLabel.alpha = 0.0
+      })
+    } else {
       self.instructionTextView.resignFirstResponder()
+      UIView.animateWithDuration(0.2, animations: { () -> Void in
+        self.instructionNumberLabel.alpha = 1.0
+      })
     }
   }
   override func setSelected(selected: Bool, animated: Bool) {

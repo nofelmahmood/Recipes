@@ -21,6 +21,7 @@ enum RecipesScope: String {
   case Favories = "Favorites"
 }
 
+// MARK: UITableViewDataSource
 extension RecipesViewController: UITableViewDataSource {
   func numberOfSectionsInTableView(tableView: UITableView) -> Int {
     return 1
@@ -36,6 +37,8 @@ extension RecipesViewController: UITableViewDataSource {
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeTableViewCell
     let recipe = self.recipes![indexPath.row]
+    print(recipe.photo_thumbnailURL!)
+    print(recipe.photo_URL!)
     cell.updateCellFromRecipe(recipe, scope: self.selectedScope())
     if let image = self.cachedImages[recipe.id!.intValue] {
       cell.backgroundImageView.image = image
@@ -46,13 +49,15 @@ extension RecipesViewController: UITableViewDataSource {
       let photoDownloadTask = NSURLSession.sharedSession().downloadTaskWithRequest(photoURLRequest, completionHandler: { (location, response, error) -> Void in
         let photoData = NSData(contentsOfURL: location!)
         if let photoData = photoData {
-          self.recipes![indexPath.row].photo = photoData
+          recipe.photo = photoData
           self.cachedImages[recipe.id!.intValue] = UIImage(data: photoData)
-          NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-            self.tableView.beginUpdates()
-            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Fade)
-            self.tableView.endUpdates()
-          })
+          if (tableView.cellForRowAtIndexPath(indexPath) as? RecipeTableViewCell)?.recipe == recipe {
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+              self.tableView.beginUpdates()
+              self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Fade)
+              self.tableView.endUpdates()
+            }
+          }
         }
       })
       photoDownloadTask.resume()
@@ -61,6 +66,7 @@ extension RecipesViewController: UITableViewDataSource {
   }
 }
 
+// MARK: UITableViewDelegate
 extension RecipesViewController: UITableViewDelegate {
   
   func scrollViewDidScroll(scrollView: UIScrollView) {
@@ -142,14 +148,12 @@ class RecipesViewController: UIViewController {
   
   @IBAction func scopeSegmentedControlSelectionDidChange(sender: AnyObject) {
     switch(self.segmentedControl.selectedSegmentIndex) {
-    case 0:
-      self.recipes = fetchedRecipes
     case 1:
       self.recipes = fetchedRecipes?.filter {
         return $0.favorite!.boolValue
       }
     default:
-      break
+      self.recipes = fetchedRecipes
     }
     self.tableView.reloadData()
   }

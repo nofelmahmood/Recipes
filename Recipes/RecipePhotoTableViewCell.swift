@@ -13,12 +13,14 @@ class RecipePhotoTableViewCell: UITableViewCell {
   @IBOutlet var photoImageView: UIImageView!
   @IBOutlet var cameraButton: UIButton!
   @IBOutlet var photoLibraryButton: UIButton!
+  @IBOutlet var visualEffectView: UIVisualEffectView!
   
   override func awakeFromNib() {
     super.awakeFromNib()
     // Initialization code
     self.editingAccessoryType = UITableViewCellAccessoryType.None
     self.accessoryType = UITableViewCellAccessoryType.None
+    self.photoImageView.translatesAutoresizingMaskIntoConstraints = false
   }
   
   override func setSelected(selected: Bool, animated: Bool) {
@@ -27,18 +29,8 @@ class RecipePhotoTableViewCell: UITableViewCell {
   }
   
   override func setEditing(editing: Bool, animated: Bool) {
+    self.photoLibraryButton.hidden = !editing
+    self.cameraButton.hidden = !editing
+    self.visualEffectView.hidden = !editing
   }
-  // MARK: IBAction
-  @IBAction func buttonTapped(sender: AnyObject) {
-    guard let button = sender as? UIButton else {
-      return
-    }
-    if button == self.cameraButton {
-      
-    } else if button == self.photoLibraryButton {
-      
-    }
-  }
-
-  
 }
