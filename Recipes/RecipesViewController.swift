@@ -41,7 +41,7 @@ extension RecipesViewController: UITableViewDataSource {
     if let image = self.cachedImages[recipe.id!.intValue] {
       cell.backgroundImageView.image = image
     } else {
-      cell.backgroundImageView.image = nil
+      cell.backgroundImageView.image = UIImage(named: "ImagePlaceholder")
       let photoURL = NSURL(string: recipe.photo_thumbnailURL!)
       let photoURLRequest = NSURLRequest(URL: photoURL!)
       let photoDownloadTask = NSURLSession.sharedSession().downloadTaskWithRequest(photoURLRequest, completionHandler: { (location, response, error) -> Void in
@@ -84,6 +84,24 @@ extension RecipesViewController: UITableViewDelegate {
   
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     self.performSegueWithIdentifier(RecipesSegue.RecipeModifier.rawValue, sender: self)
+  }
+  
+  func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    if editingStyle == UITableViewCellEditingStyle.Delete {
+      guard let recipe = self.recipes?[indexPath.row] else {
+        return
+      }
+      CoreDataStack.defaultStack.managedObjectContext.deleteObject(recipe)
+      do {
+          try self.prepareDataSource {
+          NSOperationQueue.mainQueue().addOperationWithBlock {
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+          }
+        }
+      } catch {
+        print("Error preparing DataSource")
+      }
+    }
   }
 }
 

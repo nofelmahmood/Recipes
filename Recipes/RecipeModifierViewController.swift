@@ -45,6 +45,7 @@ extension RecipeModifierViewController: UITableViewDataSource {
       return cell
     } else if indexPath.section == 1 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeDescriptionTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeDescriptionTableViewCell
+      cell.descriptionTextView.inputAccessoryView = self.accessoryView
       if let recipeDescription = self.recipe?.specification {
         cell.descriptionTextView.text = recipeDescription
       }
@@ -53,6 +54,7 @@ extension RecipeModifierViewController: UITableViewDataSource {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeInstructionTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeInstructionTableViewCell
       let instruction = self.recipeInstructions![indexPath.row]
       cell.instructionTextView.text = "\(instruction). This is the instruction you have been waiting for. You can either die as a hero or you can live long enough to become a villian and I can do those things."
+      cell.instructionTextView.inputAccessoryView = self.accessoryView
       cell.instructionNumberLabel.text = "\(indexPath.row + 1)"
       return cell
     }
@@ -100,13 +102,19 @@ extension RecipeModifierViewController: UITableViewDelegate {
     }
     return false
   }
-  
-  func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-    if editingStyle == UITableViewCellEditingStyle.Delete {
-      print("Delete row")
-    }
+}
+
+// MARK: UITextFieldDelegate
+extension RecipeModifierViewController: UITextFieldDelegate {
+  func textFieldDidBeginEditing(textField: UITextField) {
+    self.firstResponderIndexPath = nil
+  }
+
+  func textFieldDidEndEditing(textField: UITextField) {
+    self.recipe?.name = textField.text
   }
 }
+
 
 // MARK: UIImagePickerControllerDelegate
 extension RecipeModifierViewController: UIImagePickerControllerDelegate {
@@ -131,19 +139,17 @@ extension RecipeModifierViewController: UINavigationControllerDelegate {
   
 }
 
-
 class RecipeModifierViewController: UIViewController {
   
   @IBOutlet var tableView: UITableView!
   @IBOutlet var recipeNameTextField: UITextField!
   @IBOutlet var accessoryView: UIView!
   
-  var modifierInputAccessoryViewController: RecipeModifierInputAccessoryViewController?
-  
   var recipe: Recipe?
   var cachedImage: UIImage?
   var recipeInstructions: [String]?
   var cookingMode = false
+  var firstResponderIndexPath: NSIndexPath?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -193,6 +199,7 @@ class RecipeModifierViewController: UIViewController {
     // Dispose of any resources that can be recreated.
   }
   
+  // MARK: UIImagePickerController
   func didRequestImagePickerForPhotoLibrary(sender: AnyObject) {
     if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.PhotoLibrary) {
       let imagePickerController = UIImagePickerController()
@@ -265,6 +272,44 @@ class RecipeModifierViewController: UIViewController {
         self.setEditing(true, animated: true)
       } else if self.navigationItem.rightBarButtonItem! == sender as! NSObject {
         self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+      }
+    }
+  }
+
+  func nextResponderIndexPath() -> NSIndexPath? {
+    guard let firstResponderIndexPath = self.firstResponderIndexPath else {
+      return nil
+    }
+    if firstResponderIndexPath.section == 1 {
+      if self.recipeInstructions?.first != nil {
+        self.firstResponderIndexPath = NSIndexPath(forRow: 0, inSection: 2)
+        return firstResponderIndexPath
+      }
+    } else if firstResponderIndexPath.section == 2 {
+      if self.recipeInstructions != nil && (firstResponderIndexPath.row + 1) < self.recipeInstructions!.count {
+        self.firstResponderIndexPath = NSIndexPath(forRow: firstResponderIndexPath.row + 1, inSection: 2)
+        return self.firstResponderIndexPath
+      }
+    }
+    return nil
+  }
+  
+  @IBAction func didPressBarButtonInAccessoryView(sender: AnyObject) {
+    guard let barButton = sender as? UIBarButtonItem else {
+      return
+    }
+    if let title = barButton.title {
+      if title == "Next" {
+        guard let nextResponderIndexPath = self.nextResponderIndexPath() else {
+          return
+        }
+        self.tableView.scrollToRowAtIndexPath(nextResponderIndexPath, atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+        if let cell = self.tableView.cellForRowAtIndexPath(nextResponderIndexPath) as? RecipeDescriptionTableViewCell {
+          cell.descriptionTextView.becomeFirstResponder()
+        }
+        if let cell = self.tableView.cellForRowAtIndexPath(nextResponderIndexPath) as? RecipeInstructionTableViewCell {
+          cell.instructionTextView.becomeFirstResponder()
+        }
       }
     }
   }
