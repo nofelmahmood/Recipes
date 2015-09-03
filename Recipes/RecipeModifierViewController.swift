@@ -95,13 +95,6 @@ extension RecipeModifierViewController: UITableViewDelegate {
   func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
     return false
   }
-  
-  func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-    if indexPath.section == 2 {
-      return true
-    }
-    return false
-  }
 }
 
 // MARK: UITextFieldDelegate
@@ -122,7 +115,7 @@ extension RecipeModifierViewController: UIImagePickerControllerDelegate {
   func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
     picker.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     NSOperationQueue().addOperationWithBlock {
-      self.recipe?.photo = UIImageJPEGRepresentation(image,0.5)
+      self.recipe?.photo?.data = UIImageJPEGRepresentation(image,0.5)
       self.cachedImage = UIImage.scaledUIImageToSize(image, size: CGSize(width: 200, height: 200))
       NSOperationQueue.mainQueue().addOperationWithBlock {
         self.tableView.beginUpdates()
@@ -163,13 +156,13 @@ class RecipeModifierViewController: UIViewController {
     if let recipeName = self.recipe?.name {
       self.recipeNameTextField.text = recipeName
     }
-    if let recipeInstructions = self.recipe?.instructionsList {
-      self.recipeInstructions = recipeInstructions
-      self.recipeInstructions!.append("Here's Another Step. Stay Healthy")
-      self.recipeInstructions!.append("Stay fine. This is a very important step. This must be done in order to keep the food well cooked. This would allow you to stay fit")
+    if let recipeInstructions = self.recipe?.instructions?.allObjects as? [Instruction] {
+      for instruction in recipeInstructions {
+        print(instruction.name)
+      }
     }
     
-    if let photo = self.recipe?.photo {
+    if let photo = self.recipe?.photo?.data {
       if let image = UIImage(data: photo) {
         self.cachedImage = UIImage.scaledUIImageToSize(image, size: CGSize(width: 200, height: 200))
       }

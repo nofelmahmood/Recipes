@@ -1,5 +1,5 @@
 //
-//  Recipe+CoreDataProperties.swift
+//  Instruction+CoreDataProperties.swift
 //  Recipes
 //
 //  Created by Nofel Mahmood on 03/09/2015.
@@ -12,16 +12,10 @@
 import Foundation
 import CoreData
 
-extension Recipe {
+extension Instruction {
 
-    @NSManaged var createdAt: NSDate?
-    @NSManaged var difficulty: NSNumber?
-    @NSManaged var favorite: NSNumber?
     @NSManaged var id: NSNumber?
     @NSManaged var name: String?
-    @NSManaged var specification: String?
-    @NSManaged var updatedAt: NSDate?
-    @NSManaged var instructions: NSSet?
-    @NSManaged var photo: Photo?
+    @NSManaged var recipe: Recipe?
 
 }

@@ -510,6 +510,9 @@
                                                             <include reference="XKV-6A-Ona"/>
                                                         </mask>
                                                     </variation>
+                                                    <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
+                                                        <rect key="frame" x="78" y="8" width="154" height="29"/>
+                                                    </variation>
                                                 </label>
                                             </subviews>
                                             <constraints>

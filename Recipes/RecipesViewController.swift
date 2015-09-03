@@ -37,12 +37,16 @@ extension RecipesViewController: UITableViewDataSource {
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeTableViewCell
     let recipe = self.recipes![indexPath.row]
+    for instruction in (recipe.instructions?.allObjects)! {
+      print(instruction)
+    }
     cell.updateCellFromRecipe(recipe, scope: self.selectedScope())
     if let image = self.cachedImages[recipe.id!.intValue] {
       cell.backgroundImageView.image = image
     } else {
       cell.backgroundImageView.image = UIImage(named: "ImagePlaceholder")
-      let photoURL = NSURL(string: recipe.photo_thumbnailURL!)
+      let photo = recipe.photo?.data      
+      let photoURL = NSURL(string: recipe.photo!.thumbnailURL!)
       let photoURLRequest = NSURLRequest(URL: photoURL!)
       let photoDownloadTask = NSURLSession.sharedSession().downloadTaskWithRequest(photoURLRequest, completionHandler: { (location, response, error) -> Void in
         guard let location = location else {
@@ -50,7 +54,7 @@ extension RecipesViewController: UITableViewDataSource {
         }
         let photoData = NSData(contentsOfURL: location)
         if let photoData = photoData {
-          recipe.photo = photoData
+          recipe.photo!.data = photoData
           self.cachedImages[recipe.id!.intValue] = UIImage(data: photoData)
           if (tableView.cellForRowAtIndexPath(indexPath) as? RecipeTableViewCell)?.recipe == recipe {
             NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -93,7 +97,7 @@ extension RecipesViewController: UITableViewDelegate {
       }
       CoreDataStack.defaultStack.managedObjectContext.deleteObject(recipe)
       do {
-          try self.prepareDataSource {
+        try self.prepareDataSource {
           NSOperationQueue.mainQueue().addOperationWithBlock {
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
           }
@@ -120,7 +124,7 @@ class RecipesViewController: UIViewController {
     let asynchronousFetchRequest = NSAsynchronousFetchRequest(fetchRequest: fetchRequest) { (result) -> Void in
       if let finalResult = result.finalResult as? [Recipe] {
         self.fetchedRecipes = finalResult
-        self.recipes = self.fetchedRecipes
+        self.loadRecipesForSelectedScope()
       }
       completionBlock?()
     }
@@ -136,10 +140,10 @@ class RecipesViewController: UIViewController {
     self.tableView.dataSource = self
     do {
       try self.prepareDataSource({ () -> Void in
-      NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-        self.tableView.reloadData()
+        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+          self.tableView.reloadData()
+        })
       })
-    })
     } catch {
       print("Error preparing DataSource for RecipesViewController")
     }
@@ -160,12 +164,7 @@ class RecipesViewController: UIViewController {
     }
   }
   
-  // MARK: IBAction
-  @IBAction func searchBarButtonDidPress(sender: AnyObject) {
-    self.performSegueWithIdentifier(RecipesSegue.RecipesSearch.rawValue, sender: self)
-  }
-  
-  @IBAction func scopeSegmentedControlSelectionDidChange(sender: AnyObject) {
+  func loadRecipesForSelectedScope() {
     switch(self.segmentedControl.selectedSegmentIndex) {
     case 1:
       self.recipes = fetchedRecipes?.filter {
@@ -174,14 +173,23 @@ class RecipesViewController: UIViewController {
     default:
       self.recipes = fetchedRecipes
     }
+  }
+  
+  // MARK: IBAction
+  @IBAction func searchBarButtonDidPress(sender: AnyObject) {
+    self.performSegueWithIdentifier(RecipesSegue.RecipesSearch.rawValue, sender: self)
+  }
+  
+  @IBAction func scopeSegmentedControlSelectionDidChange(sender: AnyObject) {
+    self.loadRecipesForSelectedScope()
     self.tableView.reloadData()
   }
   // MARK: - Navigation
   
   // In a storyboard-based application, you will often want to do a little preparation before navigation
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-  // Get the new view controller using segue.destinationViewController.
-  // Pass the selected object to the new view controller.
+    // Get the new view controller using segue.destinationViewController.
+    // Pass the selected object to the new view controller.
     if segue.identifier == RecipesSegue.RecipesSearch.rawValue {
       guard let recipesSearchViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? RecipesSearchViewController else {
         return

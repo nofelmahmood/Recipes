@@ -20,6 +20,11 @@ extension RecipeInstructionTableViewCell: UITextViewDelegate {
     }
     self.tableView()?.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Top, animated: true)
   }
+  
+  func textViewDidChange(textView: UITextView) {
+    self.tableView()?.beginUpdates()
+    self.tableView()?.endUpdates()
+  }
 }
 
 
@@ -27,6 +32,8 @@ class RecipeInstructionTableViewCell: UITableViewCell {
   
   @IBOutlet var instructionTextView: UITextView!
   @IBOutlet var instructionNumberLabel: UILabel!
+  
+  var recipe: Recipe!
   
   override func awakeFromNib() {
     super.awakeFromNib()

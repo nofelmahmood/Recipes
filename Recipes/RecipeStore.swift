@@ -27,31 +27,27 @@ enum ApiEndPoint: String {
   case Users = "/users"
 }
 
-enum RecipeApiObjectAttributesMapping: String {
-  
-  case id = "id"
-  case name = "name"
-  case specification = "description"
-  case instructions = "instructions"
-  case favorite = "favorite"
-  case difficulty = "difficulty"
-  case createdAt = "created_at"
-  case updatedAt = "updated_at"
-  case photo = "photo"
-
-}
-
-enum PhotoApiObjectAttributesMapping: String {
-  
-  case photo_URL = "url"
-  case photo_thumbnailURL = "thumbnail_url"
-}
 
 let ApiTokenKey = "~!@ApiTokenKey"
+let ApiServerNameKey = "serverName"
 let ApiDateFormatString = "YYYY'-'MM'-'DD'T'HH:mm:ss.SSS'Z'"
 
 let RecipeEntityName = "Recipe"
 let PhotoEntityName = "Photo"
+let InstructionEntityName = "Instruction"
+
+let RecipeInstructionsSeparator = ","
+
+let RecipeEntityIDAttributeName = "id"
+let RecipeEntityPhotoRelationshipName = "photo"
+let RecipeEntityInstructionsRelationshipName = "instructions"
+
+let InstructionEntityIDAttributeName = "id"
+let InstructionEntityNameAttributeName = "name"
+
+enum RecipeStoreError: ErrorType {
+  case InvalidEntity
+}
 
 class RecipeStore: NSIncrementalStore
 {
@@ -105,12 +101,12 @@ class RecipeStore: NSIncrementalStore
         if let recipesKeyValues = json as? [[String: AnyObject]] {
           var fetchedObjects = [NSManagedObject]()
           for recipeKeyValue in recipesKeyValues {
-            let id = recipeKeyValue[RecipeApiObjectAttributesMapping.id.rawValue]
-            if let id = id as? NSNumber {
+            if let id = recipeKeyValue[RecipeEntityIDAttributeName] as? NSNumber {
+              self.cache[id] = recipeKeyValue
               let managedObjectID = self.newObjectIDForEntity(request.entity!, referenceObject: id)
               let managedObject = context.objectWithID(managedObjectID)
               fetchedObjects.append(managedObject)
-              self.cache[id] = recipeKeyValue
+              self.keepInCacheByArrangingKeyValues(usingKeyValuesFromDictionary: recipeKeyValue)
             }
           }
           return fetchedObjects
@@ -126,34 +122,131 @@ class RecipeStore: NSIncrementalStore
     return []
   }
   
+  func keepInCacheByArrangingKeyValues(usingKeyValuesFromDictionary keyValueDictionary: [String: AnyObject]) {
+    if let propertiesByServerName = self.persistentStoreCoordinator?.managedObjectModel.entitiesByName[RecipeEntityName]?.propertiesByServerName() {
+      var cacheKeyValues = [String: NSObject]()
+      let dateFormatter = NSDateFormatter()
+      dateFormatter.dateFormat = ApiDateFormatString
+      dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+      for (key, value) in keyValueDictionary {
+        if let propertyDescription = propertiesByServerName[key] {
+          if let attributeDescription = propertyDescription as? NSAttributeDescription {
+            switch(attributeDescription.attributeType) {
+            case .DateAttributeType:
+              if let date = dateFormatter.dateFromString(value as! String) {
+                cacheKeyValues[key] = date
+              }
+            default:
+              cacheKeyValues[key] = value as? NSObject
+            }
+            continue
+          } else if let relationshipDescription = propertyDescription as? NSRelationshipDescription {
+            if relationshipDescription.name == RecipeEntityInstructionsRelationshipName {
+              if let separatedInstructions = (value as? String)?.componentsSeparatedByString(RecipeInstructionsSeparator) {
+                var instructionsByID = [Int: String]()
+                var startID = 1
+                for instruction in separatedInstructions {
+                  if instruction.isEmpty {
+                    continue
+                  }
+                  instructionsByID[startID] = instruction
+                  startID = startID + 1
+                }
+                cacheKeyValues[key] = instructionsByID
+                continue
+              }
+            }
+          }
+          if let value = value as? NSObject {
+            cacheKeyValues[key] = value
+          }
+        }
+      }
+      if let id = keyValueDictionary[RecipeEntityIDAttributeName] as? NSNumber {
+        self.cache[id] = cacheKeyValues
+      }
+    }
+  }
+  
   // MARK: Faulting
   override func newValuesForObjectWithID(objectID: NSManagedObjectID, withContext context: NSManagedObjectContext) throws -> NSIncrementalStoreNode {
     
-    if let referenceObject = self.referenceObjectForObjectID(objectID) as? NSNumber {
-      if let cachedValue = self.cache[referenceObject] {
-        var valuesByKeys = [String: AnyObject]()
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = ApiDateFormatString
-        dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
-        for (key, value) in cachedValue {
-          if let attribute = RecipeApiObjectAttributesMapping(rawValue: key) {
-            if attribute == RecipeApiObjectAttributesMapping.createdAt || attribute == RecipeApiObjectAttributesMapping.updatedAt {
-              valuesByKeys["\(attribute)"] = dateFormatter.dateFromString(value as! String)
-              continue
+    if let entityName = objectID.entity.name {
+      if entityName == RecipeEntityName {
+        if let recipeID = self.referenceObjectForObjectID(objectID) as? NSNumber {
+          if let cachedValue = self.cache[recipeID] {
+            let propertiesByServerName = objectID.entity.propertiesByServerName()
+            var incrementalStoreNodeValues = [String: AnyObject]()
+            for (key,property) in propertiesByServerName {
+              if property is NSAttributeDescription {
+                if let valueForKey = cachedValue[key] {
+                  incrementalStoreNodeValues[key] = valueForKey
+                }
+              } else if let relationshipDescription = property as? NSRelationshipDescription {
+                if relationshipDescription.toMany {
+                  continue
+                }
+                if let destinationEntity = relationshipDescription.destinationEntity, let id = cachedValue[RecipeEntityIDAttributeName] as? NSNumber {
+                  let relationshipObjectID = self.newObjectIDForEntity(destinationEntity, referenceObject: id)
+                  incrementalStoreNodeValues[key] = relationshipObjectID
+                }
+              }
             }
-            if attribute == RecipeApiObjectAttributesMapping.photo {
-              let photoValues = value as! [String: String]
-              valuesByKeys["\(PhotoApiObjectAttributesMapping.photo_URL)"] = photoValues[PhotoApiObjectAttributesMapping.photo_URL.rawValue]
-              valuesByKeys["\(PhotoApiObjectAttributesMapping.photo_thumbnailURL)"] = photoValues[PhotoApiObjectAttributesMapping.photo_thumbnailURL.rawValue]
-              continue
-            }
-            valuesByKeys["\(attribute)"] = value
+            return NSIncrementalStoreNode(objectID: objectID, withValues: incrementalStoreNodeValues, version: 0)
           }
         }
-        return NSIncrementalStoreNode(objectID: objectID, withValues: valuesByKeys, version: 0)
+      } else if entityName == PhotoEntityName, let photoID = self.referenceObjectForObjectID(objectID) as? NSNumber {
+        if let cachedValue = self.cache[photoID] {
+          if let photoCachedValue = cachedValue[RecipeEntityPhotoRelationshipName] as? [String: AnyObject] {
+            let attributesByServerName = objectID.entity.attributesByServerName()
+            var incrementalStoreNodeValues = [String: AnyObject]()
+            for (key, attributeDescription) in attributesByServerName {
+              if let value = photoCachedValue[key] {
+                incrementalStoreNodeValues[attributeDescription.name] = value
+              }
+            }
+            return NSIncrementalStoreNode(objectID: objectID, withValues: incrementalStoreNodeValues, version: 0)
+          }
+        }
+      } else if entityName == InstructionEntityName {
+        if let referenceObject = (self.referenceObjectForObjectID(objectID) as? String)?.componentsSeparatedByString(RecipeInstructionsSeparator) {
+          if  referenceObject.count == 2 {
+            let recipeID = NSNumber(integer: (referenceObject[0] as NSString).integerValue)
+            let instructionID = (referenceObject[1] as NSString).integerValue
+            if let cachedValue = self.cache[recipeID] {
+              if let instructions = cachedValue[RecipeEntityInstructionsRelationshipName] as? [Int: String] {
+                var incrementalStoreNodeValues = [String: AnyObject]()
+                incrementalStoreNodeValues[InstructionEntityNameAttributeName] = instructions[instructionID]
+                incrementalStoreNodeValues[InstructionEntityIDAttributeName] = instructionID
+                return NSIncrementalStoreNode(objectID: objectID, withValues: incrementalStoreNodeValues, version: 0)
+              }
+            }
+          }
+        }
       }
     }
-    return NSIncrementalStoreNode()
+    throw RecipeStoreError.InvalidEntity
   }
-
+  
+  override func newValueForRelationship(relationship: NSRelationshipDescription, forObjectWithID objectID: NSManagedObjectID, withContext context: NSManagedObjectContext?) throws -> AnyObject {
+    
+    if let entityName = relationship.destinationEntity?.name {
+      if entityName == InstructionEntityName {
+        if let recipeID = self.referenceObjectForObjectID(objectID) as? NSNumber {
+          if let cachedValue = self.cache[recipeID] {
+            if let instructionsValue = cachedValue[RecipeEntityInstructionsRelationshipName] as? [Int: String] {
+              var objectIDs = [NSManagedObjectID]()
+              for (key, _) in instructionsValue {
+                let referenceObject = "\(recipeID.integerValue)\(RecipeInstructionsSeparator)\(key)"
+                let objectID = self.newObjectIDForEntity(relationship.destinationEntity!, referenceObject: referenceObject)
+                objectIDs.append(objectID)
+              }
+              return objectIDs
+            }
+          }
+        }
+      }
+    }
+    throw RecipeStoreError.InvalidEntity
+  }
 }
