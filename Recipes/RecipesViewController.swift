@@ -37,6 +37,9 @@ extension RecipesViewController: UITableViewDataSource {
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeTableViewCell
     let recipe = self.recipes![indexPath.row]
+    for instruction in (recipe.instructions?.allObjects)! {
+      print(instruction)
+    }
     cell.updateCellFromRecipe(recipe, scope: self.selectedScope())
     if let image = self.cachedImages[recipe.id!.intValue] {
       cell.backgroundImageView.image = image

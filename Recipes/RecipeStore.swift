@@ -241,6 +241,7 @@ class RecipeStore: NSIncrementalStore
                 let objectID = self.newObjectIDForEntity(relationship.destinationEntity!, referenceObject: referenceObject)
                 objectIDs.append(objectID)
               }
+              return objectIDs
             }
           }
         }

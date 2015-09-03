@@ -156,10 +156,10 @@ class RecipeModifierViewController: UIViewController {
     if let recipeName = self.recipe?.name {
       self.recipeNameTextField.text = recipeName
     }
-    if let recipeInstructions = self.recipe?.instructions {
-      self.recipeInstructions = recipeInstructions.allObjects as? [String]
-      self.recipeInstructions!.append("Here's Another Step. Stay Healthy")
-      self.recipeInstructions!.append("Stay fine. This is a very important step. This must be done in order to keep the food well cooked. This would allow you to stay fit")
+    if let recipeInstructions = self.recipe?.instructions?.allObjects as? [Instruction] {
+      for instruction in recipeInstructions {
+        print(instruction.name)
+      }
     }
     
     if let photo = self.recipe?.photo?.data {
