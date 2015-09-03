@@ -1,19 +1,74 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8193.2" systemVersion="14F27" minimumToolsVersion="Automatic">
-    <entity name="Recipe" representedClassName=".Recipe" syncable="YES">
-        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="difficulty" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="favorite" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="instructions" optional="YES" attributeType="String" syncable="YES"/>
+    <entity name="Instruction" representedClassName=".Instruction" syncable="YES">
+        <attribute name="id" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
-        <attribute name="photo" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="photo_thumbnailURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="photo_URL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="specification" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="recipe" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recipe" inverseName="instructions" inverseEntity="Recipe" syncable="YES"/>
+    </entity>
+    <entity name="Photo" representedClassName=".Photo" syncable="YES">
+        <attribute name="data" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="thumbnailURL" optional="YES" attributeType="String" syncable="YES">
+            <userInfo>
+                <entry key="serverName" value="thumbnail_url"/>
+            </userInfo>
+        </attribute>
+        <attribute name="url" optional="YES" attributeType="String" syncable="YES">
+            <userInfo>
+                <entry key="serverName" value="url"/>
+            </userInfo>
+        </attribute>
+        <relationship name="recipe" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recipe" inverseName="photo" inverseEntity="Recipe" syncable="YES"/>
+    </entity>
+    <entity name="Recipe" representedClassName=".Recipe" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES">
+            <userInfo>
+                <entry key="serverName" value="created_at"/>
+            </userInfo>
+        </attribute>
+        <attribute name="difficulty" attributeType="Integer 16" defaultValueString="0" syncable="YES">
+            <userInfo>
+                <entry key="serverName" value="difficulty"/>
+            </userInfo>
+        </attribute>
+        <attribute name="favorite" optional="YES" attributeType="Boolean" syncable="YES">
+            <userInfo>
+                <entry key="serverName" value="favorite"/>
+            </userInfo>
+        </attribute>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES">
+            <userInfo>
+                <entry key="serverName" value="id"/>
+            </userInfo>
+        </attribute>
+        <attribute name="name" attributeType="String" syncable="YES">
+            <userInfo>
+                <entry key="serverName" value="name"/>
+            </userInfo>
+        </attribute>
+        <attribute name="specification" optional="YES" attributeType="String" syncable="YES">
+            <userInfo>
+                <entry key="serverName" value="description"/>
+            </userInfo>
+        </attribute>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES">
+            <userInfo>
+                <entry key="serverName" value="updated_at"/>
+            </userInfo>
+        </attribute>
+        <relationship name="instructions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Instruction" inverseName="recipe" inverseEntity="Instruction" syncable="YES">
+            <userInfo>
+                <entry key="serverName" value="instructions"/>
+            </userInfo>
+        </relationship>
+        <relationship name="photo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Photo" inverseName="recipe" inverseEntity="Photo" syncable="YES">
+            <userInfo>
+                <entry key="serverName" value="photo"/>
+            </userInfo>
+        </relationship>
     </entity>
     <elements>
-        <element name="Recipe" positionX="-63" positionY="-18" width="128" height="210"/>
+        <element name="Instruction" positionX="-63" positionY="63" width="128" height="90"/>
+        <element name="Photo" positionX="-45" positionY="90" width="128" height="105"/>
+        <element name="Recipe" positionX="-63" positionY="-18" width="128" height="180"/>
     </elements>
 </model>

@@ -61,7 +61,7 @@ extension RecipesSearchViewController: UITableViewDataSource {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeSearchTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeSearchTableViewCell
     let recipe = self.searchResults[indexPath.row]
     cell.nameLabel.text = recipe.name!
-    if let photo = recipe.photo {
+    if let photo = recipe.photo!.data {
       cell.photoImageView.image = UIImage(data: photo)
     }
     return cell
