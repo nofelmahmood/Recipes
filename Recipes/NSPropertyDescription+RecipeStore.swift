@@ -10,7 +10,8 @@ import Foundation
 import CoreData
 
 extension NSPropertyDescription {
-  func serverName() -> String? {
-    return self.userInfo?[ApiServerNameKey] as? String
+  
+  var serverName: String? {
+    return self.userInfo?[RecipeStoreAttributeServerNameKey] as? String
   }
 }

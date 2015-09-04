@@ -15,15 +15,15 @@ extension RecipeInstructionTableViewCell: UITextViewDelegate {
   }
   
   func textViewDidBeginEditing(textView: UITextView) {
-    guard let indexPath = self.tableView()?.indexPathForCell(self) else {
+    guard let indexPath = self.tableView?.indexPathForCell(self) else {
       return
     }
-    self.tableView()?.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+    self.tableView?.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Top, animated: true)
   }
   
   func textViewDidChange(textView: UITextView) {
-    self.tableView()?.beginUpdates()
-    self.tableView()?.endUpdates()
+    self.tableView?.beginUpdates()
+    self.tableView?.endUpdates()
   }
 }
 

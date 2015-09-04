@@ -38,8 +38,6 @@ class RecipeTableViewCell: UITableViewCell {
     }
   }
 
-
-  
   @IBAction func favoriteButtonTapped(sender: AnyObject?) {
     self.favoriteButton.selected = !self.favoriteButton.selected
     self.recipe.favorite = NSNumber(bool: self.favoriteButton.selected)
@@ -48,7 +46,4 @@ class RecipeTableViewCell: UITableViewCell {
     super.setSelected(selected, animated: animated)
     // Configure the view for the selected state
   }
-
-  
-  
 }

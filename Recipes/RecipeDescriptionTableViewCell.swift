@@ -15,10 +15,10 @@ extension RecipeDescriptionTableViewCell: UITextViewDelegate {
   }
   
   func textViewDidBeginEditing(textView: UITextView) {
-    guard let indexPath = self.tableView()?.indexPathForCell(self) else {
+    guard let indexPath = self.tableView?.indexPathForCell(self) else {
       return
     }
-    self.tableView()?.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+    self.tableView?.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Top, animated: true)
   }
 }
 

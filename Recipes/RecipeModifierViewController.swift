@@ -53,7 +53,7 @@ extension RecipeModifierViewController: UITableViewDataSource {
     } else if indexPath.section == 2 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeInstructionTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeInstructionTableViewCell
       let instruction = self.recipeInstructions![indexPath.row]
-      cell.instructionTextView.text = "\(instruction). This is the instruction you have been waiting for. You can either die as a hero or you can live long enough to become a villian and I can do those things."
+      cell.instructionTextView.text = "\(instruction)"
       cell.instructionTextView.inputAccessoryView = self.accessoryView
       cell.instructionNumberLabel.text = "\(indexPath.row + 1)"
       return cell
@@ -157,8 +157,11 @@ class RecipeModifierViewController: UIViewController {
       self.recipeNameTextField.text = recipeName
     }
     if let recipeInstructions = self.recipe?.instructions?.allObjects as? [Instruction] {
+      self.recipeInstructions = [String]()
       for instruction in recipeInstructions {
-        print(instruction.name)
+        if let instructionName = instruction.name {
+          self.recipeInstructions?.append(instructionName)
+        }
       }
     }
     

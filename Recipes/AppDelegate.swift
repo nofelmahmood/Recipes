@@ -14,42 +14,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   var window: UIWindow?
   
-  
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
     UITabBar.appearance().tintColor = AppColorList.keyColor
-//    
-//    let url = NSURL(string: "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Users.rawValue)")
-//    let urlRequest = NSMutableURLRequest(URL: url!)
-//    urlRequest.HTTPMethod = "POST"
-//    urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//    let session = NSURLSession.sharedSession()
-//    let userDictionary = ["user": ["email": "awlaUSerIsnow@example.com", "password" :"secret", "password_confirmation": "secret", "seed_recipes": true]]
-//    
-//    guard let json = try? NSJSONSerialization.dataWithJSONObject(userDictionary, options: NSJSONWritingOptions(rawValue: 0)) else {
-//      print("Json Error")
-//      return true
-//    }
-//    
-//    urlRequest.HTTPBody = json
-//    
-//    let dataTask = session.dataTaskWithRequest(urlRequest) { (data, response, error) -> Void in
-//      
-//      let json = try! NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions(rawValue: 0))
-//      guard let token = json["auth_token"] as? String else
-//      {
-//        print("Failed to convert to string")
-//        return
-//      }
-//      NSUserDefaults.standardUserDefaults().setObject(token, forKey: ApiTokenKey)
-//      NSUserDefaults.standardUserDefaults().synchronize()
-//      print(token)
-//    
-//    
-//    }
-//    
-//    dataTask.resume()
-    print(NSUserDefaults.standardUserDefaults().objectForKey(ApiTokenKey))
 
     return true
   }

@@ -10,19 +10,20 @@ import Foundation
 import CoreData
 
 extension NSEntityDescription {
-  func propertiesByServerName() -> [String: NSPropertyDescription] {
+  
+  var propertiesByServerName: [String: NSPropertyDescription] {
     var propertiesByServerName = [String: NSPropertyDescription]()
     for property in self.properties {
-      if let propertyServerName = property.serverName() {
+      if let propertyServerName = property.serverName {
         propertiesByServerName[propertyServerName] = property
       }
     }
     return propertiesByServerName
   }
   
-  func attributesByServerName() -> [String: NSAttributeDescription] {
+  var attributesByServerName: [String: NSAttributeDescription] {
     var attributesByServerName = [String: NSAttributeDescription]()
-    let propertiesByServerName = self.propertiesByServerName()
+    let propertiesByServerName = self.propertiesByServerName
     for (key, value) in propertiesByServerName {
       if value is NSAttributeDescription {
         attributesByServerName[key] = (value as! NSAttributeDescription)
@@ -31,9 +32,9 @@ extension NSEntityDescription {
     return attributesByServerName
   }
   
-  func relationshipsByServerName() -> [String: NSRelationshipDescription] {
+  var relationshipsByServerName: [String: NSRelationshipDescription] {
     var relationshipsByServerName = [String: NSRelationshipDescription]()
-    let propertiesByServerName = self.propertiesByServerName()
+    let propertiesByServerName = self.propertiesByServerName
     for (key, value) in propertiesByServerName {
       if value is NSRelationshipDescription {
         relationshipsByServerName[key] = (value as! NSRelationshipDescription)

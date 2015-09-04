@@ -37,15 +37,14 @@ extension RecipesViewController: UITableViewDataSource {
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeTableViewCell
     let recipe = self.recipes![indexPath.row]
-    for instruction in (recipe.instructions?.allObjects)! {
-      print(instruction)
-    }
+    print("DICTIONARYVALUES")
+    print(recipe.dictionaryWithValuesForKeys(Array(recipe.entity.propertiesByName.keys)))
+    print("END")
     cell.updateCellFromRecipe(recipe, scope: self.selectedScope())
     if let image = self.cachedImages[recipe.id!.intValue] {
       cell.backgroundImageView.image = image
     } else {
       cell.backgroundImageView.image = UIImage(named: "ImagePlaceholder")
-      let photo = recipe.photo?.data      
       let photoURL = NSURL(string: recipe.photo!.thumbnailURL!)
       let photoURLRequest = NSURLRequest(URL: photoURL!)
       let photoDownloadTask = NSURLSession.sharedSession().downloadTaskWithRequest(photoURLRequest, completionHandler: { (location, response, error) -> Void in
@@ -134,8 +133,6 @@ class RecipesViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
-    NSUserDefaults.standardUserDefaults().setObject("6f18c4ae7aaf0fd69d57", forKey: ApiTokenKey)
-    NSUserDefaults.standardUserDefaults().synchronize()
     self.tableView.delegate = self
     self.tableView.dataSource = self
     do {

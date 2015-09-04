@@ -9,7 +9,9 @@
 import UIKit
 
 extension UITableViewCell {
-  func tableView() -> UITableView? {
+  
+  var tableView: UITableView? {
     return self.superview?.superview as? UITableView
   }
+
 }
