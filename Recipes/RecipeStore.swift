@@ -83,6 +83,16 @@ class RecipeStore: NSIncrementalStore
   
   func executeInResponseToSaveChangesRequest(request: NSSaveChangesRequest, withContext context: NSManagedObjectContext) -> [NSManagedObjectContext] {
     
+    if let deletedObjects = request.deletedObjects {
+      for deletedObject in deletedObjects {
+        if let recipeID = (deletedObject as? Recipe)?.id?.integerValue {
+          RecipeApi.deleteRecipe(recipeID, completionBlock: { (error) -> Void in
+            print(error)
+          })
+        }
+      }
+    }
+    
     return []
   }
   

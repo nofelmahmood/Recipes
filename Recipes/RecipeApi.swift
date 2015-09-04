@@ -53,26 +53,32 @@ class RecipeApi: NSObject {
     return nil
   }
   
-  class func createRecipe(fromRecipe recipe: Recipe) {
-    let requestURL = NSURL(string: "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)")
-    if let requestURL = requestURL {
-      let urlRequest = RecipeApi.urlRequestWithRequestURL(requestURL, httpMethod: HTTPMethod.Post)
-    }
-  }
+//  class func createRecipe(fromRecipeKeyValue recipe: [String: AnyObject]) {
+//    let requestURL = NSURL(string: "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)")
+//    if let requestURL = requestURL {
+//      let urlRequest = RecipeApi.urlRequestWithRequestURL(requestURL, httpMethod: HTTPMethod.Post)
+//    }
+//  }
   
-  class func updateRecipe(fromRecipe recipe: Recipe) {
-    if let recipeID = recipe.id?.integerValue {
-      let requestURL = NSURL(string: "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)/\(recipeID))")
-      if let requestURL = requestURL {
-        let urlRequest = RecipeApi.urlRequestWithRequestURL(requestURL, httpMethod: HTTPMethod.Put)
-      }
-    }
-  }
+//  class func updateRecipe(fromRecipeKeyValue recipe: [String: AnyObject]) {
+//    if let recipeID = recipe.id?.integerValue {
+//      let requestURL = NSURL(string: "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)/\(recipeID))")
+//      if let requestURL = requestURL {
+//        let urlRequest = RecipeApi.urlRequestWithRequestURL(requestURL, httpMethod: HTTPMethod.Put)
+//      }
+//    }
+//  }
   
-  class func deleteRecipe(recipeID: Int) {
+  class func deleteRecipe(recipeID: Int, completionBlock: ((error: NSError?) -> Void)?) {
     let requestURL = NSURL(string: "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)/\(recipeID)")
     if let requestURL = requestURL {
       let urlRequest = RecipeApi.urlRequestWithRequestURL(requestURL, httpMethod: HTTPMethod.Delete)
+      let session = NSURLSession.sharedSession()
+      let dataTask = session.dataTaskWithRequest(urlRequest, completionHandler: { (data, response, error) -> Void in
+        print(response,data,error)
+        completionBlock?(error: error)
+      })
+      dataTask.resume()
     }
   }
   

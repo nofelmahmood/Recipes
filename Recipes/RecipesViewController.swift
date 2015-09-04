@@ -37,9 +37,6 @@ extension RecipesViewController: UITableViewDataSource {
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeTableViewCell
     let recipe = self.recipes![indexPath.row]
-    print("DICTIONARYVALUES")
-    print(recipe.dictionaryWithValuesForKeys(Array(recipe.entity.propertiesByName.keys)))
-    print("END")
     cell.updateCellFromRecipe(recipe, scope: self.selectedScope())
     if let image = self.cachedImages[recipe.id!.intValue] {
       cell.backgroundImageView.image = image
@@ -96,6 +93,7 @@ extension RecipesViewController: UITableViewDelegate {
       }
       CoreDataStack.defaultStack.managedObjectContext.deleteObject(recipe)
       do {
+        try CoreDataStack.defaultStack.managedObjectContext.save()
         try self.prepareDataSource {
           NSOperationQueue.mainQueue().addOperationWithBlock {
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
