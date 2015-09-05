@@ -35,7 +35,7 @@
                 <entry key="serverName" value="favorite"/>
             </userInfo>
         </attribute>
-        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES">
+        <attribute name="id" attributeType="Integer 32" defaultValueString="0" syncable="YES">
             <userInfo>
                 <entry key="serverName" value="id"/>
             </userInfo>
