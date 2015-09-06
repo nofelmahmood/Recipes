@@ -2,7 +2,7 @@
 //  Recipe+CoreDataProperties.swift
 //  Recipes
 //
-//  Created by Nofel Mahmood on 05/09/2015.
+//  Created by Nofel Mahmood on 06/09/2015.
 //  Copyright © 2015 Hyper. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -21,7 +21,7 @@ extension Recipe {
     @NSManaged var name: String?
     @NSManaged var specification: String?
     @NSManaged var updatedAt: NSDate?
-    @NSManaged var instructions: NSSet?
+    @NSManaged var instructions: NSOrderedSet?
     @NSManaged var photo: Photo?
 
 }

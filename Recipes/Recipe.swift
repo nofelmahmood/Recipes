@@ -21,11 +21,6 @@ class Recipe: NSManagedObject {
     if let context = self.managedObjectContext {
       if let instruction = NSEntityDescription.insertNewObjectForEntityForName("Instruction", inManagedObjectContext: context) as? Instruction {
         instruction.name = name
-        if let instructionsCount = self.instructions?.count {
-          instruction.id = NSNumber(integer: instructionsCount + 1)
-        } else {
-          instruction.id = NSNumber(integer: 1)
-        }
         instruction.recipe = self
       }
     }
