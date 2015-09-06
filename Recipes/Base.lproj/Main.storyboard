@@ -812,41 +812,28 @@
                                             <subviews>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="kQY-Gc-3gt">
                                                     <rect key="frame" x="-60" y="-14" width="121" height="29"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="331" id="Hkr-RX-igb"/>
-                                                    </constraints>
                                                     <segments>
-                                                        <segment title="Easy"/>
-                                                        <segment title="Medium"/>
-                                                        <segment title="Hard"/>
+                                                        <segment title="Easy" width="90"/>
+                                                        <segment title="Medium" width="90"/>
+                                                        <segment title="Hard" width="90"/>
                                                     </segments>
                                                     <color key="tintColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <variation key="default">
-                                                        <mask key="constraints">
-                                                            <exclude reference="Hkr-RX-igb"/>
-                                                        </mask>
-                                                    </variation>
                                                     <variation key="widthClass=compact" fixedFrame="YES">
                                                         <rect key="frame" x="35" y="11" width="331" height="29"/>
-                                                    </variation>
-                                                    <variation key="heightClass=regular-widthClass=compact">
-                                                        <mask key="constraints">
-                                                            <include reference="Hkr-RX-igb"/>
-                                                        </mask>
                                                     </variation>
                                                 </segmentedControl>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="kQY-Gc-3gt" firstAttribute="centerY" secondItem="inm-Oe-Qlj" secondAttribute="centerY" id="bTX-Sh-8a8"/>
-                                                <constraint firstItem="kQY-Gc-3gt" firstAttribute="centerX" secondItem="inm-Oe-Qlj" secondAttribute="centerX" id="jGU-ia-zRm"/>
+                                                <constraint firstItem="kQY-Gc-3gt" firstAttribute="centerX" secondItem="inm-Oe-Qlj" secondAttribute="centerX" id="9Xg-pS-mgI"/>
+                                                <constraint firstItem="kQY-Gc-3gt" firstAttribute="centerY" secondItem="inm-Oe-Qlj" secondAttribute="centerY" id="T5g-MR-dAI"/>
                                             </constraints>
                                             <variation key="default">
                                                 <mask key="subviews">
                                                     <exclude reference="kQY-Gc-3gt"/>
                                                 </mask>
                                                 <mask key="constraints">
-                                                    <exclude reference="bTX-Sh-8a8"/>
-                                                    <exclude reference="jGU-ia-zRm"/>
+                                                    <exclude reference="9Xg-pS-mgI"/>
+                                                    <exclude reference="T5g-MR-dAI"/>
                                                 </mask>
                                             </variation>
                                             <variation key="widthClass=compact">
@@ -856,8 +843,8 @@
                                             </variation>
                                             <variation key="heightClass=regular-widthClass=compact">
                                                 <mask key="constraints">
-                                                    <include reference="bTX-Sh-8a8"/>
-                                                    <include reference="jGU-ia-zRm"/>
+                                                    <include reference="9Xg-pS-mgI"/>
+                                                    <include reference="T5g-MR-dAI"/>
                                                 </mask>
                                             </variation>
                                         </tableViewCellContentView>

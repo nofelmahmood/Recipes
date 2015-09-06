@@ -12,23 +12,23 @@ import MobileCoreServices
 let RecipePhotoTableViewCellIdentifier = "RecipePhotoTableViewCell"
 let RecipeDescriptionTableViewCellIdentifier = "RecipeDescriptionTableViewCellI"
 let RecipeInstructionTableViewCellIdentifier = "RecipeInstructionTableViewCell"
+let RecipeCookingLevelTableViewCellIdentifier = "RecipeCookingLevelTableViewCell"
 
 let RecipeModifierBarButtonItemActionName = "didPressBarButtonItem:"
 
 // MARK: UITableViewDataSource
 extension RecipeModifierViewController: UITableViewDataSource {
   func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-    return 3
+    return 4
   }
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if section == 0 || section == 1 {
+    if section == 0 || section == 1 || section == 3 {
       return 1
     }
     guard let recipeInstructions = self.recipe?.instructions else {
       return 0
     }
-    
     return recipeInstructions.count
   }
   
@@ -63,6 +63,9 @@ extension RecipeModifierViewController: UITableViewDataSource {
       cell.didBecomeFirstResponder = ({() -> Void in
         self.firstResponderIndexPath = indexPath
       })
+      return cell
+    } else if indexPath.section == 3 {
+      let cell = tableView.dequeueReusableCellWithIdentifier(RecipeCookingLevelTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeCookingLevelTableViewCell
       return cell
     }
     return UITableViewCell()
@@ -106,6 +109,8 @@ extension RecipeModifierViewController: UITableViewDelegate {
   func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
     if section == 2 {
       return "Steps"
+    } else if section == 3 {
+      return "Cooking"
     }
     return nil
   }
