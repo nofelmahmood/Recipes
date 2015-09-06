@@ -25,7 +25,7 @@ extension RecipeModifierViewController: UITableViewDataSource {
     if section == 0 || section == 1 {
       return 1
     }
-    guard let recipeInstructions = self.recipeInstructions else {
+    guard let recipeInstructions = self.recipe?.instructions else {
       return 0
     }
     
@@ -49,13 +49,20 @@ extension RecipeModifierViewController: UITableViewDataSource {
       if let recipeDescription = self.recipe?.specification {
         cell.descriptionTextView.text = recipeDescription
       }
+      cell.didBecomeFirstResponder = ({() -> Void in
+        self.firstResponderIndexPath = indexPath
+      })
       return cell
     } else if indexPath.section == 2 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeInstructionTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeInstructionTableViewCell
-      let instruction = self.recipeInstructions![indexPath.row]
-      cell.instructionTextView.text = "\(instruction)"
-      cell.instructionTextView.inputAccessoryView = self.accessoryView
-      cell.instructionNumberLabel.text = "\(indexPath.row + 1)"
+      if let instruction = self.recipe?.instructions?.allObjects[indexPath.row].name {
+        cell.instructionTextView.text = "\(instruction)"
+        cell.instructionTextView.inputAccessoryView = self.accessoryView
+        cell.instructionNumberLabel.text = "\(indexPath.row + 1)"
+      }
+      cell.didBecomeFirstResponder = ({() -> Void in
+        self.firstResponderIndexPath = indexPath
+      })
       return cell
     }
     return UITableViewCell()
@@ -94,6 +101,20 @@ extension RecipeModifierViewController: UITableViewDelegate {
   
   func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
     return false
+  }
+  
+  func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    if section == 2 {
+      return "Steps"
+    }
+    return nil
+  }
+  
+  func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    if let view = view as? UITableViewHeaderFooterView {
+      view.textLabel?.font = UIFont(name: "Avenir Book", size: 21.0)
+      view.textLabel?.textColor = UIColor.darkGrayColor()
+    }
   }
 }
 
@@ -140,31 +161,21 @@ class RecipeModifierViewController: UIViewController {
   
   var recipe: Recipe?
   var cachedImage: UIImage?
-  var recipeInstructions: [String]?
   var cookingMode = false
   var firstResponderIndexPath: NSIndexPath?
+  var isNewRecipe = false
   
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
     self.accessoryView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 44)
     self.recipeNameTextField.inputAccessoryView = self.accessoryView
-    self.setEditing(false, animated: true)
     tableView.estimatedRowHeight = 44.0
     tableView.rowHeight = UITableViewAutomaticDimension
     self.recipeNameTextField.tintAdjustmentMode = UIViewTintAdjustmentMode.Normal
     if let recipeName = self.recipe?.name {
       self.recipeNameTextField.text = recipeName
     }
-    if let recipeInstructions = self.recipe?.instructions?.allObjects as? [Instruction] {
-      self.recipeInstructions = [String]()
-      for instruction in recipeInstructions {
-        if let instructionName = instruction.name {
-          self.recipeInstructions?.append(instructionName)
-        }
-      }
-    }
-    
     if let photo = self.recipe?.photo?.data {
       if let image = UIImage(data: photo) {
         self.cachedImage = UIImage.scaledUIImageToSize(image, size: CGSize(width: 200, height: 200))
@@ -186,8 +197,10 @@ class RecipeModifierViewController: UIViewController {
     NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
   }
   
+  
   override func viewDidAppear(animated: Bool) {
     self.tableView.reloadData()
+    self.setEditing(self.isNewRecipe, animated: true)
   }
   
   override func didReceiveMemoryWarning() {
@@ -272,40 +285,74 @@ class RecipeModifierViewController: UIViewController {
     }
   }
 
-  func nextResponderIndexPath() -> NSIndexPath? {
-    guard let firstResponderIndexPath = self.firstResponderIndexPath else {
-      return nil
-    }
-    if firstResponderIndexPath.section == 1 {
-      if self.recipeInstructions?.first != nil {
-        self.firstResponderIndexPath = NSIndexPath(forRow: 0, inSection: 2)
-        return firstResponderIndexPath
+  func setNextResponderIndexPath() -> Bool {
+    if let firstResponderIndexPath = firstResponderIndexPath {
+      if let instructionsCount = self.recipe?.instructions?.count {
+        if firstResponderIndexPath.section == 1 {
+          if instructionsCount > 0 {
+            self.firstResponderIndexPath = NSIndexPath(forRow: 0, inSection: 2)
+            return true
+          }
+        } else if (firstResponderIndexPath.row + 1) < instructionsCount {
+          self.firstResponderIndexPath = NSIndexPath(forRow: firstResponderIndexPath.row + 1, inSection: 2)
+          return true
+        }
       }
-    } else if firstResponderIndexPath.section == 2 {
-      if self.recipeInstructions != nil && (firstResponderIndexPath.row + 1) < self.recipeInstructions!.count {
-        self.firstResponderIndexPath = NSIndexPath(forRow: firstResponderIndexPath.row + 1, inSection: 2)
-        return self.firstResponderIndexPath
+    } else {
+      self.firstResponderIndexPath = NSIndexPath(forRow: 0, inSection: 1)
+      return true
+    }
+    return false
+  }
+  
+  func setPreviousResponderIndexPath() -> Bool {
+    if let firstResponderIndexPath = firstResponderIndexPath {
+      if firstResponderIndexPath.section == 1 {
+        self.recipeNameTextField.becomeFirstResponder()
+        return true
+      } else if firstResponderIndexPath.section == 2 {
+        if firstResponderIndexPath.row == 0 {
+          self.firstResponderIndexPath = NSIndexPath(forRow: 0, inSection: 1)
+          return true
+        } else {
+          self.firstResponderIndexPath = NSIndexPath(forRow: firstResponderIndexPath.row - 1, inSection: 2)
+          return true
+        }
       }
     }
-    return nil
+    return false
   }
   
   @IBAction func didPressBarButtonInAccessoryView(sender: AnyObject) {
     guard let barButton = sender as? UIBarButtonItem else {
       return
     }
-    if let title = barButton.title {
-      if title == "Next" {
-        guard let nextResponderIndexPath = self.nextResponderIndexPath() else {
-          return
-        }
-        self.tableView.scrollToRowAtIndexPath(nextResponderIndexPath, atScrollPosition: UITableViewScrollPosition.Top, animated: true)
-        if let cell = self.tableView.cellForRowAtIndexPath(nextResponderIndexPath) as? RecipeDescriptionTableViewCell {
-          cell.descriptionTextView.becomeFirstResponder()
-        }
-        if let cell = self.tableView.cellForRowAtIndexPath(nextResponderIndexPath) as? RecipeInstructionTableViewCell {
+    var didSet = false
+    if barButton.tag == 0 {
+      didSet = self.setPreviousResponderIndexPath()
+    } else if barButton.tag == 1 {
+      didSet = self.setNextResponderIndexPath()
+    } else if barButton.tag == 2 {
+      self.recipe?.addInstruction("")
+      if let instructionsCount = self.recipe?.instructions?.count {
+        self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: instructionsCount - 1, inSection: 2)], withRowAnimation: UITableViewRowAnimation.Automatic)
+        self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: instructionsCount - 1, inSection: 2), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+        if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: instructionsCount - 1, inSection: 2)) as? RecipeInstructionTableViewCell {
           cell.instructionTextView.becomeFirstResponder()
         }
+      } else {
+        self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 2)], withRowAnimation: UITableViewRowAnimation.Automatic)
+      }
+    }
+    if didSet || barButton.tag == 0 || barButton.tag == 1 {
+      guard let firstResponderIndexPath = firstResponderIndexPath else {
+        return
+      }
+      self.tableView.scrollToRowAtIndexPath(firstResponderIndexPath, atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+      if let cell = self.tableView.cellForRowAtIndexPath(firstResponderIndexPath) as? RecipeDescriptionTableViewCell {
+        cell.descriptionTextView.becomeFirstResponder()
+      } else if let cell = self.tableView.cellForRowAtIndexPath(firstResponderIndexPath) as? RecipeInstructionTableViewCell {
+        cell.instructionTextView.becomeFirstResponder()
       }
     }
   }

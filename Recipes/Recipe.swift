@@ -17,6 +17,20 @@ enum RecipeDifficulty: Int {
 class Recipe: NSManagedObject {
 
 // Insert code here to add functionality to your managed object subclass
+  func addInstruction(name: String) {
+    if let context = self.managedObjectContext {
+      if let instruction = NSEntityDescription.insertNewObjectForEntityForName("Instruction", inManagedObjectContext: context) as? Instruction {
+        instruction.name = name
+        if let instructionsCount = self.instructions?.count {
+          instruction.id = NSNumber(integer: instructionsCount + 1)
+        } else {
+          instruction.id = NSNumber(integer: 1)
+        }
+        instruction.recipe = self
+      }
+    }
+  }
+  
   func difficultyDescription() -> String? {
     if let difficulty = self.difficulty?.integerValue {
       switch(difficulty) {

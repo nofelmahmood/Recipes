@@ -15,16 +15,29 @@ extension RecipeDescriptionTableViewCell: UITextViewDelegate {
   }
   
   func textViewDidBeginEditing(textView: UITextView) {
-    guard let indexPath = self.tableView?.indexPathForCell(self) else {
-      return
+    self.didBecomeFirstResponder?()
+  }
+  
+  func textViewDidChange(textView: UITextView) {
+    let size = textView.bounds.size
+    let newSize = textView.sizeThatFits(CGSize(width: size.width, height: CGFloat.max))
+    if size.height != newSize.height {
+      UIView.setAnimationsEnabled(false)
+      tableView?.beginUpdates()
+      tableView?.endUpdates()
+      UIView.setAnimationsEnabled(true)
+      if let indexPath = self.indexPath {
+        tableView?.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: false)
+      }
     }
-    self.tableView?.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Top, animated: true)
   }
 }
 
 class RecipeDescriptionTableViewCell: UITableViewCell {
   
   @IBOutlet var descriptionTextView: UITextView!
+  
+  var didBecomeFirstResponder: (() -> Void)?
   
   override func awakeFromNib() {
     super.awakeFromNib()
@@ -38,8 +51,7 @@ class RecipeDescriptionTableViewCell: UITableViewCell {
   
   override func setEditing(editing: Bool, animated: Bool) {
     self.descriptionTextView.editable = editing
-    if editing {
-    } else {
+    if !editing {
       self.descriptionTextView.resignFirstResponder()
     }
   }

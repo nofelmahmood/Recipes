@@ -42,26 +42,29 @@ extension RecipesViewController: UITableViewDataSource {
       cell.backgroundImageView.image = image
     } else {
       cell.backgroundImageView.image = UIImage(named: "ImagePlaceholder")
-      let photoURL = NSURL(string: recipe.photo!.thumbnailURL!)
-      let photoURLRequest = NSURLRequest(URL: photoURL!)
-      let photoDownloadTask = NSURLSession.sharedSession().downloadTaskWithRequest(photoURLRequest, completionHandler: { (location, response, error) -> Void in
-        guard let location = location else {
-          return
-        }
-        let photoData = NSData(contentsOfURL: location)
-        if let photoData = photoData {
-          recipe.photo!.data = photoData
-          self.cachedImages[recipe.id!.intValue] = UIImage(data: photoData)
-          if (tableView.cellForRowAtIndexPath(indexPath) as? RecipeTableViewCell)?.recipe == recipe {
-            NSOperationQueue.mainQueue().addOperationWithBlock {
-              self.tableView.beginUpdates()
-              self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Fade)
-              self.tableView.endUpdates()
+      if let photoURLString = recipe.photo?.thumbnailURL {
+        if let photoURL = NSURL(string: photoURLString) {
+          let photoURLRequest = NSURLRequest(URL: photoURL)
+          let photoDownloadTask = NSURLSession.sharedSession().downloadTaskWithRequest(photoURLRequest, completionHandler: { (location, response, error) -> Void in
+            guard let location = location else {
+              return
             }
-          }
+            let photoData = NSData(contentsOfURL: location)
+            if let photoData = photoData {
+              recipe.photo?.data = photoData
+              self.cachedImages[recipe.id!.intValue] = UIImage(data: photoData)
+              if (tableView.cellForRowAtIndexPath(indexPath) as? RecipeTableViewCell)?.recipe == recipe {
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                  self.tableView.beginUpdates()
+                  self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Fade)
+                  self.tableView.endUpdates()
+                }
+              }
+            }
+          })
+          photoDownloadTask.resume()
         }
-      })
-      photoDownloadTask.resume()
+      }
     }
     return cell
   }
@@ -92,16 +95,16 @@ extension RecipesViewController: UITableViewDelegate {
         return
       }
       CoreDataStack.defaultStack.managedObjectContext.deleteObject(recipe)
-      do {
-        try CoreDataStack.defaultStack.managedObjectContext.save()
-        try self.prepareDataSource {
-          NSOperationQueue.mainQueue().addOperationWithBlock {
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-          }
-        }
-      } catch {
-        print("Error preparing DataSource")
-      }
+      let checkTryIt = try? CoreDataStack.defaultStack.managedObjectContext.save()
+//      do {
+//        try self.prepareDataSource {
+//          NSOperationQueue.mainQueue().addOperationWithBlock {
+//            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+//          }
+//        }
+//      } catch {
+//        print("Error preparing DataSource")
+//      }
     }
   }
 }
@@ -144,6 +147,26 @@ class RecipesViewController: UIViewController {
     }
   }
   
+  override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "saveNotification:", name: RecipeStoreDidSaveSuccessfulNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "saveNotification:", name: RecipeStoreDidSaveUnSuccessfulNotification, object: nil)
+  }
+  
+  override func viewWillDisappear(animated: Bool) {
+    super.viewWillDisappear(animated)
+    NSNotificationCenter.defaultCenter().removeObserver(self, name: RecipeStoreDidSaveSuccessfulNotification, object: nil)
+    NSNotificationCenter.defaultCenter().removeObserver(self, name: RecipeStoreDidSaveUnSuccessfulNotification, object: nil)
+  }
+  
+  func saveNotification(notification: NSNotification) {
+    if notification.name == RecipeStoreDidSaveSuccessfulNotification {
+      _ = try? self.prepareDataSource(nil)
+    } else {
+      
+    }
+  }
+  
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
@@ -163,7 +186,10 @@ class RecipesViewController: UIViewController {
     switch(self.segmentedControl.selectedSegmentIndex) {
     case 1:
       self.recipes = fetchedRecipes?.filter {
-        return $0.favorite!.boolValue
+        if let favorite = $0.favorite?.boolValue {
+          return favorite
+        }
+        return false
       }
     default:
       self.recipes = fetchedRecipes
@@ -171,6 +197,10 @@ class RecipesViewController: UIViewController {
   }
   
   // MARK: IBAction
+  @IBAction func addBarButtonDidPress(sender: AnyObject) {
+    self.performSegueWithIdentifier(RecipesSegue.RecipeModifier.rawValue, sender: sender)
+  }
+  
   @IBAction func searchBarButtonDidPress(sender: AnyObject) {
     self.performSegueWithIdentifier(RecipesSegue.RecipesSearch.rawValue, sender: self)
   }
@@ -192,6 +222,12 @@ class RecipesViewController: UIViewController {
       recipesSearchViewController.recipes = self.recipes
     } else if segue.identifier == RecipesSegue.RecipeModifier.rawValue {
       guard let recipesModifierViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? RecipeModifierViewController else {
+        return
+      }
+      if sender is UIBarButtonItem {
+        let recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: CoreDataStack.defaultStack.managedObjectContext) as? Recipe
+        recipesModifierViewController.recipe = recipe
+        recipesModifierViewController.isNewRecipe = true
         return
       }
       guard let indexPathforSelectedRow = self.tableView.indexPathForSelectedRow else {

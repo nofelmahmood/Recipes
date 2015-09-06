@@ -13,5 +13,8 @@ extension UITableViewCell {
   var tableView: UITableView? {
     return self.superview?.superview as? UITableView
   }
-
+  
+  var indexPath: NSIndexPath? {
+    return self.tableView?.indexPathForCell(self)
+  }
 }

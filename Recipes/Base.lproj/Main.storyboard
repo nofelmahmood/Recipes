@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8151.3"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Recipes-->
@@ -354,6 +355,9 @@
                     <navigationItem key="navigationItem" title="Recipes" id="jC2-t9-Qni">
                         <barButtonItem key="leftBarButtonItem" systemItem="add" id="ro5-ME-JDq">
                             <color key="tintColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="addBarButtonDidPress:" destination="xQV-RP-pL6" id="ffO-rS-PE1"/>
+                            </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="search" id="5eK-V1-Off">
                             <color key="tintColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -371,7 +375,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xyk-KV-Jnv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1773" y="-162"/>
+            <point key="canvasLocation" x="3513" y="-629.25"/>
         </scene>
         <!--Search Recipes-->
         <scene sceneID="K1u-K7-hzN">
@@ -731,22 +735,19 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xqt-du-AEE">
                                                     <rect key="frame" x="-42" y="-21" width="42" height="21"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="21" id="RJe-E2-zSO"/>
-                                                        <constraint firstAttribute="width" constant="19" id="uPY-Sp-ANC"/>
+                                                        <constraint firstAttribute="width" constant="33" id="7N3-cl-pGH"/>
                                                     </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <color key="textColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                     <variation key="default">
                                                         <mask key="constraints">
-                                                            <exclude reference="RJe-E2-zSO"/>
-                                                            <exclude reference="uPY-Sp-ANC"/>
+                                                            <exclude reference="7N3-cl-pGH"/>
                                                         </mask>
                                                     </variation>
                                                     <variation key="heightClass=regular-widthClass=compact">
                                                         <mask key="constraints">
-                                                            <include reference="RJe-E2-zSO"/>
-                                                            <include reference="uPY-Sp-ANC"/>
+                                                            <include reference="7N3-cl-pGH"/>
                                                         </mask>
                                                     </variation>
                                                 </label>
@@ -758,12 +759,14 @@
                                                 </textView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="xqt-du-AEE" firstAttribute="top" secondItem="qAY-os-akO" secondAttribute="top" constant="11" id="2zp-3j-B79"/>
-                                                <constraint firstItem="xqt-du-AEE" firstAttribute="leading" secondItem="qAY-os-akO" secondAttribute="leading" constant="13" id="IkW-h5-Y95"/>
                                                 <constraint firstAttribute="trailing" secondItem="8O3-jQ-BLM" secondAttribute="trailing" constant="8" id="Pw5-EI-0mk"/>
                                                 <constraint firstItem="8O3-jQ-BLM" firstAttribute="top" secondItem="qAY-os-akO" secondAttribute="top" constant="3" id="exy-rp-t7H"/>
+                                                <constraint firstItem="xqt-du-AEE" firstAttribute="top" secondItem="qAY-os-akO" secondAttribute="top" constant="14" id="eyY-rm-F3o"/>
+                                                <constraint firstItem="8O3-jQ-BLM" firstAttribute="leading" secondItem="xqt-du-AEE" secondAttribute="trailing" constant="-2" id="j0a-yK-uXd"/>
                                                 <constraint firstAttribute="bottom" secondItem="8O3-jQ-BLM" secondAttribute="bottom" id="jii-Ij-SjB"/>
-                                                <constraint firstItem="8O3-jQ-BLM" firstAttribute="leading" secondItem="xqt-du-AEE" secondAttribute="trailing" constant="8" id="pww-PG-Ci7"/>
+                                                <constraint firstItem="xqt-du-AEE" firstAttribute="leading" secondItem="qAY-os-akO" secondAttribute="leadingMargin" constant="1" id="tgL-PV-Isg">
+                                                    <variation key="heightClass=regular-widthClass=compact" constant="8"/>
+                                                </constraint>
                                             </constraints>
                                             <variation key="default">
                                                 <mask key="subviews">
@@ -771,12 +774,12 @@
                                                     <exclude reference="8O3-jQ-BLM"/>
                                                 </mask>
                                                 <mask key="constraints">
-                                                    <exclude reference="2zp-3j-B79"/>
-                                                    <exclude reference="IkW-h5-Y95"/>
+                                                    <exclude reference="eyY-rm-F3o"/>
+                                                    <exclude reference="tgL-PV-Isg"/>
                                                     <exclude reference="Pw5-EI-0mk"/>
                                                     <exclude reference="exy-rp-t7H"/>
+                                                    <exclude reference="j0a-yK-uXd"/>
                                                     <exclude reference="jii-Ij-SjB"/>
-                                                    <exclude reference="pww-PG-Ci7"/>
                                                 </mask>
                                             </variation>
                                             <variation key="widthClass=compact">
@@ -787,12 +790,12 @@
                                             </variation>
                                             <variation key="heightClass=regular-widthClass=compact">
                                                 <mask key="constraints">
-                                                    <include reference="2zp-3j-B79"/>
-                                                    <include reference="IkW-h5-Y95"/>
+                                                    <include reference="eyY-rm-F3o"/>
+                                                    <include reference="tgL-PV-Isg"/>
                                                     <include reference="Pw5-EI-0mk"/>
                                                     <include reference="exy-rp-t7H"/>
+                                                    <include reference="j0a-yK-uXd"/>
                                                     <include reference="jii-Ij-SjB"/>
-                                                    <include reference="pww-PG-Ci7"/>
                                                 </mask>
                                             </variation>
                                         </tableViewCellContentView>
@@ -943,17 +946,22 @@
                                 <constraint firstAttribute="height" constant="44" id="CTW-Qj-hNu"/>
                             </constraints>
                             <items>
-                                <barButtonItem title="Previous" id="srh-oW-fKD">
+                                <barButtonItem image="Previous" id="srh-oW-fKD">
                                     <connections>
                                         <action selector="didPressBarButtonInAccessoryView:" destination="KBO-P8-UaC" id="sNJ-px-CKP"/>
+                                    </connections>
+                                </barButtonItem>
+                                <barButtonItem tag="1" image="Next" id="Bfr-O6-SWs">
+                                    <connections>
+                                        <action selector="didPressBarButtonInAccessoryView:" destination="KBO-P8-UaC" id="3FG-Qe-gQ4"/>
                                     </connections>
                                 </barButtonItem>
                                 <barButtonItem style="plain" systemItem="flexibleSpace" id="cO3-d2-pnz">
                                     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </barButtonItem>
-                                <barButtonItem title="Next" id="Bfr-O6-SWs">
+                                <barButtonItem tag="2" title="New Step" id="BsT-w0-Xzv">
                                     <connections>
-                                        <action selector="didPressBarButtonInAccessoryView:" destination="KBO-P8-UaC" id="3FG-Qe-gQ4"/>
+                                        <action selector="didPressBarButtonInAccessoryView:" destination="KBO-P8-UaC" id="ymg-f3-JRa"/>
                                     </connections>
                                 </barButtonItem>
                             </items>
@@ -1074,7 +1082,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kPR-DR-W2D" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4021.5" y="-400.5"/>
+            <point key="canvasLocation" x="4191" y="-1327.5"/>
         </scene>
     </scenes>
     <resources>
@@ -1082,9 +1090,11 @@
         <image name="Heart" width="23" height="22"/>
         <image name="HeartFilled" width="21" height="21"/>
         <image name="ImagePlaceholder" width="320" height="205"/>
+        <image name="Next" width="22" height="12"/>
         <image name="Photos" width="75" height="58"/>
+        <image name="Previous" width="22" height="12"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="WOG-Jd-fuY"/>
+        <segue reference="KTB-VG-uh8"/>
     </inferredMetricsTieBreakers>
 </document>

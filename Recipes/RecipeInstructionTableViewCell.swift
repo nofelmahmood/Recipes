@@ -15,23 +15,30 @@ extension RecipeInstructionTableViewCell: UITextViewDelegate {
   }
   
   func textViewDidBeginEditing(textView: UITextView) {
-    guard let indexPath = self.tableView?.indexPathForCell(self) else {
-      return
-    }
-    self.tableView?.scrollToRowAtIndexPath(indexPath, atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+    self.didBecomeFirstResponder?()
   }
   
   func textViewDidChange(textView: UITextView) {
-    self.tableView?.beginUpdates()
-    self.tableView?.endUpdates()
+    let size = textView.bounds.size
+    let newSize = textView.sizeThatFits(CGSize(width: size.width, height: CGFloat.max))
+    if size.height != newSize.height {
+      UIView.setAnimationsEnabled(false)
+      tableView?.beginUpdates()
+      tableView?.endUpdates()
+      UIView.setAnimationsEnabled(true)
+      if let indexPath = self.indexPath {
+        tableView?.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: false)
+      }
+    }
   }
 }
-
 
 class RecipeInstructionTableViewCell: UITableViewCell {
   
   @IBOutlet var instructionTextView: UITextView!
   @IBOutlet var instructionNumberLabel: UILabel!
+  
+  var didBecomeFirstResponder: (() -> Void)?
   
   var recipe: Recipe!
   
@@ -47,16 +54,6 @@ class RecipeInstructionTableViewCell: UITableViewCell {
   
   override func setEditing(editing: Bool, animated: Bool) {
     self.instructionTextView.editable = editing
-    if editing {
-      UIView.animateWithDuration(0.2, animations: { () -> Void in
-        self.instructionNumberLabel.alpha = 0.0
-      })
-    } else {
-      self.instructionTextView.resignFirstResponder()
-      UIView.animateWithDuration(0.2, animations: { () -> Void in
-        self.instructionNumberLabel.alpha = 1.0
-      })
-    }
   }
   override func setSelected(selected: Bool, animated: Bool) {
     super.setSelected(selected, animated: animated)

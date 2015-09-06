@@ -30,7 +30,11 @@ class RecipeTableViewCell: UITableViewCell {
     self.recipe = recipe
     self.nameLabel.text = recipe.name!
     self.difficultyLabel.text = self.recipe.difficultyDescription()
-    self.favoriteButton.selected = recipe.favorite!.boolValue
+    if let favorite = recipe.favorite?.boolValue {
+      self.favoriteButton.selected = favorite
+    } else {
+      self.favoriteButton.selected = false
+    }
     if scope == RecipesScope.All {
       self.favoriteButton.hidden = false
     } else if scope == RecipesScope.Favories {

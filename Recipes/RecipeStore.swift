@@ -72,15 +72,6 @@ class RecipeStore: NSIncrementalStore
           if let id = recipeKeyValue[RecipeEntityIDAttributeName] as? NSNumber {
             if let transformedValue = transformer.transformedValue(recipeKeyValue) as? [String: NSObject] {
               self.cache[id] = transformedValue
-              print("ORIGINALVALUE")
-              print(recipeKeyValue)
-              print("END")
-              print("TRANSFORMEDVALUE")
-              print(transformedValue)
-              print("END")
-              print("REVERSETRANSFORMEDVALUE")
-              print(transformer.reverseTransformedValue(transformedValue))
-              print("END")
               let managedObjectID = self.newObjectIDForEntity(request.entity!, referenceObject: id)
               let managedObject = context.objectWithID(managedObjectID)
               fetchedObjects.append(managedObject)
