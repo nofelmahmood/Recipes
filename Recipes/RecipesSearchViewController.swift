@@ -37,7 +37,7 @@ extension RecipesSearchViewController: UISearchResultsUpdating {
     }
     
     self.searchResults = recipes.filter({ (recipe) -> Bool in
-      if recipe.name!.rangeOfString(searchString, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil {
+      if recipe.name.rangeOfString(searchString, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil {
         return true
       }
       return false
@@ -60,8 +60,8 @@ extension RecipesSearchViewController: UITableViewDataSource {
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeSearchTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeSearchTableViewCell
     let recipe = self.searchResults[indexPath.row]
-    cell.nameLabel.text = recipe.name!
-    if let photo = recipe.photo!.data {
+    cell.nameLabel.text = recipe.name
+    if let photo = recipe.photoData {
       cell.photoImageView.image = UIImage(data: photo)
     }
     return cell

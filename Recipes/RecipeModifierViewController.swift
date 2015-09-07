@@ -45,24 +45,17 @@ extension RecipeModifierViewController: UITableViewDataSource {
       return cell
     } else if indexPath.section == 1 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeDescriptionTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeDescriptionTableViewCell
+      cell.refreshCellUsingRecipe(recipe!)
       cell.descriptionTextView.inputAccessoryView = self.accessoryView
-      if let recipeDescription = self.recipe?.specification {
-        cell.descriptionTextView.text = recipeDescription
-      }
-      cell.didBecomeFirstResponder = ({() -> Void in
-        self.firstResponderIndexPath = indexPath
-      })
+      cell.didBecomeFirstResponder = { self.firstResponderIndexPath = indexPath}
       return cell
     } else if indexPath.section == 2 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeInstructionTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeInstructionTableViewCell
-      if let instruction = self.recipe?.instructions?.allObjects[indexPath.row].name {
-        cell.instructionTextView.text = "\(instruction)"
-        cell.instructionTextView.inputAccessoryView = self.accessoryView
-        cell.instructionNumberLabel.text = "\(indexPath.row + 1)"
+      if let instruction = self.recipe?.instructions?.array[indexPath.row] as? String {
+        cell.refreshCellUsingInstruction(instruction, number: indexPath.row)
       }
-      cell.didBecomeFirstResponder = ({() -> Void in
-        self.firstResponderIndexPath = indexPath
-      })
+      cell.instructionTextView.inputAccessoryView = self.accessoryView
+      cell.didBecomeFirstResponder = { self.firstResponderIndexPath = indexPath }
       return cell
     } else if indexPath.section == 3 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeCookingLevelTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeCookingLevelTableViewCell
@@ -74,9 +67,8 @@ extension RecipeModifierViewController: UITableViewDataSource {
 
 // MARK: UITableViewDelegate
 extension RecipeModifierViewController: UITableViewDelegate {
-
+  
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    //Todo : Implement Cooking Mode
     guard let selectedCell = tableView.cellForRowAtIndexPath(indexPath) as? RecipeInstructionTableViewCell else {
       return
     }
@@ -128,7 +120,16 @@ extension RecipeModifierViewController: UITextFieldDelegate {
   func textFieldDidBeginEditing(textField: UITextField) {
     self.firstResponderIndexPath = nil
   }
-
+  
+  func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    if range.location == 0 && string.isEmpty {
+      self.navigationItem.leftBarButtonItem?.enabled = false
+    } else {
+      self.navigationItem.leftBarButtonItem?.enabled = true
+    }
+    return true
+  }
+  
   func textFieldDidEndEditing(textField: UITextField) {
     self.recipe?.name = textField.text
   }
@@ -137,7 +138,7 @@ extension RecipeModifierViewController: UITextFieldDelegate {
 
 // MARK: UIImagePickerControllerDelegate
 extension RecipeModifierViewController: UIImagePickerControllerDelegate {
-
+  
   func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
     picker.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     NSOperationQueue().addOperationWithBlock {
@@ -166,7 +167,6 @@ class RecipeModifierViewController: UIViewController {
   
   var recipe: Recipe?
   var cachedImage: UIImage?
-  var cookingMode = false
   var firstResponderIndexPath: NSIndexPath?
   var isNewRecipe = false
   
@@ -181,7 +181,7 @@ class RecipeModifierViewController: UIViewController {
     if let recipeName = self.recipe?.name {
       self.recipeNameTextField.text = recipeName
     }
-    if let photo = self.recipe?.photo?.data {
+    if let photo = self.recipe?.photoData {
       if let image = UIImage(data: photo) {
         self.cachedImage = UIImage.scaledUIImageToSize(image, size: CGSize(width: 200, height: 200))
       }
@@ -241,6 +241,9 @@ class RecipeModifierViewController: UIViewController {
     self.tableView.setEditing(editing, animated: animated)
     if editing {
       self.navigationItem.setLeftBarButtonItem(UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: Selector(RecipeModifierBarButtonItemActionName)), animated: true)
+      if self.recipeNameTextField.text == nil || self.recipeNameTextField.text!.isEmpty {
+        self.navigationItem.leftBarButtonItem?.enabled = false
+      }
       self.navigationItem.setRightBarButtonItem(nil, animated: true)
       self.recipeNameTextField.becomeFirstResponder()
     } else {
@@ -276,20 +279,8 @@ class RecipeModifierViewController: UIViewController {
       self.tableView.scrollIndicatorInsets = UIEdgeInsetsZero
     }
   }
-
-  // MARK: IBAction
-  @IBAction func didPressBarButtonItem(sender: AnyObject) {
-    if self.editing && self.navigationItem.leftBarButtonItem! == sender as! NSObject {
-      self.setEditing(false, animated: true)
-    } else if !self.editing {
-      if self.navigationItem.leftBarButtonItem! == sender as! NSObject {
-        self.setEditing(true, animated: true)
-      } else if self.navigationItem.rightBarButtonItem! == sender as! NSObject {
-        self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-      }
-    }
-  }
-
+  
+  // Responders
   func setNextResponderIndexPath() -> Bool {
     if let firstResponderIndexPath = firstResponderIndexPath {
       if let instructionsCount = self.recipe?.instructions?.count {
@@ -328,6 +319,21 @@ class RecipeModifierViewController: UIViewController {
     return false
   }
   
+  // MARK: IBAction
+  @IBAction func didPressBarButtonItem(sender: AnyObject) {
+    if self.editing {
+      if self.navigationItem.leftBarButtonItem! == sender as! NSObject {
+        self.setEditing(false, animated: true)
+      }
+    } else if !self.editing {
+      if self.navigationItem.leftBarButtonItem! == sender as! NSObject {
+        self.setEditing(true, animated: true)
+      } else if self.navigationItem.rightBarButtonItem! == sender as! NSObject {
+        //Do Saving over here
+      }
+    }
+  }
+  
   @IBAction func didPressBarButtonInAccessoryView(sender: AnyObject) {
     guard let barButton = sender as? UIBarButtonItem else {
       return
@@ -338,15 +344,21 @@ class RecipeModifierViewController: UIViewController {
     } else if barButton.tag == 1 {
       didSet = self.setNextResponderIndexPath()
     } else if barButton.tag == 2 {
-      self.recipe?.addInstruction("")
-      if let instructionsCount = self.recipe?.instructions?.count {
-        self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: instructionsCount - 1, inSection: 2)], withRowAnimation: UITableViewRowAnimation.Automatic)
-        self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: instructionsCount - 1, inSection: 2), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
-        if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: instructionsCount - 1, inSection: 2)) as? RecipeInstructionTableViewCell {
-          cell.instructionTextView.becomeFirstResponder()
+      if let instruction = self.recipe?.addInstruction("") {
+        if let instructionsCount = self.recipe?.instructions?.count {
+          self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: instructionsCount - 1, inSection: 2)], withRowAnimation: UITableViewRowAnimation.Automatic)
+          self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: instructionsCount - 1, inSection: 2), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+          if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: instructionsCount - 1, inSection: 2)) as? RecipeInstructionTableViewCell {
+            cell.refreshCellUsingInstruction("")
+            cell.refreshCellUsingInstruction(instruction)
+            cell.instructionTextView.becomeFirstResponder()
+          }
+        } else {
+          self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 2)], withRowAnimation: UITableViewRowAnimation.Automatic)
+          if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 2)) as? RecipeInstructionTableViewCell {
+            cell.instructionTextView.becomeFirstResponder()
+          }
         }
-      } else {
-        self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 2)], withRowAnimation: UITableViewRowAnimation.Automatic)
       }
     }
     if didSet || barButton.tag == 0 || barButton.tag == 1 {
@@ -361,7 +373,7 @@ class RecipeModifierViewController: UIViewController {
       }
     }
   }
-
+  
   /*
   // MARK: - Navigation
   

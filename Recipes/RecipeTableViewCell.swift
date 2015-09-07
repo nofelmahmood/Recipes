@@ -28,7 +28,7 @@ class RecipeTableViewCell: UITableViewCell {
   
   func updateCellFromRecipe(recipe: Recipe, scope: RecipesScope) {
     self.recipe = recipe
-    self.nameLabel.text = recipe.name!
+    self.nameLabel.text = recipe.name
     self.difficultyLabel.text = self.recipe.difficultyDescription()
     if let favorite = recipe.favorite?.boolValue {
       self.favoriteButton.selected = favorite

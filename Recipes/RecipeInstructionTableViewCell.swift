@@ -31,6 +31,10 @@ extension RecipeInstructionTableViewCell: UITextViewDelegate {
       }
     }
   }
+  
+  func textViewDidEndEditing(textView: UITextView) {
+    self.instructionDidChange?()
+  }
 }
 
 class RecipeInstructionTableViewCell: UITableViewCell {
@@ -39,8 +43,7 @@ class RecipeInstructionTableViewCell: UITableViewCell {
   @IBOutlet var instructionNumberLabel: UILabel!
   
   var didBecomeFirstResponder: (() -> Void)?
-  
-  var recipe: Recipe!
+  var instructionDidChange: (() -> Void)?
   
   override func awakeFromNib() {
     super.awakeFromNib()
@@ -52,13 +55,23 @@ class RecipeInstructionTableViewCell: UITableViewCell {
     self.instructionTextView.selectable = false
   }
   
+  func refreshCellUsingInstruction(instruction: String, number: Int) {
+    self.instructionNumberLabel.text = "\(number + 1)"
+    self.instructionTextView.text = instruction
+  }
+  
   override func setEditing(editing: Bool, animated: Bool) {
     self.instructionTextView.editable = editing
   }
+  
   override func setSelected(selected: Bool, animated: Bool) {
     super.setSelected(selected, animated: animated)
     
     // Configure the view for the selected state
   }
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.instructionTextView.text = ""
+  }
 }

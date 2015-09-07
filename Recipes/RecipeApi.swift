@@ -56,7 +56,7 @@ class RecipeApi: NSObject {
   }
   
   // MARK: Api Calls
-  func recipes() -> [[String: AnyObject]]? {
+  func recipes() -> [Recipe]? {
     let urlString = "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)"
     let URL = NSURL(string: urlString)
     if let URL = URL {
@@ -72,7 +72,14 @@ class RecipeApi: NSObject {
       guard let json = try? NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions(rawValue: 0)) else {
         return nil
       }
-      return json as? [[String: AnyObject]]
+      if let recipesJson = json as? [[String: AnyObject]] {
+        var recipeModels = [Recipe]()
+        for recipeKeyValue in recipesJson {
+          recipeModels.append(Recipe(fillFromRemoteKeyValue: recipeKeyValue))
+        }
+        return recipeModels
+      }
+      return nil
     }
     return nil
   }

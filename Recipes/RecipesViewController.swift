@@ -42,7 +42,7 @@ extension RecipesViewController: UITableViewDataSource {
       cell.backgroundImageView.image = image
     } else {
       cell.backgroundImageView.image = UIImage(named: "ImagePlaceholder")
-      if let photoURLString = recipe.photo?.thumbnailURL {
+      if let photoURLString = recipe.photoThumbnailURL {
         if let photoURL = NSURL(string: photoURLString) {
           let photoURLRequest = NSURLRequest(URL: photoURL)
           let photoDownloadTask = NSURLSession.sharedSession().downloadTaskWithRequest(photoURLRequest, completionHandler: { (location, response, error) -> Void in
@@ -51,7 +51,7 @@ extension RecipesViewController: UITableViewDataSource {
             }
             let photoData = NSData(contentsOfURL: location)
             if let photoData = photoData {
-              recipe.photo?.data = photoData
+              recipe.photoData = photoData
               self.cachedImages[recipe.id!.intValue] = UIImage(data: photoData)
               if (tableView.cellForRowAtIndexPath(indexPath) as? RecipeTableViewCell)?.recipe == recipe {
                 NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -94,8 +94,6 @@ extension RecipesViewController: UITableViewDelegate {
       guard let recipe = self.recipes?[indexPath.row] else {
         return
       }
-      CoreDataStack.defaultStack.managedObjectContext.deleteObject(recipe)
-      let checkTryIt = try? CoreDataStack.defaultStack.managedObjectContext.save()
 //      do {
 //        try self.prepareDataSource {
 //          NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -119,16 +117,11 @@ class RecipesViewController: UIViewController {
   var fetchedRecipes: [Recipe]?
   var cachedImages = [Int32: UIImage]()
   
-  func prepareDataSource(completionBlock: (() -> Void)?) throws {
-    let fetchRequest = NSFetchRequest(entityName: RecipeEntityName)
-    let asynchronousFetchRequest = NSAsynchronousFetchRequest(fetchRequest: fetchRequest) { (result) -> Void in
-      if let finalResult = result.finalResult as? [Recipe] {
-        self.fetchedRecipes = finalResult
-        self.loadRecipesForSelectedScope()
-      }
-      completionBlock?()
+  func prepareDataSource()  {
+    if let recipes = RecipeApi.sharedAPI.recipes() {
+      self.fetchedRecipes = recipes
+      self.loadRecipesForSelectedScope()
     }
-    try CoreDataStack.defaultStack.managedObjectContext.executeRequest(asynchronousFetchRequest)
   }
   
   override func viewDidLoad() {
@@ -136,35 +129,16 @@ class RecipesViewController: UIViewController {
     // Do any additional setup after loading the view.
     self.tableView.delegate = self
     self.tableView.dataSource = self
-    do {
-      try self.prepareDataSource({ () -> Void in
-        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-          self.tableView.reloadData()
-        })
-      })
-    } catch {
-      print("Error preparing DataSource for RecipesViewController")
-    }
+    self.prepareDataSource()
+    self.tableView.reloadData()
   }
   
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: "saveNotification:", name: RecipeStoreDidSaveSuccessfulNotification, object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: "saveNotification:", name: RecipeStoreDidSaveUnSuccessfulNotification, object: nil)
   }
   
   override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
-    NSNotificationCenter.defaultCenter().removeObserver(self, name: RecipeStoreDidSaveSuccessfulNotification, object: nil)
-    NSNotificationCenter.defaultCenter().removeObserver(self, name: RecipeStoreDidSaveUnSuccessfulNotification, object: nil)
-  }
-  
-  func saveNotification(notification: NSNotification) {
-    if notification.name == RecipeStoreDidSaveSuccessfulNotification {
-      _ = try? self.prepareDataSource(nil)
-    } else {
-      
-    }
   }
   
   override func didReceiveMemoryWarning() {
@@ -186,7 +160,7 @@ class RecipesViewController: UIViewController {
     switch(self.segmentedControl.selectedSegmentIndex) {
     case 1:
       self.recipes = fetchedRecipes?.filter {
-        if let favorite = $0.favorite?.boolValue {
+        if let favorite = $0.favorite {
           return favorite
         }
         return false
@@ -225,8 +199,7 @@ class RecipesViewController: UIViewController {
         return
       }
       if sender is UIBarButtonItem {
-        let recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: CoreDataStack.defaultStack.managedObjectContext) as? Recipe
-        recipesModifierViewController.recipe = recipe
+        // Create and send a new recipe
         recipesModifierViewController.isNewRecipe = true
         return
       }
