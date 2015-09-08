@@ -16,16 +16,53 @@ enum RecipeDifficulty: Int {
 
 class Recipe: NSObject {
   
-  var difficulty: NSNumber = NSNumber(integer: 1)
-  var favorite: Bool?
-  var id: NSNumber?
-  var name: String
-  var specification: String?
-  var instructions: [String]?
-  var photoURL: String?
-  var photoThumbnailURL: String?
-  var photoData: NSData?
+  var difficulty: NSNumber = NSNumber(integer: 1) {
+    didSet {
+      self.hasChanges = true
+    }
+  }
+  var favorite: Bool? {
+    didSet {
+      self.hasChanges = true
+    }
+  }
+  var id: NSNumber? {
+    didSet {
+      self.hasChanges = true
+    }
+  }
+  var name: String {
+    didSet {
+      self.hasChanges = true
+    }
+  }
+  var specification: String? {
+    didSet {
+      self.hasChanges = true
+    }
+  }
+  var instructions: [String]? {
+    didSet {
+      self.hasChanges = true
+    }
+  }
+  var photoURL: String? {
+    didSet {
+      self.hasChanges = true
+    }
+  }
+  var photoThumbnailURL: String? {
+    didSet {
+      self.hasChanges = true
+    }
+  }
+  var photoData: NSData? {
+    didSet {
+      self.hasChanges = true
+    }
+  }
   
+  private var hasChanges = false
   private var fromRemote: Bool {
     if self.id != nil {
       return true
@@ -52,11 +89,17 @@ class Recipe: NSObject {
     self.name = ""
     super.init()
     self.fill(keyValue)
+    self.hasChanges = false
   }
   
   override init() {
     self.name = ""
     super.init()
+    self.hasChanges = false
+  }
+
+  func changed() -> Bool {
+    return self.hasChanges
   }
   
   func difficultyDescription() -> String? {
@@ -126,5 +169,4 @@ class Recipe: NSObject {
       })
     }
   }
-  
 }
