@@ -64,8 +64,10 @@ extension RecipesSearchViewController: UITableViewDataSource {
     let cell = tableView.dequeueReusableCellWithIdentifier(RecipeSearchTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeSearchTableViewCell
     let recipe = self.searchResults[indexPath.row]
     cell.nameLabel.text = recipe.name
-    if let photo = recipe.photoData {
-      cell.photoImageView.image = UIImage(data: photo)
+    if let id = recipe.id?.intValue {
+      if let photo = self.cachedImages[id] {
+        cell.photoImageView.image = photo
+      }
     }
     return cell
   }
@@ -86,6 +88,7 @@ class RecipesSearchViewController: UIViewController {
   
   var recipes: [Recipe]?
   var searchResults = [Recipe]()
+  var cachedImages = [Int32: UIImage]()
   
   override func viewDidLoad() {
     super.viewDidLoad()

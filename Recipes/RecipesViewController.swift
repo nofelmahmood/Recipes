@@ -267,6 +267,7 @@ class RecipesViewController: UIViewController {
         return
       }
       recipesSearchViewController.recipes = self.recipes
+      recipesSearchViewController.cachedImages = self.cachedImages
     } else if segue.identifier == RecipesSegue.RecipeModifier.rawValue {
       guard let recipesModifierViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? RecipeModifierViewController else {
         return

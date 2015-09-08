@@ -24,4 +24,10 @@ class RecipeSearchTableViewCell: UITableViewCell {
     // Configure the view for the selected state
   }
   
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    self.nameLabel.text = ""
+    self.photoImageView.image = UIImage(named: "ImagePlaceholder")
+  }
+  
 }
