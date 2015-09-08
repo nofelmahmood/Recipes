@@ -144,14 +144,23 @@ class RecipesSearchViewController: UIViewController {
       self.tableView.scrollIndicatorInsets = UIEdgeInsetsZero
     }
   }
-  /*
+  
   // MARK: - Navigation
   
   // In a storyboard-based application, you will often want to do a little preparation before navigation
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
   // Get the new view controller using segue.destinationViewController.
   // Pass the selected object to the new view controller.
+    if segue.identifier == RecipeSearchSegue.RecipeModifier.rawValue {
+      guard let recipesModifierViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? RecipeModifierViewController else {
+        return
+      }
+      if let indexPath = self.tableView.indexPathForSelectedRow {
+        if self.recipes != nil && self.recipes!.count > 0 && indexPath.row < self.recipes!.count {
+          let selectedRecipe = self.recipes![indexPath.row]
+          recipesModifierViewController.recipe = selectedRecipe
+        }
+      }
+    }
   }
-  */
-  
 }

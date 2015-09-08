@@ -369,7 +369,7 @@
                     <connections>
                         <outlet property="segmentedControl" destination="vaa-HA-z6G" id="Ufz-EW-ZZt"/>
                         <outlet property="tableView" destination="dT3-xi-Eos" id="3Lf-KY-4GX"/>
-                        <segue destination="PwC-Nt-C7j" kind="presentation" identifier="RecipesSearch" id="Wl7-rf-sm7"/>
+                        <segue destination="PwC-Nt-C7j" kind="showDetail" identifier="RecipesSearch" id="Wl7-rf-sm7"/>
                         <segue destination="mMN-ms-ff7" kind="presentation" identifier="RecipeModifier" modalTransitionStyle="coverVertical" id="KTB-VG-uh8"/>
                     </connections>
                 </viewController>
@@ -409,7 +409,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="240" height="66"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cle-Pz-vKJ">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ImagePlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="Cle-Pz-vKJ">
                                                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="70" id="yKZ-m4-h5V"/>
@@ -529,7 +529,7 @@
                     <navigationItem key="navigationItem" title="Search Recipes" id="su9-MR-wxd"/>
                     <connections>
                         <outlet property="tableView" destination="c7x-nC-DKT" id="bCX-Pu-fTQ"/>
-                        <segue destination="mMN-ms-ff7" kind="presentation" identifier="RecipeModifier" id="WOG-Jd-fuY"/>
+                        <segue destination="mMN-ms-ff7" kind="showDetail" identifier="RecipeModifier" id="WOG-Jd-fuY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lNz-S7-WkU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1095,6 +1095,6 @@
         <image name="Previous" width="22" height="12"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="KTB-VG-uh8"/>
+        <segue reference="WOG-Jd-fuY"/>
     </inferredMetricsTieBreakers>
 </document>
