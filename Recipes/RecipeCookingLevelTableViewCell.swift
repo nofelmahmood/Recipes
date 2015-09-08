@@ -12,6 +12,8 @@ class RecipeCookingLevelTableViewCell: UITableViewCell {
   
   @IBOutlet var levelSegmentedControl: UISegmentedControl!
   
+  var cookingLevelDidChange: ((selectedLevel: Int) -> ())?
+  
   override func awakeFromNib() {
     super.awakeFromNib()
     // Initialization code
@@ -25,4 +27,7 @@ class RecipeCookingLevelTableViewCell: UITableViewCell {
     // Configure the view for the selected state
   }
   
+  @IBAction func segmentControlValueDidChange(sender: AnyObject) {
+    self.cookingLevelDidChange?(selectedLevel: self.levelSegmentedControl.selectedSegmentIndex + 1)
+  }
 }

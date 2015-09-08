@@ -831,6 +831,9 @@
                                                     <variation key="widthClass=compact" fixedFrame="YES">
                                                         <rect key="frame" x="35" y="11" width="331" height="29"/>
                                                     </variation>
+                                                    <connections>
+                                                        <action selector="segmentControlValueDidChange:" destination="voY-Gc-Yqk" eventType="valueChanged" id="kvD-FQ-nyb"/>
+                                                    </connections>
                                                 </segmentedControl>
                                             </subviews>
                                             <constraints>

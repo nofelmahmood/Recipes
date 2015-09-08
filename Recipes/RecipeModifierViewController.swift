@@ -19,17 +19,21 @@ let RecipeModifierBarButtonItemActionName = "didPressBarButtonItem:"
 // MARK: UITableViewDataSource
 extension RecipeModifierViewController: UITableViewDataSource {
   func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-    return 4
+    if tableView.editing {
+      return 4
+    } else {
+      return 3
+    }
   }
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 0 || section == 1 || section == 3 {
       return 1
     }
-    guard let recipeInstructions = self.recipe?.instructions else {
+    guard let recipeInstructionsCount = self.recipe?.instructions?.count else {
       return 0
     }
-    return recipeInstructions.count
+    return recipeInstructionsCount
   }
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -45,20 +49,26 @@ extension RecipeModifierViewController: UITableViewDataSource {
       return cell
     } else if indexPath.section == 1 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeDescriptionTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeDescriptionTableViewCell
-      cell.refreshCellUsingRecipe(recipe!)
+      cell.descriptionDidChange = { self.recipe?.specification = $0 }
+      cell.refreshCellUsingRecipeDescription(self.recipe?.specification)
       cell.descriptionTextView.inputAccessoryView = self.accessoryView
       cell.didBecomeFirstResponder = { self.firstResponderIndexPath = indexPath}
       return cell
     } else if indexPath.section == 2 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeInstructionTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeInstructionTableViewCell
-      if let instruction = self.recipe?.instructions?.array[indexPath.row] as? String {
-        cell.refreshCellUsingInstruction(instruction, number: indexPath.row)
+      if let instruction = self.recipe?.instructions?[indexPath.row] {
+        cell.refreshCellUsingInstruction(instruction, number: indexPath.row + 1)
       }
       cell.instructionTextView.inputAccessoryView = self.accessoryView
+      cell.instructionDidChange = { self.recipe?.instructions?[indexPath.row] = $0 }
       cell.didBecomeFirstResponder = { self.firstResponderIndexPath = indexPath }
       return cell
     } else if indexPath.section == 3 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeCookingLevelTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeCookingLevelTableViewCell
+      if let difficulty = self.recipe?.difficulty.integerValue {
+        cell.levelSegmentedControl.selectedSegmentIndex = difficulty
+      }
+      cell.cookingLevelDidChange = { selectedLevel in self.recipe?.difficulty = NSNumber(integer: selectedLevel) }
       return cell
     }
     return UITableViewCell()
@@ -131,7 +141,9 @@ extension RecipeModifierViewController: UITextFieldDelegate {
   }
   
   func textFieldDidEndEditing(textField: UITextField) {
-    self.recipe?.name = textField.text
+    if let text = textField.text {
+      self.recipe?.name = text
+    }
   }
 }
 
@@ -142,7 +154,7 @@ extension RecipeModifierViewController: UIImagePickerControllerDelegate {
   func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
     picker.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     NSOperationQueue().addOperationWithBlock {
-      self.recipe?.photo?.data = UIImageJPEGRepresentation(image,0.5)
+      self.recipe?.photoData = UIImageJPEGRepresentation(image,0.5)
       self.cachedImage = UIImage.scaledUIImageToSize(image, size: CGSize(width: 200, height: 200))
       NSOperationQueue.mainQueue().addOperationWithBlock {
         self.tableView.beginUpdates()
@@ -240,6 +252,7 @@ class RecipeModifierViewController: UIViewController {
     self.recipeNameTextField.userInteractionEnabled = editing
     self.tableView.setEditing(editing, animated: animated)
     if editing {
+      self.tableView.reloadData()
       self.navigationItem.setLeftBarButtonItem(UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: Selector(RecipeModifierBarButtonItemActionName)), animated: true)
       if self.recipeNameTextField.text == nil || self.recipeNameTextField.text!.isEmpty {
         self.navigationItem.leftBarButtonItem?.enabled = false
@@ -247,6 +260,7 @@ class RecipeModifierViewController: UIViewController {
       self.navigationItem.setRightBarButtonItem(nil, animated: true)
       self.recipeNameTextField.becomeFirstResponder()
     } else {
+      self.tableView.reloadData()
       self.navigationItem.setLeftBarButtonItem(UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: Selector(RecipeModifierBarButtonItemActionName)), animated: true)
       self.navigationItem.setRightBarButtonItem(UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: Selector(RecipeModifierBarButtonItemActionName)), animated: true)
     }
@@ -325,11 +339,34 @@ class RecipeModifierViewController: UIViewController {
       if self.navigationItem.leftBarButtonItem! == sender as! NSObject {
         self.setEditing(false, animated: true)
       }
-    } else if !self.editing {
+    } else {
       if self.navigationItem.leftBarButtonItem! == sender as! NSObject {
         self.setEditing(true, animated: true)
       } else if self.navigationItem.rightBarButtonItem! == sender as! NSObject {
-        //Do Saving over here
+        self.navigationItem.leftBarButtonItem?.enabled = false
+        self.navigationItem.rightBarButtonItem?.enabled = false
+        self.recipe?.createOrUpdateOnRemote {
+          if $0 {
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+              self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+            }
+          } else {
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+              self.navigationItem.leftBarButtonItem?.enabled = true
+              self.navigationItem.rightBarButtonItem?.enabled = true
+              let alertController = UIAlertController(title: "Sorry !", message: "We failed to save your recipe on the server because of no internet connectivity. Please check your connection and try again ?", preferredStyle: UIAlertControllerStyle.Alert)
+              let cancelAlertAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { (alertAction: UIAlertAction) -> Void in
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                  self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+                }
+              })
+              let okAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
+              alertController.addAction(cancelAlertAction)
+              alertController.addAction(okAlertAction)
+              self.presentViewController(alertController, animated: true, completion: nil)
+            }
+          }
+        }
       }
     }
   }
@@ -344,15 +381,13 @@ class RecipeModifierViewController: UIViewController {
     } else if barButton.tag == 1 {
       didSet = self.setNextResponderIndexPath()
     } else if barButton.tag == 2 {
-      if let instruction = self.recipe?.addInstruction("") {
+      self.recipe?.addInstruction("")
         if let instructionsCount = self.recipe?.instructions?.count {
           self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: instructionsCount - 1, inSection: 2)], withRowAnimation: UITableViewRowAnimation.Automatic)
           self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: instructionsCount - 1, inSection: 2), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
           if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: instructionsCount - 1, inSection: 2)) as? RecipeInstructionTableViewCell {
-            cell.refreshCellUsingInstruction("")
-            cell.refreshCellUsingInstruction(instruction)
+            cell.refreshCellUsingInstruction("", number: instructionsCount)
             cell.instructionTextView.becomeFirstResponder()
-          }
         } else {
           self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 2)], withRowAnimation: UITableViewRowAnimation.Automatic)
           if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 2)) as? RecipeInstructionTableViewCell {
