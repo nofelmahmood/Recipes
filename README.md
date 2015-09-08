@@ -1,4 +1,3 @@
-## Recipes
 ![](http://s17.postimg.org/pmjkpn9gv/Slice_1.png)
 
 ## Screenshots
