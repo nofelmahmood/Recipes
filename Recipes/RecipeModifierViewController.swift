@@ -127,13 +127,6 @@ extension RecipeModifierViewController: UITableViewDelegate {
     return UITableViewCellEditingStyle.None
   }
   
-  func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-    if indexPath.section == 2 {
-      return true
-    }
-    return false
-  }
-  
   func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
     if indexPath.section == 2 {
       if editingStyle == UITableViewCellEditingStyle.Delete {
