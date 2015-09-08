@@ -8,12 +8,12 @@
 
 import UIKit
 
-let RecipeDescriptionTextPlaceholder = "A little description about the recipe would look very nice !"
+let RecipeDescriptionTextPlaceholder = "A little description here would look very nice !"
 
 // MARK: UITextViewDelegate
 extension RecipeDescriptionTableViewCell: UITextViewDelegate {
   func textViewShouldBeginEditing(textView: UITextView) -> Bool {
-    if self.hasPlaceholder() {
+    if textView.text == RecipeDescriptionTextPlaceholder {
       textView.text = ""
     }
     return true
@@ -24,7 +24,7 @@ extension RecipeDescriptionTableViewCell: UITextViewDelegate {
   }
   
   func textViewDidChange(textView: UITextView) {
-    self.recipe.specification = textView.text
+    self.descriptionDidChange?(description: textView.text)
     let size = textView.bounds.size
     let newSize = textView.sizeThatFits(CGSize(width: size.width, height: CGFloat.max))
     if size.height != newSize.height {
@@ -39,7 +39,7 @@ extension RecipeDescriptionTableViewCell: UITextViewDelegate {
   }
   
   func textViewDidEndEditing(textView: UITextView) {
-    if self.hasPlaceholder() {
+    if textView.text.isEmpty {
       textView.text = RecipeDescriptionTextPlaceholder
     }
   }
@@ -48,9 +48,9 @@ extension RecipeDescriptionTableViewCell: UITextViewDelegate {
 class RecipeDescriptionTableViewCell: UITableViewCell {
   
   @IBOutlet var descriptionTextView: UITextView!
-  private var recipe: Recipe!
   
   var didBecomeFirstResponder: (() -> Void)?
+  var descriptionDidChange: ((description: String) -> Void)?
   
   override func awakeFromNib() {
     super.awakeFromNib()
@@ -62,24 +62,12 @@ class RecipeDescriptionTableViewCell: UITableViewCell {
     self.descriptionTextView.selectable = false
   }
   
-  func refreshCellUsingRecipe(recipe: Recipe) {
-    self.recipe = recipe
-    guard let recipeDescription = recipe.specification else {
-      self.descriptionTextView.text = RecipeDescriptionTextPlaceholder
-      return
-    }
-    if recipeDescription.isEmpty {
+  func refreshCellUsingRecipeDescription(recipeDescription: String?) {
+    if recipeDescription == nil || recipeDescription!.isEmpty {
       self.descriptionTextView.text = RecipeDescriptionTextPlaceholder
     } else {
-      self.descriptionTextView.text = recipeDescription
+      self.descriptionTextView.text = recipeDescription!
     }
-  }
-  
-  func hasPlaceholder() -> Bool {
-    guard let recipeDescription = self.recipe.specification else {
-      return true
-    }
-    return recipeDescription.isEmpty
   }
   
   override func setEditing(editing: Bool, animated: Bool) {
@@ -97,7 +85,7 @@ class RecipeDescriptionTableViewCell: UITableViewCell {
   
   override func prepareForReuse() {
     super.prepareForReuse()
-    self.descriptionTextView.text = RecipeDescriptionTextPlaceholder
+    self.descriptionTextView.text = ""
   }
   
 }
