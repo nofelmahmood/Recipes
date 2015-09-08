@@ -21,7 +21,7 @@ class Recipe: NSObject {
   var id: NSNumber?
   var name: String
   var specification: String?
-  var instructions: NSMutableOrderedSet?
+  var instructions: [String]?
   var photoURL: String?
   var photoThumbnailURL: String?
   var photoData: NSData?
@@ -34,23 +34,29 @@ class Recipe: NSObject {
   }
   
   private var serverRepresentation: [String: AnyObject] {
-    var representation = ["name": self.name, "difficulty": self.difficulty]
+    var representation = [RecipeKey.Name.rawValue: self.name, RecipeKey.Difficulty.rawValue: self.difficulty]
     if let favorite = favorite {
-      representation["favorite"] = favorite
+      representation[RecipeKey.Favorite.rawValue] = favorite
     }
     if let description = self.specification {
-      representation["description"] = description
+      representation[RecipeKey.Description.rawValue] = description
     }
-    if let instructions = (self.instructions?.array as? [String])?.joinWithSeparator(",") {
-      representation["instructions"] = instructions
+    if let instructions = self.instructions?.joinWithSeparator(",") {
+      representation[RecipeKey.Instructions.rawValue] = instructions
     }
-    return ["recipe":representation]
+    
+    return [RecipeKey.Recipe.rawValue: representation]
   }
   
   init(fillFromRemoteKeyValue keyValue:[String: AnyObject]) {
     self.name = ""
     super.init()
     self.fill(keyValue)
+  }
+  
+  override init() {
+    self.name = ""
+    super.init()
   }
   
   func difficultyDescription() -> String? {
@@ -68,48 +74,45 @@ class Recipe: NSObject {
   
   func addInstruction(name: String){
     if self.instructions != nil {
-      self.instructions!.addObject(name)
+      self.instructions?.append(name)
+    } else {
+      self.instructions = [name]
     }
   }
   
   private func fill(keyValue: [String: AnyObject]) {
-    if let id = keyValue["id"] as? NSNumber {
+    if let id = keyValue[RecipeKey.ID.rawValue] as? NSNumber {
       self.id = id
     }
-    if let name = keyValue["name"] as? String {
+    if let name = keyValue[RecipeKey.Name.rawValue] as? String {
       self.name = name
     }
-    if let description = keyValue["description"] as? String {
+    if let description = keyValue[RecipeKey.Description.rawValue] as? String {
       self.specification = description
     }
-    if let instructions = (keyValue["instructions"] as? String)?.componentsSeparatedByString(",") {
-      self.instructions = NSOrderedSet(array: instructions)
+    if let instructions = (keyValue[RecipeKey.Instructions.rawValue] as? String)?.componentsSeparatedByString(",") {
+      self.instructions = instructions
     }
-    if let favorite = (keyValue["favorite"] as? NSNumber)?.boolValue {
+    if let favorite = (keyValue[RecipeKey.Favorite.rawValue] as? NSNumber)?.boolValue {
       self.favorite = favorite
     }
-    if let difficulty = keyValue["difficulty"] as? NSNumber {
+    if let difficulty = keyValue[RecipeKey.Difficulty.rawValue] as? NSNumber {
       self.difficulty = difficulty
     }
-    if let photo = keyValue["photo"] as? [String: String] {
-      if let photoURL = photo["url"] {
+    if let photo = keyValue[PhotoKey.Photo.rawValue] as? [String: String] {
+      if let photoURL = photo[PhotoKey.URL.rawValue] {
         self.photoURL = photoURL
       }
-      if let photoThumbnailURL = photo["thumbnail_url"] {
+      if let photoThumbnailURL = photo[PhotoKey.ThumbnailURL.rawValue] {
         self.photoThumbnailURL = photoThumbnailURL
       }
     }
   }
   
   func createOrUpdateOnRemote(completionBlock: ((successful: Bool)-> Void)?) {
-    RecipeApi.sharedAPI.createOrUpdate(withRecipeID: self.id?.integerValue, usingRecipeParameters: self.serverRepresentation, photoData: self.photoData, completionBlock: { (error) -> Void in
-      print("Saved")
-      if error == nil {
-        completionBlock?(successful: true)
-      } else {
-        completionBlock?(successful: false)
-      }
-    })
+    RecipeApi.sharedAPI.createOrUpdate(withRecipeID: self.id?.integerValue, usingRecipeParameters: self.serverRepresentation, photoData: self.photoData) { (successful) -> Void in
+      completionBlock?(successful: successful)
+    }
   }
   
   func deleteFromRemote(completionBlock: ((successful: Bool) -> Void)?) {
