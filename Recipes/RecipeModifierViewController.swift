@@ -216,11 +216,6 @@ class RecipeModifierViewController: UIViewController {
     if let recipeName = self.recipe?.name {
       self.recipeNameTextField.text = recipeName
     }
-    if let photo = self.recipe?.photoData {
-      if let image = UIImage(data: photo) {
-        self.cachedImage = UIImage.scaledUIImageToSize(image, size: CGSize(width: 200, height: 200))
-      }
-    }
   }
   
   override func viewWillAppear(animated: Bool) {

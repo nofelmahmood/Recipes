@@ -282,6 +282,9 @@ class RecipesViewController: UIViewController {
       }
       let recipe = self.recipes![indexPathforSelectedRow.row]
       recipesModifierViewController.recipe = recipe
+      if let id = recipe.id?.intValue {
+        recipesModifierViewController.cachedImage = self.cachedImages[id]
+      }
     }
   }
 }
