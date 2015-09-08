@@ -1,5 +1,4 @@
-## Recipes
-![](http://s30.postimg.org/i0ejytru9/Icon_To_Upload.png)
+![](http://s17.postimg.org/pmjkpn9gv/Slice_1.png)
 
 ## Screenshots
 ![](http://s21.postimg.org/86so39xnb/IMG_2639.png)
@@ -10,7 +9,14 @@
 ## Requirements
 Xcode 7 Beta 6
 
+## External Libraries or Frameworks
+AFNetworking
+
 ## Tested on
 iPhone 5 iOS 8.4
 
+
 #### Tried my best to follow the Hyper's swift style guide. Looking forward for a great response !
+
+### With Love 
+[Nofel Mahmood](https://twitter.com/NofelMahmood) :)
