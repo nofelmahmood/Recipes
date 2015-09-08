@@ -118,25 +118,43 @@ class RecipesViewController: UIViewController {
   @IBOutlet var tableView: UITableView!
   @IBOutlet var segmentedControl: UISegmentedControl!
   var refreshControl: UIRefreshControl!
+  var activityIndicatorView: UIActivityIndicatorView!
   
   var recipes: [Recipe]?
   var fetchedRecipes: [Recipe]?
   var cachedImages = [Int32: UIImage]()
   
-  func prepareDataSource()  {
-    if let recipes = RecipeApi.sharedAPI.recipes() {
-      self.fetchedRecipes = recipes
-      self.loadRecipesForSelectedScope()
+  func prepareDataSource(completionBlock: ((successful: Bool)->())?)  {
+    RecipeApi.sharedAPI.recipes { (recipes: [Recipe]?) -> () in
+      if let recipes = recipes {
+        self.fetchedRecipes = recipes
+        completionBlock?(successful: true)
+      } else {
+        completionBlock?(successful: false)
+      }
     }
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
+    self.activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+    self.activityIndicatorView.color = AppColorList.keyColor
+    let frame = self.activityIndicatorView.frame
+    self.activityIndicatorView.frame.origin.x = self.view.frame.size.width / 2 - frame.size.width / 2
+    self.activityIndicatorView.frame.origin.y = self.view.frame.size.height / 2 - frame.size.height / 2
+    self.tableView.addSubview(self.activityIndicatorView)
     AFNetworkReachabilityManager.sharedManager().setReachabilityStatusChangeBlock { (status: AFNetworkReachabilityStatus) -> Void in
       if status == AFNetworkReachabilityStatus.ReachableViaWiFi || status == AFNetworkReachabilityStatus.ReachableViaWWAN {
         NSOperationQueue.mainQueue().addOperationWithBlock {
-          self.prepareDataSource()
+          self.prepareDataSource({ (successful) -> () in
+            if successful {
+              NSOperationQueue.mainQueue().addOperationWithBlock {
+                self.loadRecipesForSelectedScope()
+                self.tableView.reloadData()
+              }
+            }
+          })
           self.tableView.reloadData()
         }
       }
@@ -149,10 +167,8 @@ class RecipesViewController: UIViewController {
     self.tableView.addSubview(self.refreshControl)
     self.tableView.delegate = self
     self.tableView.dataSource = self
-    self.prepareDataSource()
-    self.tableView.reloadData()
   }
-  
+
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
   }
@@ -163,19 +179,35 @@ class RecipesViewController: UIViewController {
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    self.prepareDataSource()
-    self.tableView.reloadData()
+    self.activityIndicatorView.startAnimating()
+    self.prepareDataSource { (successful) -> () in
+      NSOperationQueue.mainQueue().addOperationWithBlock {
+        self.activityIndicatorView.stopAnimating()
+      }
+      if successful {
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+          self.loadRecipesForSelectedScope()
+          self.tableView.reloadData()
+        }
+      }
+    }
   }
   
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
   }
-  
+
   func didRefresh(sender: AnyObject) {
-    self.prepareDataSource()
-    self.tableView.reloadData()
-    self.refreshControl.endRefreshing()
+    self.prepareDataSource { (successful) -> () in
+      if successful {
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+          self.loadRecipesForSelectedScope()
+          self.tableView.reloadData()
+          self.refreshControl.endRefreshing()
+        }
+      }
+    }
   }
   
   // MARK: Recipes Scope
