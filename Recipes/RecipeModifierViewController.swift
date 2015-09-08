@@ -19,7 +19,7 @@ let RecipeModifierBarButtonItemActionName = "didPressBarButtonItem:"
 // MARK: UITableViewDataSource
 extension RecipeModifierViewController: UITableViewDataSource {
   func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-    if tableView.editing {
+    if self.editing {
       return 4
     } else {
       return 3
@@ -66,7 +66,7 @@ extension RecipeModifierViewController: UITableViewDataSource {
     } else if indexPath.section == 3 {
       let cell = tableView.dequeueReusableCellWithIdentifier(RecipeCookingLevelTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeCookingLevelTableViewCell
       if let difficulty = self.recipe?.difficulty.integerValue {
-        cell.levelSegmentedControl.selectedSegmentIndex = difficulty
+        cell.levelSegmentedControl.selectedSegmentIndex = difficulty - 1
       }
       cell.cookingLevelDidChange = { selectedLevel in self.recipe?.difficulty = NSNumber(integer: selectedLevel) }
       return cell
@@ -100,10 +100,6 @@ extension RecipeModifierViewController: UITableViewDelegate {
     })
   }
   
-  func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-    return UITableViewCellEditingStyle.None
-  }
-  
   func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
     return false
   }
@@ -121,6 +117,24 @@ extension RecipeModifierViewController: UITableViewDelegate {
     if let view = view as? UITableViewHeaderFooterView {
       view.textLabel?.font = UIFont(name: "Avenir Book", size: 21.0)
       view.textLabel?.textColor = UIColor.darkGrayColor()
+    }
+  }
+  
+  func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    if editingStyle == UITableViewCellEditingStyle.Delete {
+      if self.recipe?.instructions != nil {
+        if let instruction = (tableView.cellForRowAtIndexPath(indexPath) as? RecipeInstructionTableViewCell)?.instructionTextView.text {
+          let oldCount = self.recipe!.instructions!.count
+          self.recipe!.instructions = self.recipe!.instructions!.filter {
+            return $0 != instruction
+          }
+          let newCount = self.recipe!.instructions!.count
+          if newCount < oldCount {
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+            tableView.reloadSections(NSIndexSet(index: 2), withRowAnimation: UITableViewRowAnimation.None)
+          }
+        }
+      }
     }
   }
 }
@@ -141,8 +155,10 @@ extension RecipeModifierViewController: UITextFieldDelegate {
   }
   
   func textFieldDidEndEditing(textField: UITextField) {
-    if let text = textField.text {
-      self.recipe?.name = text
+    if let text = textField.text, let recipe = self.recipe {
+      if text != recipe.name {
+        self.recipe?.name = text
+      }
     }
   }
 }
@@ -345,26 +361,32 @@ class RecipeModifierViewController: UIViewController {
       } else if self.navigationItem.rightBarButtonItem! == sender as! NSObject {
         self.navigationItem.leftBarButtonItem?.enabled = false
         self.navigationItem.rightBarButtonItem?.enabled = false
-        self.recipe?.createOrUpdateOnRemote {
-          if $0 {
-            NSOperationQueue.mainQueue().addOperationWithBlock {
-              self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-            }
-          } else {
-            NSOperationQueue.mainQueue().addOperationWithBlock {
-              self.navigationItem.leftBarButtonItem?.enabled = true
-              self.navigationItem.rightBarButtonItem?.enabled = true
-              let alertController = UIAlertController(title: "Sorry !", message: "We failed to save your recipe on the server because of no internet connectivity. Please check your connection and try again ?", preferredStyle: UIAlertControllerStyle.Alert)
-              let cancelAlertAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { (alertAction: UIAlertAction) -> Void in
+        if let recipe = self.recipe {
+          if recipe.changed() {
+            self.recipe?.createOrUpdateOnRemote {
+              if $0 {
                 NSOperationQueue.mainQueue().addOperationWithBlock {
                   self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                 }
-              })
-              let okAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
-              alertController.addAction(cancelAlertAction)
-              alertController.addAction(okAlertAction)
-              self.presentViewController(alertController, animated: true, completion: nil)
+              } else {
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                  self.navigationItem.leftBarButtonItem?.enabled = true
+                  self.navigationItem.rightBarButtonItem?.enabled = true
+                  let alertController = UIAlertController(title: "Sorry !", message: "We failed to save your recipe on the server because of no internet connectivity. Please check your connection and try again ?", preferredStyle: UIAlertControllerStyle.Alert)
+                  let cancelAlertAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: { (alertAction: UIAlertAction) -> Void in
+                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                      self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+                    }
+                  })
+                  let okAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
+                  alertController.addAction(cancelAlertAction)
+                  alertController.addAction(okAlertAction)
+                  self.presentViewController(alertController, animated: true, completion: nil)
+                }
+              }
             }
+          } else {
+            self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
           }
         }
       }
