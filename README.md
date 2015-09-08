@@ -19,4 +19,4 @@ iPhone 5 iOS 8.4
 #### Tried my best to follow the Hyper's swift style guide. Looking forward for a great response !
 
 ### With Love 
-Nofel Mahmood :)
+[Nofel Mahmood](https://twitter.com/NofelMahmood) :)
