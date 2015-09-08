@@ -117,6 +117,8 @@ class RecipesViewController: UIViewController {
   
   @IBOutlet var tableView: UITableView!
   @IBOutlet var segmentedControl: UISegmentedControl!
+  @IBOutlet var errorMessageView: UIView!
+
   var refreshControl: UIRefreshControl!
   var activityIndicatorView: UIActivityIndicatorView!
   
@@ -130,6 +132,7 @@ class RecipesViewController: UIViewController {
         self.fetchedRecipes = recipes
         completionBlock?(successful: true)
       } else {
+        self.fetchedRecipes = nil
         completionBlock?(successful: false)
       }
     }
@@ -189,6 +192,8 @@ class RecipesViewController: UIViewController {
           self.loadRecipesForSelectedScope()
           self.tableView.reloadData()
         }
+      } else {
+        self.tableView.backgroundView = self.errorMessageView
       }
     }
   }
@@ -205,6 +210,10 @@ class RecipesViewController: UIViewController {
           self.loadRecipesForSelectedScope()
           self.tableView.reloadData()
           self.refreshControl.endRefreshing()
+        }
+      } else {
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+          self.tableView.backgroundView = self.errorMessageView
         }
       }
     }
