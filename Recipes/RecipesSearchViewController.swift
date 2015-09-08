@@ -14,6 +14,7 @@ enum RecipeSearchSegue: String {
 
 let RecipeSearchTableViewCellIdentifier = "RecipeSearchTableViewCell"
 
+// MARK: UISearchControllerDelegate
 extension RecipesSearchViewController: UISearchControllerDelegate {
   
   func didPresentSearchController(searchController: UISearchController) {
@@ -25,6 +26,7 @@ extension RecipesSearchViewController: UISearchControllerDelegate {
   }
 }
 
+// MARK: UISearchResultsUpdating
 extension RecipesSearchViewController: UISearchResultsUpdating {
   func updateSearchResultsForSearchController(searchController: UISearchController) {
     guard let searchString = searchController.searchBar.text else {
@@ -48,6 +50,7 @@ extension RecipesSearchViewController: UISearchResultsUpdating {
   }
 }
 
+// MARK: UITableViewDataSource
 extension RecipesSearchViewController: UITableViewDataSource {
   func numberOfSectionsInTableView(tableView: UITableView) -> Int {
     return 1
@@ -68,12 +71,14 @@ extension RecipesSearchViewController: UITableViewDataSource {
   }
 }
 
+// MARK: UITableViewDelegate
 extension RecipesSearchViewController: UITableViewDelegate {
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     self.performSegueWithIdentifier(RecipeSearchSegue.RecipeModifier.rawValue, sender: self)
   }
 }
 
+// MARK: -
 class RecipesSearchViewController: UIViewController {
   
   @IBOutlet var tableView: UITableView!

@@ -37,6 +37,7 @@ extension RecipeInstructionTableViewCell: UITextViewDelegate {
   }
 }
 
+// MARK: -
 class RecipeInstructionTableViewCell: UITableViewCell {
   
   @IBOutlet var instructionTextView: UITextView!

@@ -57,7 +57,6 @@
 		3E10E36F1B91EC1D00AA3F52 /* RecipesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesTests.swift; sourceTree = "<group>"; };
 		3E10E3711B91EC1D00AA3F52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E264B141B92F29100298796 /* RecipesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesViewController.swift; sourceTree = "<group>"; };
-		3E6A6FBD1B91EDC6007B72DD /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		3E7D617D1B93231200A8386E /* RecipeTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeTableViewCell.swift; sourceTree = "<group>"; };
 		3E7D617F1B9417F800A8386E /* RecipesSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesSearchViewController.swift; sourceTree = "<group>"; };
 		3E7D61821B9424DD00A8386E /* RecipeSearchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeSearchTableViewCell.swift; sourceTree = "<group>"; };
@@ -136,7 +135,6 @@
 			isa = PBXGroup;
 			children = (
 				3E04E19E1B9AE32700B1FA6A /* Recipes-Bridging-Header.h */,
-				3E6A6FBF1B91EDCA007B72DD /* Frameworks */,
 				3E060D411B95986E00C71B5F /* Helpers */,
 				3E0208F31B9DDBEF00672A32 /* Model */,
 				3E264B0F1B92E3C200298796 /* ViewControllers */,
@@ -167,14 +165,6 @@
 				3E7D61891B94434E00A8386E /* RecipeModifierViewController.swift */,
 			);
 			name = ViewControllers;
-			sourceTree = "<group>";
-		};
-		3E6A6FBF1B91EDCA007B72DD /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				3E6A6FBD1B91EDC6007B72DD /* CoreData.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		3E7D617B1B9322E800A8386E /* UITableView Custom Cells */ = {

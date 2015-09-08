@@ -45,6 +45,7 @@ extension RecipeDescriptionTableViewCell: UITextViewDelegate {
   }
 }
 
+// MARK: -
 class RecipeDescriptionTableViewCell: UITableViewCell {
   
   @IBOutlet var descriptionTextView: UITextView!

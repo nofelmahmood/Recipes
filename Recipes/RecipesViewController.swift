@@ -112,7 +112,7 @@ extension RecipesViewController: UITableViewDelegate {
   }
 }
 
-
+// MARK: -
 class RecipesViewController: UIViewController {
   
   @IBOutlet var tableView: UITableView!
