@@ -94,15 +94,20 @@ extension RecipesViewController: UITableViewDelegate {
       guard let recipe = self.recipes?[indexPath.row] else {
         return
       }
-//      do {
-//        try self.prepareDataSource {
-//          NSOperationQueue.mainQueue().addOperationWithBlock {
-//            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-//          }
-//        }
-//      } catch {
-//        print("Error preparing DataSource")
-//      }
+      recipe.deleteFromRemote { successful in
+        if successful {
+          NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.recipes?.removeAtIndex(indexPath.row)
+            self.fetchedRecipes?.removeAtIndex(indexPath.row)
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+          }
+        } else {
+          let alertController = UIAlertController(title: "Sorry", message: "We failed to delete the recipe from server. Please check your internet connection and try again !", preferredStyle: UIAlertControllerStyle.Alert)
+          let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
+          alertController.addAction(okAction)
+          self.presentViewController(alertController, animated: true, completion: nil)
+        }
+      }
     }
   }
 }
@@ -112,6 +117,7 @@ class RecipesViewController: UIViewController {
   
   @IBOutlet var tableView: UITableView!
   @IBOutlet var segmentedControl: UISegmentedControl!
+  var refreshControl: UIRefreshControl!
   
   var recipes: [Recipe]?
   var fetchedRecipes: [Recipe]?
@@ -127,6 +133,11 @@ class RecipesViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
+    self.refreshControl = UIRefreshControl()
+    self.refreshControl.backgroundColor = UIColor.whiteColor()
+    self.refreshControl.tintColor = AppColorList.keyColor
+    self.refreshControl.addTarget(self, action: "didRefresh:", forControlEvents: UIControlEvents.ValueChanged)
+    self.tableView.addSubview(self.refreshControl)
     self.tableView.delegate = self
     self.tableView.dataSource = self
     self.prepareDataSource()
@@ -141,9 +152,21 @@ class RecipesViewController: UIViewController {
     super.viewWillDisappear(animated)
   }
   
+  override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    self.prepareDataSource()
+    self.tableView.reloadData()
+  }
+  
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
+  }
+  
+  func didRefresh(sender: AnyObject) {
+    self.prepareDataSource()
+    self.tableView.reloadData()
+    self.refreshControl.endRefreshing()
   }
   
   // MARK: Recipes Scope
@@ -199,7 +222,8 @@ class RecipesViewController: UIViewController {
         return
       }
       if sender is UIBarButtonItem {
-        // Create and send a new recipe
+        let newRecipe = Recipe()
+        recipesModifierViewController.recipe = newRecipe
         recipesModifierViewController.isNewRecipe = true
         return
       }
