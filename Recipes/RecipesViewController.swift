@@ -133,6 +133,15 @@ class RecipesViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
+    AFNetworkReachabilityManager.sharedManager().setReachabilityStatusChangeBlock { (status: AFNetworkReachabilityStatus) -> Void in
+      if status == AFNetworkReachabilityStatus.ReachableViaWiFi || status == AFNetworkReachabilityStatus.ReachableViaWWAN {
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+          self.prepareDataSource()
+          self.tableView.reloadData()
+        }
+      }
+    }
+    AFNetworkReachabilityManager.sharedManager().startMonitoring()
     self.refreshControl = UIRefreshControl()
     self.refreshControl.backgroundColor = UIColor.whiteColor()
     self.refreshControl.tintColor = AppColorList.keyColor
