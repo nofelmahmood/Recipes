@@ -367,6 +367,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="errorMessageView" destination="SA3-Qh-Cpj" id="mfb-9J-kze"/>
                         <outlet property="segmentedControl" destination="vaa-HA-z6G" id="Ufz-EW-ZZt"/>
                         <outlet property="tableView" destination="dT3-xi-Eos" id="3Lf-KY-4GX"/>
                         <segue destination="PwC-Nt-C7j" kind="showDetail" identifier="RecipesSearch" id="Wl7-rf-sm7"/>
@@ -374,15 +375,46 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xyk-KV-Jnv" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <view contentMode="scaleToFill" id="U3f-ri-9Wo">
+                <view contentMode="scaleToFill" id="SA3-Qh-Cpj">
                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sorry, We were not able to fetch recipes from the server. Please check your internet connection ?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r2h-GF-Sk2">
+                            <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                            <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="14"/>
+                            <color key="textColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                </view>
-                <view contentMode="scaleToFill" id="flf-yO-udM">
-                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="r2h-GF-Sk2" firstAttribute="top" secondItem="SA3-Qh-Cpj" secondAttribute="top" constant="22" id="AY2-ON-WaN"/>
+                        <constraint firstItem="r2h-GF-Sk2" firstAttribute="leading" secondItem="SA3-Qh-Cpj" secondAttribute="leading" constant="34" id="IQO-fg-GtK"/>
+                        <constraint firstAttribute="bottom" secondItem="r2h-GF-Sk2" secondAttribute="bottom" constant="22" id="Ljk-AB-fgu"/>
+                        <constraint firstAttribute="trailing" secondItem="r2h-GF-Sk2" secondAttribute="trailing" constant="33" id="xMJ-Aq-fJJ"/>
+                    </constraints>
+                    <variation key="default">
+                        <mask key="subviews">
+                            <exclude reference="r2h-GF-Sk2"/>
+                        </mask>
+                        <mask key="constraints">
+                            <exclude reference="AY2-ON-WaN"/>
+                            <exclude reference="IQO-fg-GtK"/>
+                            <exclude reference="Ljk-AB-fgu"/>
+                            <exclude reference="xMJ-Aq-fJJ"/>
+                        </mask>
+                    </variation>
+                    <variation key="heightClass=regular-widthClass=compact">
+                        <mask key="subviews">
+                            <include reference="r2h-GF-Sk2"/>
+                        </mask>
+                        <mask key="constraints">
+                            <include reference="AY2-ON-WaN"/>
+                            <include reference="IQO-fg-GtK"/>
+                            <include reference="Ljk-AB-fgu"/>
+                            <include reference="xMJ-Aq-fJJ"/>
+                        </mask>
+                    </variation>
                 </view>
             </objects>
             <point key="canvasLocation" x="1923" y="-640.5"/>
@@ -1095,6 +1127,6 @@
         <image name="Previous" width="22" height="12"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="WOG-Jd-fuY"/>
+        <segue reference="KTB-VG-uh8"/>
     </inferredMetricsTieBreakers>
 </document>

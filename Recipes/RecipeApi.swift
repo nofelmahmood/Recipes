@@ -22,7 +22,7 @@ enum HTTPHeader: String {
 }
 
 enum ApiEndPoint: String {
-  case Base = "http://hyper-recipes.herokuapp.com"
+  case Base = "https://hyper-recipes.herokuapp.com"
   case Recipes = "/recipes"
   case Users = "/users"
 }
@@ -32,9 +32,12 @@ let HTTPHeaderJSONTypeValue = "application/json"
 let ApiToken = "780572e2326694c5a58c"
 let ApiDateFormatString = "YYYY'-'MM'-'DD'T'HH:mm:ss.SSS'Z'"
 
+let ApiImageMimeType = "image/jpeg"
+
 let RecipeInstructionsSeparator = ","
 
 enum RecipeKey: String {
+  case Recipe = "recipe"
   case ID = "id"
   case Name = "name"
   case Difficulty = "difficulty"
@@ -42,6 +45,12 @@ enum RecipeKey: String {
   case Instructions = "instructions"
   case Favorite = "favorite"
   case Photo = "recipe[photo]"
+}
+
+enum PhotoKey: String {
+  case Photo = "photo"
+  case URL = "url"
+  case ThumbnailURL = "thumbnail_url"
 }
 
 class RecipeApi: NSObject {
@@ -56,54 +65,50 @@ class RecipeApi: NSObject {
   }
   
   // MARK: Api Calls
-  func recipes() -> [Recipe]? {
+  func recipes(completionBlock: ((recipes: [Recipe]?)->())?) {
     let urlString = "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)"
-    let URL = NSURL(string: urlString)
-    if let URL = URL {
-      let urlRequest = NSMutableURLRequest(URL: URL)
-      urlRequest.addValue(HTTPHeaderJSONTypeValue, forHTTPHeaderField: HTTPHeader.ContentType.rawValue)
-      urlRequest.addValue(HTTPHeaderJSONTypeValue, forHTTPHeaderField: HTTPHeader.Accept.rawValue)
-      urlRequest.addValue("Token token=\"\(ApiToken)\"", forHTTPHeaderField: HTTPHeader.Authorization.rawValue)
-      var urlResponse: NSURLResponse?
-      let data = try? NSURLConnection.sendSynchronousRequest(urlRequest, returningResponse: &urlResponse)
-      guard let jsonData = data else {
-        return nil
-      }
-      guard let json = try? NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions(rawValue: 0)) else {
-        return nil
-      }
-      if let recipesJson = json as? [[String: AnyObject]] {
+    manager.requestSerializer.setValue(HTTPHeaderJSONTypeValue, forHTTPHeaderField: HTTPHeader.ContentType.rawValue)
+    manager.requestSerializer.setValue(HTTPHeaderJSONTypeValue, forHTTPHeaderField: HTTPHeader.Accept.rawValue)
+    manager.GET(urlString, parameters: nil, success: { (requestOperation, object) -> Void in
+      if let jsonData = object as? [[String: AnyObject]] {
         var recipeModels = [Recipe]()
-        for recipeKeyValue in recipesJson {
+        for recipeKeyValue in jsonData {
           recipeModels.append(Recipe(fillFromRemoteKeyValue: recipeKeyValue))
         }
-        return recipeModels
+        completionBlock?(recipes: recipeModels)
+      } else {
+        completionBlock?(recipes: nil)
       }
-      return nil
+      }) { (requestOperation, error) -> Void in
+        completionBlock?(recipes: nil)
     }
-    return nil
   }
   
-  func createOrUpdate(withRecipeID ID: Int?, usingRecipeParameters parameters: [String: AnyObject], photoData: NSData?, completionBlock: ((error: NSError?) -> Void)?) {
+  func createOrUpdate(withRecipeID ID: Int?, usingRecipeParameters parameters: [String: AnyObject], photoData: NSData?, completionBlock: ((successful: Bool) -> Void)?) {
     let manager = AFHTTPRequestOperationManager()
-    var url = "\(ApiEndPoint.Base.rawValue)/\(ApiEndPoint.Recipes.rawValue)"
+    var url = "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)"
+    var httpMethod = HTTPMethod.Post.rawValue
     if let ID = ID {
       url = "\(url)/\(ID)"
+      httpMethod = HTTPMethod.Put.rawValue
     }
-    manager.POST( url, parameters: parameters,
-      constructingBodyWithBlock: { (data: AFMultipartFormData!) in
-        if let photoData = photoData, let name = parameters[RecipeKey.Name.rawValue] as? String {
-          data.appendPartWithFileData(photoData, name: RecipeKey.Photo.rawValue, fileName: "\(name)", mimeType: "image/jpeg")
-        }
-      },
-      success: { (operation: AFHTTPRequestOperation!, responseObject: AnyObject!) in
-        completionBlock?(error: nil)
-      },
-      failure: { (operation: AFHTTPRequestOperation!, error: NSError!) in
-        completionBlock?(error: error)
+    var error: NSError?
+    let urlRequest = manager.requestSerializer.multipartFormRequestWithMethod(httpMethod, URLString: url, parameters: parameters, constructingBodyWithBlock: { (data: AFMultipartFormData) -> Void in
+      if let photoData = photoData {
+        data.appendPartWithFileData(photoData, name: RecipeKey.Photo.rawValue, fileName: "recipe_Photo", mimeType: ApiImageMimeType)
+      }
+      }, error: &error)
+    urlRequest.addValue("Token token=\"\(ApiToken)\"", forHTTPHeaderField: HTTPHeader.Authorization.rawValue)
+    let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(urlRequest, completionHandler: { (data, response, error) -> Void in
+      if error == nil {
+        completionBlock?(successful: true)
+      } else {
+        completionBlock?(successful: false)
+      }
     })
+    dataTask.resume()
   }
-  
+
   func delete(recipeID: Int, completionBlock: ((error: NSError?) -> Void)?) {
     let urlString = "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)/\(recipeID)"
     self.manager.DELETE(urlString, parameters: nil, success: { (requestOperation, responseObject) -> Void in
@@ -112,4 +117,10 @@ class RecipeApi: NSObject {
         completionBlock?(error: error)
     }
   }
+  
+  // MARK: Helpers 
+  func addAuthenticationTokenToRequestSerializer() {
+    manager.requestSerializer.setValue("Token token=\"\(ApiToken)\"", forHTTPHeaderField: HTTPHeader.Authorization.rawValue)
+  }
+
 }
