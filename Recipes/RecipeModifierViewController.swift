@@ -120,18 +120,24 @@ extension RecipeModifierViewController: UITableViewDelegate {
     }
   }
   
+  func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+    return UITableViewCellEditingStyle.None
+  }
+  
   func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-    if editingStyle == UITableViewCellEditingStyle.Delete {
-      if self.recipe?.instructions != nil {
-        if let instruction = (tableView.cellForRowAtIndexPath(indexPath) as? RecipeInstructionTableViewCell)?.instructionTextView.text {
-          let oldCount = self.recipe!.instructions!.count
-          self.recipe!.instructions = self.recipe!.instructions!.filter {
-            return $0 != instruction
-          }
-          let newCount = self.recipe!.instructions!.count
-          if newCount < oldCount {
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-            tableView.reloadSections(NSIndexSet(index: 2), withRowAnimation: UITableViewRowAnimation.None)
+    if indexPath.section == 2 {
+      if editingStyle == UITableViewCellEditingStyle.Delete {
+        if self.recipe?.instructions != nil {
+          if let instruction = (tableView.cellForRowAtIndexPath(indexPath) as? RecipeInstructionTableViewCell)?.instructionTextView.text {
+            let oldCount = self.recipe!.instructions!.count
+            self.recipe!.instructions = self.recipe!.instructions!.filter {
+              return $0 != instruction
+            }
+            let newCount = self.recipe!.instructions!.count
+            if newCount < oldCount {
+              tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+              tableView.reloadSections(NSIndexSet(index: 2), withRowAnimation: UITableViewRowAnimation.None)
+            }
           }
         }
       }
