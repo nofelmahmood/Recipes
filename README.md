@@ -1,4 +1,3 @@
-# hyper-recipes-nofel
 ## Recipes
 ![](http://s30.postimg.org/i0ejytru9/Icon_To_Upload.png)
 
@@ -14,4 +13,4 @@ Xcode 7 Beta 6
 ## Tested on
 iPhone 5 iOS 8.4
 
-## Tried my best to follow the Hyper's swift style guide. Looking forward for a great response !
+#### Tried my best to follow the Hyper's swift style guide. Looking forward for a great response !
