@@ -7,13 +7,7 @@
 //
 
 import Foundation
-
-enum HTTPMethod: String {
-  case Get = "GET"
-  case Post = "POST"
-  case Delete = "DELETE"
-  case Put = "PUT"
-}
+import Alamofire
 
 enum HTTPHeader: String {
   case ContentType = "Content-Type"
@@ -21,10 +15,10 @@ enum HTTPHeader: String {
   case Authorization = "Authorization"
 }
 
-enum ApiEndPoint: String {
-  case Base = "https://hyper-recipes.herokuapp.com"
-  case Recipes = "/recipes"
-  case Users = "/users"
+struct ApiEndPoint {
+  static let Base = "https://hyper-recipes.herokuapp.com"
+  static let Recipes = "/recipes"
+  static let Users = "/users"
 }
 
 let HTTPHeaderJSONTypeValue = "application/json"
@@ -34,93 +28,80 @@ let ApiDateFormatString = "YYYY'-'MM'-'DD'T'HH:mm:ss.SSS'Z'"
 
 let ApiImageMimeType = "image/jpeg"
 
-let RecipeInstructionsSeparator = ","
-
-enum RecipeKey: String {
-  case Recipe = "recipe"
-  case ID = "id"
-  case Name = "name"
-  case Difficulty = "difficulty"
-  case Description = "description"
-  case Instructions = "instructions"
-  case Favorite = "favorite"
-  case Photo = "recipe[photo]"
-}
-
-enum PhotoKey: String {
-  case Photo = "photo"
-  case URL = "url"
-  case ThumbnailURL = "thumbnail_url"
-}
-
 class RecipeApi: NSObject {
   
   static let sharedAPI = RecipeApi()
   
-  let manager = AFHTTPRequestOperationManager()
+  let authorizationHeaderValue = "Token token=\"780572e2326694c5a58c\""
   
   override init() {
     super.init()
-    manager.requestSerializer.setValue("Token token=\"\(ApiToken)\"", forHTTPHeaderField: HTTPHeader.Authorization.rawValue)
   }
   
   // MARK: Api Calls
-  func recipes(completionBlock: ((recipes: [Recipe]?)->())?) {
-    let urlString = "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)"
-    manager.requestSerializer.setValue(HTTPHeaderJSONTypeValue, forHTTPHeaderField: HTTPHeader.ContentType.rawValue)
-    manager.requestSerializer.setValue(HTTPHeaderJSONTypeValue, forHTTPHeaderField: HTTPHeader.Accept.rawValue)
-    manager.GET(urlString, parameters: nil, success: { (requestOperation, object) -> Void in
-      if let jsonData = object as? [[String: AnyObject]] {
-        var recipeModels = [Recipe]()
-        for recipeKeyValue in jsonData {
-          recipeModels.append(Recipe(fillFromRemoteKeyValue: recipeKeyValue))
+  func recipes(completionBlock: ((recipes: [RecipeApiModel]?)->())?) {
+    let urlString = ApiEndPoint.Base + ApiEndPoint.Recipes
+    let headers = [HTTPHeader.ContentType.rawValue: HTTPHeaderJSONTypeValue, HTTPHeader.Accept.rawValue: HTTPHeaderJSONTypeValue, HTTPHeader.Authorization.rawValue: self.authorizationHeaderValue]
+    Alamofire.request(.GET, urlString, parameters: nil, encoding: .JSON, headers: headers).responseJSON { _,_, result in
+      if let jsonData = result.value as? [[String: AnyObject]] where result.isSuccess {
+          var recipeApiModels = [RecipeApiModel]()
+          for recipeKeyValue in jsonData {
+            recipeApiModels.append(RecipeApiModel(recipeKeyValue: recipeKeyValue))
         }
-        completionBlock?(recipes: recipeModels)
+          completionBlock?(recipes: recipeApiModels)
       } else {
         completionBlock?(recipes: nil)
       }
-      }) { (requestOperation, error) -> Void in
-        completionBlock?(recipes: nil)
     }
   }
   
-  func createOrUpdate(withRecipeID ID: Int?, usingRecipeParameters parameters: [String: AnyObject], photoData: NSData?, completionBlock: ((successful: Bool) -> Void)?) {
-    let manager = AFHTTPRequestOperationManager()
-    var url = "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)"
-    var httpMethod = HTTPMethod.Post.rawValue
-    if let ID = ID {
-      url = "\(url)/\(ID)"
-      httpMethod = HTTPMethod.Put.rawValue
+  func save(recipe: RecipeApiModel, completionBlock: ((successful: Bool) -> Void)?) {
+    var urlString = ApiEndPoint.Base + ApiEndPoint.Recipes
+    var httpMethod = Alamofire.Method.POST
+    if let ID = recipe.id?.integerValue {
+      urlString = "\(urlString)/\(ID)"
+      httpMethod = Alamofire.Method.PUT
     }
-    var error: NSError?
-    let urlRequest = manager.requestSerializer.multipartFormRequestWithMethod(httpMethod, URLString: url, parameters: parameters, constructingBodyWithBlock: { (data: AFMultipartFormData) -> Void in
-      if let photoData = photoData {
-        data.appendPartWithFileData(photoData, name: RecipeKey.Photo.rawValue, fileName: "recipe_Photo", mimeType: ApiImageMimeType)
+    let serverRepresentation = recipe.serverRepresentation
+    let headers = [HTTPHeader.Authorization.rawValue: self.authorizationHeaderValue]
+    Alamofire.upload(httpMethod, urlString, headers: headers, multipartFormData: { (multipartFormData: MultipartFormData) -> Void in
+      for (key,value) in serverRepresentation {
+        if let value = value.description {
+          multipartFormData.appendBodyPart(data: value.dataUsingEncoding(0)!, name: "recipe[\(key)]")
+        }
       }
-      }, error: &error)
-    urlRequest.addValue("Token token=\"\(ApiToken)\"", forHTTPHeaderField: HTTPHeader.Authorization.rawValue)
-    let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(urlRequest, completionHandler: { (data, response, error) -> Void in
-      if error == nil {
-        completionBlock?(successful: true)
-      } else {
-        completionBlock?(successful: false)
-      }
+        if let photoData = recipe.photoData {
+          multipartFormData.appendBodyPart(data: photoData, name: "recipe[photo]", fileName: "recipe_Photo", mimeType: ApiImageMimeType)
+        }
+      }, encodingMemoryThreshold: Manager.MultipartFormDataEncodingMemoryThreshold, encodingCompletion: { encodingResult in
+        switch(encodingResult) {
+        case .Success(let request,_,_):
+          request.responseJSON {
+            request, response, JSON in
+            completionBlock?(successful: true)
+          }
+        case .Failure(_):
+          completionBlock?(successful: false)
+        }
     })
-    dataTask.resume()
   }
 
-  func delete(recipeID: Int, completionBlock: ((error: NSError?) -> Void)?) {
-    let urlString = "\(ApiEndPoint.Base.rawValue)\(ApiEndPoint.Recipes.rawValue)/\(recipeID)"
-    self.manager.DELETE(urlString, parameters: nil, success: { (requestOperation, responseObject) -> Void in
-      completionBlock?(error: nil)
-      }) { (requestOperation, error) -> Void in
-        completionBlock?(error: error)
+  func delete(recipeID: Int, completionBlock: ((successful: Bool) -> Void)?) {
+    let urlString = ApiEndPoint.Base + ApiEndPoint.Recipes + "/" + "\(recipeID)"
+    let headers = [HTTPHeader.Authorization.rawValue: self.authorizationHeaderValue]
+    Alamofire.request(.DELETE, urlString, parameters: nil, encoding: .URL, headers: headers).responseString { _,_, result  in
+      completionBlock?(successful: result.isSuccess)
     }
   }
   
-  // MARK: Helpers 
-  func addAuthenticationTokenToRequestSerializer() {
-    manager.requestSerializer.setValue("Token token=\"\(ApiToken)\"", forHTTPHeaderField: HTTPHeader.Authorization.rawValue)
+  func downloadPhotoFromURL(url: String, completion: ((image: UIImage?)->())?) {
+    Alamofire.request(.GET, url).response { request, response, data, error in
+      if let photoData = data {
+        completion?(image: UIImage(data: photoData))
+      } else {
+        completion?(image: nil)
+      }
+    }
   }
-
+  
 }
