@@ -16,14 +16,20 @@
 		3E10E3651B91EC1D00AA3F52 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E10E3631B91EC1D00AA3F52 /* LaunchScreen.storyboard */; };
 		3E10E3701B91EC1D00AA3F52 /* RecipesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E10E36F1B91EC1D00AA3F52 /* RecipesTests.swift */; };
 		3E264B151B92F29100298796 /* RecipesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E264B141B92F29100298796 /* RecipesViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		3E2AFEEB1BA9E99300FDAD3A /* RecipesListViewController+UICollectionViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E2AFEEA1BA9E99300FDAD3A /* RecipesListViewController+UICollectionViewControllerDelegate.swift */; settings = {ASSET_TAGS = (); }; };
 		3E3FCAFF1BA4211B001B38FD /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3FCAFE1BA4211B001B38FD /* SyncManager.swift */; settings = {ASSET_TAGS = (); }; };
 		3E3FCB011BA4B130001B38FD /* RecipeApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3FCB001BA4B130001B38FD /* RecipeApiModel.swift */; settings = {ASSET_TAGS = (); }; };
+		3E4F66571BAA9A8200EAE7FB /* chicken-biryani-recipe-photos-5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3E4F66561BAA9A8200EAE7FB /* chicken-biryani-recipe-photos-5.jpg */; settings = {ASSET_TAGS = (); }; };
 		3E7D61801B9417F800A8386E /* RecipesSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7D617F1B9417F800A8386E /* RecipesSearchViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		3E7D618A1B94434E00A8386E /* RecipeModifierViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7D61891B94434E00A8386E /* RecipeModifierViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		3E87C11D1BA99E1100714D69 /* RecipesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E87C11C1BA99E1100714D69 /* RecipesListViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		3E87C1201BA99E5000714D69 /* RecipesListViewController+UICollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E87C11F1BA99E5000714D69 /* RecipesListViewController+UICollectionViewDataSource.swift */; settings = {ASSET_TAGS = (); }; };
+		3E87C1231BA99ED700714D69 /* RecipeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E87C1221BA99ED700714D69 /* RecipeCollectionViewCell.swift */; settings = {ASSET_TAGS = (); }; };
+		3E87C1261BA9AB9F00714D69 /* RecipeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E87C1251BA9AB9F00714D69 /* RecipeDetailViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		3E8D06DD1B9DE99F00F5D56D /* RecipeApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8D06DC1B9DE99F00F5D56D /* RecipeApi.swift */; settings = {ASSET_TAGS = (); }; };
 		3E930A001BA1BC1800FF8B86 /* RecipesModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3E9309FE1BA1BC1800FF8B86 /* RecipesModel.xcdatamodeld */; settings = {ASSET_TAGS = (); }; };
 		3E930A231BA1BC5900FF8B86 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E930A221BA1BC5900FF8B86 /* CoreDataStack.swift */; settings = {ASSET_TAGS = (); }; };
-		3EADE9631BA8197900057A12 /* StackViewTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EADE9621BA8197900057A12 /* StackViewTestViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		3EA005DB1BAACCB900FB43C8 /* CoreSpotlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA005DA1BAACCB900FB43C8 /* CoreSpotlight.framework */; };
 		3ED36BC01BA8356F00853D75 /* Recipe+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED36BBE1BA8356F00853D75 /* Recipe+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
 		3ED36BC11BA8356F00853D75 /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED36BBF1BA8356F00853D75 /* Recipe.swift */; settings = {ASSET_TAGS = (); }; };
 		7F0E3C1558AC6345E36CF462 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EE0969E36C254B3B50FDB5A /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -57,14 +63,20 @@
 		3E10E36F1B91EC1D00AA3F52 /* RecipesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesTests.swift; sourceTree = "<group>"; };
 		3E10E3711B91EC1D00AA3F52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E264B141B92F29100298796 /* RecipesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesViewController.swift; sourceTree = "<group>"; };
+		3E2AFEEA1BA9E99300FDAD3A /* RecipesListViewController+UICollectionViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RecipesListViewController+UICollectionViewControllerDelegate.swift"; sourceTree = "<group>"; };
 		3E3FCAFE1BA4211B001B38FD /* SyncManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; usesTabs = 0; wrapsLines = 1; };
 		3E3FCB001BA4B130001B38FD /* RecipeApiModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeApiModel.swift; sourceTree = "<group>"; };
+		3E4F66561BAA9A8200EAE7FB /* chicken-biryani-recipe-photos-5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "chicken-biryani-recipe-photos-5.jpg"; path = "../../../../../../Desktop/chicken-biryani-recipe-photos-5.jpg"; sourceTree = "<group>"; };
 		3E7D617F1B9417F800A8386E /* RecipesSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesSearchViewController.swift; sourceTree = "<group>"; };
 		3E7D61891B94434E00A8386E /* RecipeModifierViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeModifierViewController.swift; sourceTree = "<group>"; };
+		3E87C11C1BA99E1100714D69 /* RecipesListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesListViewController.swift; sourceTree = "<group>"; };
+		3E87C11F1BA99E5000714D69 /* RecipesListViewController+UICollectionViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RecipesListViewController+UICollectionViewDataSource.swift"; sourceTree = "<group>"; };
+		3E87C1221BA99ED700714D69 /* RecipeCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeCollectionViewCell.swift; sourceTree = "<group>"; };
+		3E87C1251BA9AB9F00714D69 /* RecipeDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeDetailViewController.swift; sourceTree = "<group>"; };
 		3E8D06DC1B9DE99F00F5D56D /* RecipeApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeApi.swift; sourceTree = "<group>"; };
 		3E9309FF1BA1BC1800FF8B86 /* RecipesModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RecipesModel.xcdatamodel; sourceTree = "<group>"; };
 		3E930A221BA1BC5900FF8B86 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
-		3EADE9621BA8197900057A12 /* StackViewTestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackViewTestViewController.swift; sourceTree = "<group>"; };
+		3EA005DA1BAACCB900FB43C8 /* CoreSpotlight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreSpotlight.framework; path = System/Library/Frameworks/CoreSpotlight.framework; sourceTree = SDKROOT; };
 		3ED1BD4C1B9AE02B00D3EA31 /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
 		3ED36BBE1BA8356F00853D75 /* Recipe+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Recipe+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3ED36BBF1BA8356F00853D75 /* Recipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
@@ -76,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3EA005DB1BAACCB900FB43C8 /* CoreSpotlight.framework in Frameworks */,
 				7F0E3C1558AC6345E36CF462 /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,6 +146,7 @@
 		3E10E3561B91EC1D00AA3F52 /* Recipes */ = {
 			isa = PBXGroup;
 			children = (
+				3E4F66561BAA9A8200EAE7FB /* chicken-biryani-recipe-photos-5.jpg */,
 				3E04E19E1B9AE32700B1FA6A /* Recipes-Bridging-Header.h */,
 				3E3FCAFD1BA41FB3001B38FD /* Data */,
 				3E930A281BA1CB5100FF8B86 /* ViewModels */,
@@ -161,10 +175,10 @@
 		3E264B0F1B92E3C200298796 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				3E87C11B1BA99DF800714D69 /* SplitViewController */,
 				3E264B141B92F29100298796 /* RecipesViewController.swift */,
 				3E7D617F1B9417F800A8386E /* RecipesSearchViewController.swift */,
 				3E7D61891B94434E00A8386E /* RecipeModifierViewController.swift */,
-				3EADE9621BA8197900057A12 /* StackViewTestViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -175,6 +189,42 @@
 				3E3FCAFE1BA4211B001B38FD /* SyncManager.swift */,
 			);
 			name = Data;
+			sourceTree = "<group>";
+		};
+		3E87C11B1BA99DF800714D69 /* SplitViewController */ = {
+			isa = PBXGroup;
+			children = (
+				3E87C1241BA9AB8A00714D69 /* RecipeDetailViewController */,
+				3E87C11E1BA99E2D00714D69 /* RecipesListViewController */,
+			);
+			name = SplitViewController;
+			sourceTree = "<group>";
+		};
+		3E87C11E1BA99E2D00714D69 /* RecipesListViewController */ = {
+			isa = PBXGroup;
+			children = (
+				3E87C1211BA99EB800714D69 /* CustomCells */,
+				3E87C11C1BA99E1100714D69 /* RecipesListViewController.swift */,
+				3E87C11F1BA99E5000714D69 /* RecipesListViewController+UICollectionViewDataSource.swift */,
+				3E2AFEEA1BA9E99300FDAD3A /* RecipesListViewController+UICollectionViewControllerDelegate.swift */,
+			);
+			name = RecipesListViewController;
+			sourceTree = "<group>";
+		};
+		3E87C1211BA99EB800714D69 /* CustomCells */ = {
+			isa = PBXGroup;
+			children = (
+				3E87C1221BA99ED700714D69 /* RecipeCollectionViewCell.swift */,
+			);
+			name = CustomCells;
+			sourceTree = "<group>";
+		};
+		3E87C1241BA9AB8A00714D69 /* RecipeDetailViewController */ = {
+			isa = PBXGroup;
+			children = (
+				3E87C1251BA9AB9F00714D69 /* RecipeDetailViewController.swift */,
+			);
+			name = RecipeDetailViewController;
 			sourceTree = "<group>";
 		};
 		3E930A241BA1BE1900FF8B86 /* CoreData */ = {
@@ -207,6 +257,7 @@
 		72C11E98AAEBA12CC1CDB9AC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3EA005DA1BAACCB900FB43C8 /* CoreSpotlight.framework */,
 				3E04E19C1B9AE25800B1FA6A /* libAFNetworking.a */,
 				3ED1BD4C1B9AE02B00D3EA31 /* libAFNetworking.a */,
 				2EE0969E36C254B3B50FDB5A /* Pods.framework */,
@@ -309,6 +360,7 @@
 				3E10E3651B91EC1D00AA3F52 /* LaunchScreen.storyboard in Resources */,
 				3E10E3621B91EC1D00AA3F52 /* Assets.xcassets in Resources */,
 				3E10E35D1B91EC1D00AA3F52 /* Main.storyboard in Resources */,
+				3E4F66571BAA9A8200EAE7FB /* chicken-biryani-recipe-photos-5.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,9 +426,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E87C1231BA99ED700714D69 /* RecipeCollectionViewCell.swift in Sources */,
+				3E87C11D1BA99E1100714D69 /* RecipesListViewController.swift in Sources */,
 				3ED36BC01BA8356F00853D75 /* Recipe+CoreDataProperties.swift in Sources */,
 				3E0208F51B9DDC0800672A32 /* RecipeViewModel.swift in Sources */,
 				3E264B151B92F29100298796 /* RecipesViewController.swift in Sources */,
+				3E87C1261BA9AB9F00714D69 /* RecipeDetailViewController.swift in Sources */,
 				3E3FCB011BA4B130001B38FD /* RecipeApiModel.swift in Sources */,
 				3E7D61801B9417F800A8386E /* RecipesSearchViewController.swift in Sources */,
 				3E060D431B95988400C71B5F /* AppDefaults.swift in Sources */,
@@ -386,7 +441,8 @@
 				3E10E3581B91EC1D00AA3F52 /* AppDelegate.swift in Sources */,
 				3E060D451B95DD0500C71B5F /* UIImage+Helper.swift in Sources */,
 				3E930A231BA1BC5900FF8B86 /* CoreDataStack.swift in Sources */,
-				3EADE9631BA8197900057A12 /* StackViewTestViewController.swift in Sources */,
+				3E2AFEEB1BA9E99300FDAD3A /* RecipesListViewController+UICollectionViewControllerDelegate.swift in Sources */,
+				3E87C1201BA99E5000714D69 /* RecipesListViewController+UICollectionViewDataSource.swift in Sources */,
 				3E930A001BA1BC1800FF8B86 /* RecipesModel.xcdatamodeld in Sources */,
 				3ED36BC11BA8356F00853D75 /* Recipe.swift in Sources */,
 			);
