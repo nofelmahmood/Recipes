@@ -8,6 +8,8 @@
 
 import UIKit
 
-struct AppColorList {
-  static let keyColor = UIColor(red: 255.0/255.0, green: 0.0, blue: 104.0/255.0, alpha: 1.0)
+extension UIColor {
+  class func appKeyColor() -> UIColor {
+    return UIColor(red: 255.0/255.0, green: 0.0, blue: 104.0/255.0, alpha: 1.0)
+  }
 }
