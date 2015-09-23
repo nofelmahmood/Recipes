@@ -10,13 +10,16 @@ import UIKit
 import CoreData
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
   
   var window: UIWindow?
   
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
-    UITabBar.appearance().tintColor = AppColorList.keyColor
+
+//    SyncManager.sharedManager.perform { () -> Void in
+//      print("completed")
+//    }
     return true
   }
   
@@ -42,7 +45,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
   }
-  
-  
 }
 
