@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8195" systemVersion="14F27" minimumToolsVersion="Xcode 7.0">
     <entity name="Recipe" representedClassName=".Recipe" syncable="YES">
+        <attribute name="changedKeys" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="difficulty" attributeType="Integer 16" minValueString="1" maxValueString="3" defaultValueString="1" syncable="YES"/>
         <attribute name="favorite" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 32" syncable="YES"/>
         <attribute name="instructions" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isNew" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="lastSyncedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="name" attributeType="String" defaultValueString="Recipe" syncable="YES"/>
         <attribute name="photo" optional="YES" attributeType="Binary" syncable="YES"/>
@@ -14,7 +16,11 @@
         <attribute name="specification" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
     </entity>
+    <entity name="Tombstone" representedClassName=".Tombstone" syncable="YES">
+        <attribute name="recordID" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+    </entity>
     <elements>
-        <element name="Recipe" positionX="-63" positionY="-18" width="128" height="225"/>
+        <element name="Recipe" positionX="-63" positionY="-18" width="128" height="255"/>
+        <element name="Tombstone" positionX="-36" positionY="117" width="128" height="60"/>
     </elements>
 </model>
