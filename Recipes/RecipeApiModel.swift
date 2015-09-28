@@ -18,14 +18,20 @@ class RecipeApiModel: NSObject {
   var favorite: NSNumber?
   var created_at: NSDate?
   var updated_at: NSDate?
-  var photo: [String: String]?
+  var photo = [String: String?]()
   
   var url: String? {
-    return self.photo?["url"]
+    if let photoURL = self.photo["url"] {
+      return photoURL
+    }
+    return nil
   }
   
   var thumbnail_url: String? {
-    return self.photo?["thumbnail_url"]
+    if let photoThumbnailURL = self.photo["thumbnail_url"] {
+      return photoThumbnailURL
+    }
+    return nil
   }
   
   var photoData: NSData?
@@ -66,6 +72,11 @@ class RecipeApiModel: NSObject {
         }
       }
     }
+  }
+  
+  class func fromRecipe(recipe: Recipe) -> RecipeApiModel {
+    let recipeApiModel = RecipeApiModel(recipe: recipe)
+    return recipeApiModel
   }
   
   init(recipe: Recipe) {
