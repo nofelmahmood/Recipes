@@ -58,4 +58,12 @@ class CoreDataStack: NSObject {
     return managedObjectContext
     }()
   
+  func saveContext() {
+    NSOperationQueue.mainQueue().addOperationWithBlock({
+      if self.managedObjectContext.hasChanges {
+        let _ = try? self.managedObjectContext.save()
+      }
+    })
+  }
+  
 }
