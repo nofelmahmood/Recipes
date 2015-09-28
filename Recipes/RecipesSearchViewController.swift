@@ -38,12 +38,12 @@ extension RecipesSearchViewController: UISearchResultsUpdating {
       return
     }
     
-    self.searchResults = recipes.filter({ (recipe) -> Bool in
-      if recipe.name.rangeOfString(searchString, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil {
-        return true
-      }
-      return false
-    })
+//    self.searchResults = recipes.filter({ (recipe) -> Bool in
+//      if recipe.name.rangeOfString(searchString, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil {
+//        return true
+//      }
+//      return false
+//    })
     
     self.tableView.reloadData()
     
@@ -51,27 +51,27 @@ extension RecipesSearchViewController: UISearchResultsUpdating {
 }
 
 // MARK: UITableViewDataSource
-extension RecipesSearchViewController: UITableViewDataSource {
-  func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-    return 1
-  }
-  
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return self.searchResults.count
-  }
-  
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCellWithIdentifier(RecipeSearchTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeSearchTableViewCell
-    let recipe = self.searchResults[indexPath.row]
-    cell.nameLabel.text = recipe.name
-    if let id = recipe.id?.intValue {
-      if let photo = self.cachedImages[id] {
-        cell.photoImageView.image = photo
-      }
-    }
-    return cell
-  }
-}
+//extension RecipesSearchViewController: UITableViewDataSource {
+//  func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+//    return 1
+//  }
+//  
+//  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//    return self.searchResults.count
+//  }
+//  
+//  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+//    let cell = tableView.dequeueReusableCellWithIdentifier(RecipeSearchTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeSearchTableViewCell
+//    let recipe = self.searchResults[indexPath.row]
+//    cell.nameLabel.text = recipe.name
+//    if let id = recipe.id?.intValue {
+//      if let photo = self.cachedImages[id] {
+//        cell.photoImageView.image = photo
+//      }
+//    }
+//    return cell
+//  }
+//}
 
 // MARK: UITableViewDelegate
 extension RecipesSearchViewController: UITableViewDelegate {
@@ -156,19 +156,19 @@ class RecipesSearchViewController: UIViewController {
   // MARK: - Navigation
   
   // In a storyboard-based application, you will often want to do a little preparation before navigation
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-  // Get the new view controller using segue.destinationViewController.
-  // Pass the selected object to the new view controller.
-    if segue.identifier == RecipeSearchSegue.RecipeModifier.rawValue {
-      guard let recipesModifierViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? RecipeModifierViewController else {
-        return
-      }
-      if let indexPath = self.tableView.indexPathForSelectedRow {
-        if self.recipes != nil && self.recipes!.count > 0 && indexPath.row < self.recipes!.count {
-          let selectedRecipe = self.recipes![indexPath.row]
-          recipesModifierViewController.recipe = selectedRecipe
-        }
-      }
-    }
-  }
+//  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+//  // Get the new view controller using segue.destinationViewController.
+//  // Pass the selected object to the new view controller.
+//    if segue.identifier == RecipeSearchSegue.RecipeModifier.rawValue {
+//      guard let recipesModifierViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? RecipeModifierViewController else {
+//        return
+//      }
+//      if let indexPath = self.tableView.indexPathForSelectedRow {
+//        if self.recipes != nil && self.recipes!.count > 0 && indexPath.row < self.recipes!.count {
+//          let selectedRecipe = self.recipes![indexPath.row]
+//          recipesModifierViewController.recipe = selectedRecipe
+//        }
+//      }
+//    }
+//  }
 }
