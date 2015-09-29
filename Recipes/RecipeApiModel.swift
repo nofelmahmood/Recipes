@@ -6,30 +6,97 @@
 //  Copyright © 2015 Hyper. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 class RecipeApiModel: NSObject {
   
-  var id: NSNumber?
-  var name: String!
-  var difficulty: NSNumber!
-  var instructions: String?
-  var specification: String?
-  var favorite: NSNumber?
-  var created_at: NSDate?
-  var updated_at: NSDate?
-  var photo = [String: String?]()
+  private var recipeKeyValueDictionary: [String: AnyObject]!
+  private var dateFormatter: NSDateFormatter {
+    let formatter = NSDateFormatter()
+    formatter.dateFormat = ApiDateFormatString
+    return formatter
+  }
+  
+  var id: NSNumber? {
+    get {
+      return self.recipeKeyValueDictionary["id"] as? NSNumber
+    } set {
+      self.recipeKeyValueDictionary["id"] = newValue
+    }
+  }
+  
+  var name: String {
+    get {
+    return self.recipeKeyValueDictionary["name"] as! String
+    } set {
+      self.recipeKeyValueDictionary["name"] = newValue
+    }
+  }
+  
+  var difficulty: NSNumber! {
+    get {
+    return self.recipeKeyValueDictionary["difficulty"] as! NSNumber
+    } set {
+      self.recipeKeyValueDictionary["difficulty"] = newValue
+    }
+  }
+  
+  var instructions: String? {
+    get {
+    return self.recipeKeyValueDictionary["instructions"] as? String
+    } set {
+      self.recipeKeyValueDictionary["instructions"] = newValue
+    }
+  }
+  
+  var specification: String? {
+    get {
+    return self.recipeKeyValueDictionary["description"] as? String
+    } set {
+      self.recipeKeyValueDictionary["description"] = newValue
+    }
+  }
+  
+  var favorite: NSNumber? {
+    get {
+    return self.recipeKeyValueDictionary["favorite"] as? NSNumber
+    } set {
+      self.recipeKeyValueDictionary["favorite"] = newValue
+    }
+  }
+  
+  var created_at: NSDate? {
+    get {
+      if let stringValue = self.recipeKeyValueDictionary["created_at"] as? String {
+        return self.dateFormatter.dateFromString(stringValue)
+      }
+      return nil
+    } set {
+      self.created_at = newValue
+    }
+  }
+  
+  var updated_at: NSDate? {
+    get {
+      if let stringValue = self.recipeKeyValueDictionary["updated_at"] as? String {
+        return self.dateFormatter.dateFromString(stringValue)
+      }
+      return nil
+    } set {
+      self.updated_at = newValue
+    }
+  }
   
   var url: String? {
-    if let photoURL = self.photo["url"] {
-      return photoURL
+    if let photoKeyValue = self.recipeKeyValueDictionary["photo"] as? [String: String?] {
+      return photoKeyValue["url"]!
     }
     return nil
   }
   
   var thumbnail_url: String? {
-    if let photoThumbnailURL = self.photo["thumbnail_url"] {
-      return photoThumbnailURL
+    if let photoKeyValue = self.recipeKeyValueDictionary["photo"] as? [String: String?] {
+      return photoKeyValue["thumbnail_url"]!
     }
     return nil
   }
@@ -37,41 +104,17 @@ class RecipeApiModel: NSObject {
   var photoData: NSData?
   
   var serverRepresentation: [String: AnyObject] {
-    var representation = [String: AnyObject]()
-    representation["name"] = self.name
-    representation["difficulty"] = self.difficulty
-    if let instructions = self.instructions {
-      representation["instructions"] = instructions
-    }
-    if let specification = self.specification {
-      representation["description"] = specification
-    }
-    if let favorite = self.favorite {
-      representation["favorite"] = favorite
-    }
+    var representation = self.recipeKeyValueDictionary
+    representation["id"] = nil
+    representation["photo"] = nil
+    representation["created_at"] = nil
+    representation["updated_at"] = nil
     return representation
   }
   
   init(recipeKeyValue keyValue:[String: AnyObject]) {
     super.init()
-    let dateFormatter = NSDateFormatter()
-    dateFormatter.dateFormat = ApiDateFormatString
-    for (key, value) in keyValue {
-      if let _ = value as? NSNull {
-        continue
-      }
-      if key == "description" {
-        self.setValue(value, forKey: "specification")
-      } else if respondsToSelector(NSSelectorFromString(key)) {
-        if key == "created_at" || key == "updated_at" {
-          if let dateValue = dateFormatter.dateFromString(value as! String) {
-            self.setValue(dateValue, forKey: key)
-          }
-        } else {
-          self.setValue(value, forKey: key)
-        }
-      }
-    }
+    self.recipeKeyValueDictionary = keyValue
   }
   
   class func fromRecipe(recipe: Recipe) -> RecipeApiModel {
@@ -82,7 +125,7 @@ class RecipeApiModel: NSObject {
   init(recipe: Recipe) {
     super.init()
     self.id = recipe.id
-    self.name = recipe.name
+    self.name = recipe.name!
     self.difficulty = recipe.difficulty
     self.instructions = recipe.instructions
     self.specification = recipe.specification
