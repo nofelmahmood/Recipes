@@ -31,6 +31,7 @@ class Recipe: NSManagedObject {
     guard let recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: context) as? Recipe else {
       return nil
     }
+    print("Inserting",recipeApiModel.url,recipeApiModel.thumbnail_url)
     recipe.id = recipeApiModel.id
     recipe.name = recipeApiModel.name
     recipe.instructions = recipeApiModel.instructions
@@ -91,7 +92,7 @@ class Recipe: NSManagedObject {
   
   class func deleteRecipes(exceptWithIDs ids: [NSNumber], inContext context: NSManagedObjectContext) {
     let fetchRequest = NSFetchRequest(entityName: "Recipe")
-    fetchRequest.predicate = NSPredicate(format: "id NOT IN %@", ids)
+    fetchRequest.predicate = NSPredicate(format: "NOT (id IN %@)", ids)
     let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
     _ = try? context.executeRequest(batchDeleteRequest)
   }
