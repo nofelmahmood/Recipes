@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8187.4" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ypE-hB-BNO">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="lPC-F7-Wtd">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8151.3"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -945,7 +945,7 @@
                             </connections>
                         </barButtonItem>
                         <textField key="titleView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Your cool Recipe name !" textAlignment="center" minimumFontSize="17" id="7Hf-K3-j7f">
-                            <rect key="frame" x="-25" y="-30" width="97" height="30"/>
+                            <rect key="frame" x="190" y="7" width="220" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="tintColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
                             <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="20"/>
@@ -1074,6 +1074,24 @@
             </objects>
             <point key="canvasLocation" x="1009.5" y="-162"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="9Td-71-b9y">
+            <objects>
+                <viewController id="lPC-F7-Wtd" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="t2m-0o-E1x"/>
+                        <viewControllerLayoutGuide type="bottom" id="qUr-Ds-Oyc"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dOb-Fe-2GI">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pxI-K3-WWz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1794" y="287"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="4cW-Xn-VST">
             <objects>
@@ -1119,8 +1137,8 @@
     </scenes>
     <resources>
         <image name="Camera" width="70" height="53"/>
-        <image name="Heart" width="23" height="22"/>
-        <image name="HeartFilled" width="21" height="21"/>
+        <image name="Heart" width="31" height="29"/>
+        <image name="HeartFilled" width="29" height="28"/>
         <image name="ImagePlaceholder" width="320" height="205"/>
         <image name="Next" width="22" height="12"/>
         <image name="Photos" width="75" height="58"/>
