@@ -22,20 +22,21 @@ class SyncManager: NSObject {
         let newRecipes = Recipe.newRecipesSinceLastSync(inContext: mainContext)
         self.saveOnServer(newRecipes)
         Recipe.deleteRecipes(exceptWithIDs: fetchedRecipesIDs, inContext: mainContext)
+        var modifiedRecipesWithIDs = [NSNumber: Recipe]()
         if let modifiedRecipes = Recipe.recipes(withIDs: fetchedRecipesIDs, inContext: mainContext) {
           var modifiedRecipesWithIDs = [NSNumber: Recipe]()
           modifiedRecipes.forEach({ recipe in
             modifiedRecipesWithIDs[recipe.id!] = recipe
           })
-          for fetchedRecipe in fetchedRecipes {
-            if let modifiedRecipe = modifiedRecipesWithIDs[fetchedRecipe.id!] {
-              modifiedRecipe.updateFromApiModel(fetchedRecipe)
-            } else {
-              Recipe.insertNewRecipe(usingRecipeApiModel: fetchedRecipe, inManagedObjectContext: mainContext)
-            }
+        }
+        for fetchedRecipe in fetchedRecipes {
+          if let modifiedRecipe = modifiedRecipesWithIDs[fetchedRecipe.id!] {
+            modifiedRecipe.updateFromApiModel(fetchedRecipe)
+          } else {
+            Recipe.insertNewRecipe(usingRecipeApiModel: fetchedRecipe, inManagedObjectContext: mainContext)
           }
         }
-        let _ = try? mainContext.save()
+        let _ = try? mainContext.saveIfHasChanges()
       }
       completion?()
     })
