@@ -36,13 +36,12 @@ class RecipeApiTests: XCTestCase {
     let image = UIImage(named: "ImagePlaceholder")
     let jpeg = UIImageJPEGRepresentation(image!, 1.0)
     recipeApiModel.photoData = jpeg!
-    RecipeApi.sharedAPI.save(recipeApiModel) { (successful) -> Void in
-      if successful {
-        print("Successful")
+    RecipeApi.sharedAPI.save(recipeApiModel) { recipeApiModel in
+      if let recipeApiModel = recipeApiModel {
+        print(recipeApiModel.id)
       }
       expectation.fulfill()
     }
     waitForExpectationsWithTimeout(5.0, handler: nil)
   }
-  
 }
