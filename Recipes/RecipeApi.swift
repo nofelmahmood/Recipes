@@ -44,18 +44,18 @@ class RecipeApi: NSObject {
     let headers = [HTTPHeader.ContentType.rawValue: HTTPHeaderJSONTypeValue, HTTPHeader.Accept.rawValue: HTTPHeaderJSONTypeValue, HTTPHeader.Authorization.rawValue: self.authorizationHeaderValue]
     Alamofire.request(.GET, urlString, parameters: nil, encoding: .JSON, headers: headers).responseJSON { _,_, result in
       if let jsonData = result.value as? [[String: AnyObject]] where result.isSuccess {
-          var recipeApiModels = [RecipeApiModel]()
-          for recipeKeyValue in jsonData {
-            recipeApiModels.append(RecipeApiModel(recipeKeyValue: recipeKeyValue))
+        var recipeApiModels = [RecipeApiModel]()
+        for recipeKeyValue in jsonData {
+          recipeApiModels.append(RecipeApiModel(recipeKeyValue: recipeKeyValue))
         }
-          completionBlock?(recipes: recipeApiModels)
+        completionBlock?(recipes: recipeApiModels)
       } else {
         completionBlock?(recipes: nil)
       }
     }
   }
   
-  func save(recipe: RecipeApiModel, completionBlock: ((successful: Bool) -> Void)?) {
+  func save(recipe: RecipeApiModel, completionBlock: ((recipeApiModel: RecipeApiModel?) -> Void)?) {
     var urlString = ApiEndPoint.Base + ApiEndPoint.Recipes
     var httpMethod = Alamofire.Method.POST
     if let ID = recipe.id?.integerValue {
@@ -70,22 +70,31 @@ class RecipeApi: NSObject {
           multipartFormData.appendBodyPart(data: value.dataUsingEncoding(0)!, name: "recipe[\(key)]")
         }
       }
-        if let photoData = recipe.photoData {
-          multipartFormData.appendBodyPart(data: photoData, name: "recipe[photo]", fileName: "recipe_Photo", mimeType: ApiImageMimeType)
-        }
+      if let photoData = recipe.photoData {
+        multipartFormData.appendBodyPart(data: photoData, name: "recipe[photo]", fileName: "recipe_Photo", mimeType: ApiImageMimeType)
+      }
       }, encodingMemoryThreshold: Manager.MultipartFormDataEncodingMemoryThreshold, encodingCompletion: { encodingResult in
         switch(encodingResult) {
         case .Success(let request,_,_):
           request.responseJSON {
-            request, response, JSON in
-            completionBlock?(successful: true)
+            request, response, result in
+            switch result {
+            case .Success(let JSON):
+              if let recipeKeyValue = JSON as? [String: AnyObject] {
+                let recipeApiModel = RecipeApiModel(recipeKeyValue: recipeKeyValue)
+                completionBlock?(recipeApiModel: recipeApiModel)
+              }
+            default:
+              break
+            }
+            completionBlock?(recipeApiModel: nil)
           }
         case .Failure(_):
-          completionBlock?(successful: false)
+          completionBlock?(recipeApiModel: nil)
         }
     })
   }
-
+  
   func delete(recipeID: Int, completionBlock: ((successful: Bool) -> Void)?) {
     let urlString = ApiEndPoint.Base + ApiEndPoint.Recipes + "/" + "\(recipeID)"
     let headers = [HTTPHeader.Authorization.rawValue: self.authorizationHeaderValue]
