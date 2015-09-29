@@ -11,6 +11,8 @@ import CoreData
 
 class SyncManager: NSObject {
   
+  static let sharedManager = SyncManager()
+  
   func perform(completion: (() -> Void)?) {
     RecipeApi.sharedAPI.recipes({ fetchedRecipes in
       if let fetchedRecipes = fetchedRecipes {
@@ -31,13 +33,30 @@ class SyncManager: NSObject {
         }
         for fetchedRecipe in fetchedRecipes {
           if let modifiedRecipe = modifiedRecipesWithIDs[fetchedRecipe.id!] {
-            modifiedRecipe.updateFromApiModel(fetchedRecipe)
+            if fetchedRecipe.updated_at!.compare(modifiedRecipe.updatedAt!) == NSComparisonResult.OrderedAscending {
+              modifiedRecipe.updateFromApiModel(fetchedRecipe)
+            } else {
+              let recipeObjectID = modifiedRecipe.objectID
+              RecipeApi.sharedAPI.save(RecipeApiModel(recipe: modifiedRecipe), completionBlock: { recipeApiModel in
+                if let recipeApiModel = recipeApiModel {
+                  let saveContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+                  saveContext.parentContext = CoreDataStack.defaultStack.managedObjectContext
+                  if let recipeToModify = saveContext.objectWithID(recipeObjectID) as? Recipe {
+                    recipeToModify.updatedAt = recipeApiModel.updated_at
+                    let _ = try? saveContext.saveIfHasChanges()
+                  }
+                }
+              })
+            }
           } else {
             Recipe.insertNewRecipe(usingRecipeApiModel: fetchedRecipe, inManagedObjectContext: mainContext)
           }
         }
         let _ = try? mainContext.saveIfHasChanges()
       }
+      NSOperationQueue.mainQueue().addOperationWithBlock({
+        let _ = try? CoreDataStack.defaultStack.managedObjectContext.saveIfHasChanges()
+      })
       completion?()
     })
   }
