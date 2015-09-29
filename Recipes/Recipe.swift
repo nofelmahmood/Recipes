@@ -45,6 +45,10 @@ class Recipe: NSManagedObject {
     return recipe
   }
   
+  class func recipeWithObjectID(objectID: NSManagedObjectID, inContext context: NSManagedObjectContext) -> Recipe {
+    return context.objectWithID(objectID) as! Recipe
+  }
+  
   class func all(inContext context: NSManagedObjectContext) -> [Recipe]? {
     let fetchRequest = NSFetchRequest(entityName: "Recipe")
     let result = try? context.executeFetchRequest(fetchRequest)
