@@ -58,6 +58,10 @@ class Recipe: NSManagedObject {
     return nil
   }
   
+  class func allForView(inContext context: NSManagedObjectContext) -> [RecipeViewModel]? {
+    return Recipe.all(inContext: context)?.map({ RecipeViewModel(withModel: $0) })
+  }
+  
   class func deleteAll(inContext context: NSManagedObjectContext) {
     let fetchRequest = NSFetchRequest(entityName: "Recipe")
     if let result = try? context.executeFetchRequest(fetchRequest) {
