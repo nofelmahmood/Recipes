@@ -23,7 +23,6 @@ struct ApiEndPoint {
 
 let HTTPHeaderJSONTypeValue = "application/json"
 
-let ApiToken = "780572e2326694c5a58c"
 let ApiDateFormatString = "YYYY'-'MM'-'DD'T'HH:mm:ss.SSS'Z'"
 
 let ApiImageMimeType = "image/jpeg"
@@ -32,7 +31,7 @@ class RecipeApi: NSObject {
   
   static let sharedAPI = RecipeApi()
   
-  let authorizationHeaderValue = "Token token=\"780572e2326694c5a58c\""
+  let authorizationHeaderValue = "Token token=\"83163fd9411cb7b7303a\""
   
   override init() {
     super.init()
