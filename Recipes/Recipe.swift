@@ -31,7 +31,6 @@ class Recipe: NSManagedObject {
     guard let recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: context) as? Recipe else {
       return nil
     }
-    print("Inserting",recipeApiModel.url,recipeApiModel.thumbnail_url)
     recipe.id = recipeApiModel.id
     recipe.name = recipeApiModel.name
     recipe.instructions = recipeApiModel.instructions
@@ -52,6 +51,7 @@ class Recipe: NSManagedObject {
   
   class func all(inContext context: NSManagedObjectContext) -> [Recipe]? {
     let fetchRequest = NSFetchRequest(entityName: "Recipe")
+    fetchRequest.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: false),NSSortDescriptor(key: "createdAt", ascending: false)]
     let result = try? context.executeFetchRequest(fetchRequest)
     if let recipes = result as? [Recipe] {
       return recipes
