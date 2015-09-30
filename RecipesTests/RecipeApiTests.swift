@@ -25,6 +25,10 @@ class RecipeApiTests: XCTestCase {
   func testFetchingOfRecipes() {
     let expectation = expectationWithDescription("Recipes")
     RecipeApi.sharedAPI.recipes { recipes in
+      XCTAssertNotNil(recipes)
+      recipes?.forEach({ recipe in
+        print(recipe.url,recipe.thumbnail_url)
+      })
       expectation.fulfill()
     }
     waitForExpectationsWithTimeout(5.0, handler: nil)
