@@ -88,15 +88,15 @@ class RecipeApiModel: NSObject {
   }
   
   var url: String? {
-    if let photoKeyValue = self.recipeKeyValueDictionary["photo"] as? [String: String?] {
-      return photoKeyValue["url"]!
+    if let photoKeyValue = self.recipeKeyValueDictionary["photo"] as? [String: AnyObject] {
+      return photoKeyValue["url"] as? String
     }
     return nil
   }
   
   var thumbnail_url: String? {
-    if let photoKeyValue = self.recipeKeyValueDictionary["photo"] as? [String: String?] {
-      return photoKeyValue["thumbnail_url"]!
+    if let photoKeyValue = self.recipeKeyValueDictionary["photo"] as? [String: AnyObject] {
+      return photoKeyValue["thumbnail_url"] as? String
     }
     return nil
   }
