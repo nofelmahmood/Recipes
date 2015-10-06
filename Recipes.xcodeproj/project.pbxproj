@@ -32,6 +32,9 @@
 		3EA8AE1F1BBAA080005A4D68 /* RecipesListViewController+UICollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA8AE1E1BBAA080005A4D68 /* RecipesListViewController+UICollectionViewDelegate.swift */; settings = {ASSET_TAGS = (); }; };
 		3EA8AE441BBBC630005A4D68 /* RecipesListViewController+UIScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA8AE431BBBC630005A4D68 /* RecipesListViewController+UIScrollView.swift */; settings = {ASSET_TAGS = (); }; };
 		3EA8AE461BBBCA1B005A4D68 /* UICollectionViewCellParallax.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA8AE451BBBCA1B005A4D68 /* UICollectionViewCellParallax.swift */; settings = {ASSET_TAGS = (); }; };
+		3EA8AE4A1BBD167D005A4D68 /* RecipeSearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA8AE491BBD167D005A4D68 /* RecipeSearchTableViewCell.swift */; settings = {ASSET_TAGS = (); }; };
+		3EA8AE501BBD4CFC005A4D68 /* RecipesFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA8AE4F1BBD4CFC005A4D68 /* RecipesFilterViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		3EA8AE531BBD4E2A005A4D68 /* RecipesFilterTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA8AE521BBD4E2A005A4D68 /* RecipesFilterTableViewCell.swift */; settings = {ASSET_TAGS = (); }; };
 		3EA9EDD21BBA664C00D388E1 /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA9EDD11BBA664C00D388E1 /* SyncManager.swift */; settings = {ASSET_TAGS = (); }; };
 		3EF929481BB34BEB00D19C34 /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF929461BB34BEB00D19C34 /* Recipe.swift */; settings = {ASSET_TAGS = (); }; };
 		3EF929491BB34BEB00D19C34 /* Tombstone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF929471BB34BEB00D19C34 /* Tombstone.swift */; settings = {ASSET_TAGS = (); }; };
@@ -84,6 +87,9 @@
 		3EA8AE1E1BBAA080005A4D68 /* RecipesListViewController+UICollectionViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RecipesListViewController+UICollectionViewDelegate.swift"; sourceTree = "<group>"; };
 		3EA8AE431BBBC630005A4D68 /* RecipesListViewController+UIScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RecipesListViewController+UIScrollView.swift"; sourceTree = "<group>"; };
 		3EA8AE451BBBCA1B005A4D68 /* UICollectionViewCellParallax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICollectionViewCellParallax.swift; sourceTree = "<group>"; };
+		3EA8AE491BBD167D005A4D68 /* RecipeSearchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeSearchTableViewCell.swift; sourceTree = "<group>"; };
+		3EA8AE4F1BBD4CFC005A4D68 /* RecipesFilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesFilterViewController.swift; sourceTree = "<group>"; };
+		3EA8AE521BBD4E2A005A4D68 /* RecipesFilterTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesFilterTableViewCell.swift; sourceTree = "<group>"; };
 		3EA9EDD11BBA664C00D388E1 /* SyncManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
 		3ED1BD4C1B9AE02B00D3EA31 /* libAFNetworking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAFNetworking.a; path = "Pods/../build/Debug-iphoneos/libAFNetworking.a"; sourceTree = "<group>"; };
 		3EF929461BB34BEB00D19C34 /* Recipe.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
@@ -188,11 +194,12 @@
 		3E264B0F1B92E3C200298796 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				3EA8AE4E1BBD4CE6005A4D68 /* RecipesFilterViewController */,
+				3EA8AE471BBD163B005A4D68 /* RecipesSearchViewController */,
 				3E2E5F8D1BB16F23008A24B1 /* RecipesHorizontalCollectionViewController */,
 				3E2E5F881BB16846008A24B1 /* RecipesInDetailViewController */,
 				3E87C1241BA9AB8A00714D69 /* RecipeDetailViewController */,
 				3E87C11E1BA99E2D00714D69 /* RecipesListViewController */,
-				3E7D617F1B9417F800A8386E /* RecipesSearchViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -227,18 +234,10 @@
 			name = Data;
 			sourceTree = "<group>";
 		};
-		3E873E381BAD695800DEC82F /* Animator */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Animator;
-			sourceTree = "<group>";
-		};
 		3E87C11E1BA99E2D00714D69 /* RecipesListViewController */ = {
 			isa = PBXGroup;
 			children = (
 				3EA8AE1B1BBA9FC9005A4D68 /* UICollectionView */,
-				3E873E381BAD695800DEC82F /* Animator */,
 				3E87C1211BA99EB800714D69 /* CustomCells */,
 				3EA8AE151BBA99A2005A4D68 /* RecipesListViewController.swift */,
 			);
@@ -299,6 +298,40 @@
 				3EA8AE431BBBC630005A4D68 /* RecipesListViewController+UIScrollView.swift */,
 			);
 			name = UICollectionView;
+			sourceTree = "<group>";
+		};
+		3EA8AE471BBD163B005A4D68 /* RecipesSearchViewController */ = {
+			isa = PBXGroup;
+			children = (
+				3EA8AE481BBD166A005A4D68 /* CustomCells */,
+				3E7D617F1B9417F800A8386E /* RecipesSearchViewController.swift */,
+			);
+			name = RecipesSearchViewController;
+			sourceTree = "<group>";
+		};
+		3EA8AE481BBD166A005A4D68 /* CustomCells */ = {
+			isa = PBXGroup;
+			children = (
+				3EA8AE491BBD167D005A4D68 /* RecipeSearchTableViewCell.swift */,
+			);
+			name = CustomCells;
+			sourceTree = "<group>";
+		};
+		3EA8AE4E1BBD4CE6005A4D68 /* RecipesFilterViewController */ = {
+			isa = PBXGroup;
+			children = (
+				3EA8AE511BBD4E17005A4D68 /* CustomCells */,
+				3EA8AE4F1BBD4CFC005A4D68 /* RecipesFilterViewController.swift */,
+			);
+			name = RecipesFilterViewController;
+			sourceTree = "<group>";
+		};
+		3EA8AE511BBD4E17005A4D68 /* CustomCells */ = {
+			isa = PBXGroup;
+			children = (
+				3EA8AE521BBD4E2A005A4D68 /* RecipesFilterTableViewCell.swift */,
+			);
+			name = CustomCells;
 			sourceTree = "<group>";
 		};
 		72C11E98AAEBA12CC1CDB9AC /* Frameworks */ = {
@@ -480,6 +513,8 @@
 				3EF9294D1BB366A600D19C34 /* Tombstone+CoreDataProperties.swift in Sources */,
 				3E0208F51B9DDC0800672A32 /* RecipeViewModel.swift in Sources */,
 				3EA8AE161BBA99A2005A4D68 /* RecipesListViewController.swift in Sources */,
+				3EA8AE501BBD4CFC005A4D68 /* RecipesFilterViewController.swift in Sources */,
+				3EA8AE4A1BBD167D005A4D68 /* RecipeSearchTableViewCell.swift in Sources */,
 				3EA8AE1F1BBAA080005A4D68 /* RecipesListViewController+UICollectionViewDelegate.swift in Sources */,
 				3E3FCB011BA4B130001B38FD /* RecipeApiModel.swift in Sources */,
 				3EA8AE1D1BBAA057005A4D68 /* RecipesListViewController+UICollectionViewDataSource.swift in Sources */,
@@ -496,6 +531,7 @@
 				3EA8AE141BBA74A7005A4D68 /* RecipeApi.swift in Sources */,
 				3EF9294C1BB366A600D19C34 /* Recipe+CoreDataProperties.swift in Sources */,
 				3EF929481BB34BEB00D19C34 /* Recipe.swift in Sources */,
+				3EA8AE531BBD4E2A005A4D68 /* RecipesFilterTableViewCell.swift in Sources */,
 				3E930A001BA1BC1800FF8B86 /* RecipesModel.xcdatamodeld in Sources */,
 				3EA8AE461BBBCA1B005A4D68 /* UICollectionViewCellParallax.swift in Sources */,
 			);
