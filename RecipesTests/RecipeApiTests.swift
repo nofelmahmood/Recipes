@@ -34,14 +34,14 @@ class RecipeApiTests: XCTestCase {
     recipeModel.updated_at = NSDate()
     recipeModel.photo.thumbnail_url = nil
     recipeModel.photo.url = nil
-    print(recipeModel)
   }
+  
   func testFetchingOfRecipes() {
     let expectation = expectationWithDescription("Recipes")
     RecipeApi.sharedAPI.recipes { recipes in
       XCTAssertNotNil(recipes)
       recipes?.forEach({ recipe in
-        print(recipe.url,recipe.thumbnail_url)
+        print(recipe.photo.url,recipe.photo.thumbnail_url)
       })
       expectation.fulfill()
     }
@@ -50,7 +50,17 @@ class RecipeApiTests: XCTestCase {
   
   func testSavingOfRecipe() {
     let expectation = expectationWithDescription("SaveRecipe")
-    let recipeApiModel = RecipeApiModel(recipeKeyValue: ["name":"TestRecipe","difficulty":NSNumber(integer: 2)])
+    let recipeApiModel: RecipeApiModel
+    recipeApiModel.id = nil
+    recipeApiModel.specification = nil
+    recipeApiModel.instructions = nil
+    recipeApiModel.updated_at = nil
+    recipeApiModel.created_at = nil
+    recipeApiModel.favorite = nil
+    recipeApiModel.photo.url = nil
+    recipeApiModel.photo.thumbnail_url = nil
+    recipeApiModel.name = "Test Recipe"
+    recipeApiModel.difficulty = NSNumber(integer: 2)
     let image = UIImage(named: "ImagePlaceholder")
     let jpeg = UIImageJPEGRepresentation(image!, 1.0)
     recipeApiModel.photoData = jpeg!
