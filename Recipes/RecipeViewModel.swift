@@ -9,10 +9,10 @@
 import UIKit
 import CoreData
 
-enum RecipeDifficulty: String {
-  case Easy = "Easy"
-  case Medium = "Medium"
-  case Hard = "Hard"
+struct RecipeDifficulty {
+  static let Easy = "Easy"
+  static let Medium = "Medium"
+  static let Hard = "Hard"
 }
 
 let RecipeInstructionsSeparator = ","
@@ -70,7 +70,7 @@ class RecipeViewModel: NSObject {
     }
   }
   
-  var difficulty: RecipeDifficulty {
+  var difficulty: String {
     get {
       switch(self.recipe.difficulty!.integerValue) {
       case 1:
@@ -91,6 +91,7 @@ class RecipeViewModel: NSObject {
         self.recipe.difficulty = NSNumber(integer: 2)
       case RecipeDifficulty.Hard:
         self.recipe.difficulty = NSNumber(integer: 3)
+      default: break
       }
     }
   }
@@ -99,14 +100,6 @@ class RecipeViewModel: NSObject {
     get {
       if let photoData = self.recipe.photo {
         return UIImage(data: photoData)
-      } else if let photoThumbnailURL = self.recipe.photoThumbnailURL {
-      RecipeApi.sharedAPI.downloadPhotoFromURL(photoThumbnailURL, completion: { image in
-          if let image = image {
-            NSOperationQueue.mainQueue().addOperationWithBlock {
-              self.recipe.photo = UIImageJPEGRepresentation(image, 1.0)
-            }
-          }
-        })
       }
       return nil
     } set {
@@ -159,6 +152,22 @@ class RecipeViewModel: NSObject {
       self.recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: CoreDataStack.defaultStack.managedObjectContext) as? Recipe
       self.recipe.createdAt = NSDate()
       try! CoreDataStack.defaultStack.managedObjectContext.save()
+    }
+  }
+  
+  func photo(completionBlock: ((image: UIImage?) -> Void)) {
+    if let photo = self.recipe.photo {
+      completionBlock(image: UIImage(data: photo))
+      return
+    } else if let thumbnailURL = self.recipe.photoThumbnailURL {
+      RecipeApi.sharedAPI.downloadPhotoFromURL(thumbnailURL, completion: { image in
+        completionBlock(image: image)
+        if let image = image {
+          NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.recipe.photo = UIImageJPEGRepresentation(image, 1.0)
+          }
+        }
+      })
     }
   }
   
