@@ -22,6 +22,20 @@ class RecipeApiTests: XCTestCase {
     super.tearDown()
   }
   
+  func testRecipeApiModelTuple() {
+    typealias RecipeModel = (id:NSNumber, name:String, specification:String?, instructions:String?, difficulty:NSNumber, created_at:NSDate, updated_at:NSDate, photo:(url:String?, thumbnail_url: String?))
+    let recipeModel: RecipeModel
+    recipeModel.name = "Nofel"
+    recipeModel.id = NSNumber(int: 12)
+    recipeModel.specification = "Nofel"
+    recipeModel.instructions = nil
+    recipeModel.difficulty = NSNumber(int: 12)
+    recipeModel.created_at = NSDate()
+    recipeModel.updated_at = NSDate()
+    recipeModel.photo.thumbnail_url = nil
+    recipeModel.photo.url = nil
+    print(recipeModel)
+  }
   func testFetchingOfRecipes() {
     let expectation = expectationWithDescription("Recipes")
     RecipeApi.sharedAPI.recipes { recipes in
