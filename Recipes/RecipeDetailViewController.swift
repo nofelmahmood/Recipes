@@ -97,6 +97,7 @@ class RecipeDetailViewController: UIViewController {
   
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
+    UIApplication.sharedApplication().statusBarHidden = true
     self.collectionView.layoutIfNeeded()
     let indexPath = NSIndexPath(forItem: self.selectedRecipeIndex, inSection: 0)
     self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: UICollectionViewScrollPosition.CenteredHorizontally, animated: false)    
@@ -104,6 +105,8 @@ class RecipeDetailViewController: UIViewController {
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    self.navigationController?.hidesBarsOnSwipe = false
+    self.navigationController?.setNavigationBarHidden(false, animated: false)
   }
   
   override func viewDidLayoutSubviews() {
