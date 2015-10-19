@@ -37,7 +37,7 @@ class SyncManager: NSObject {
               modifiedRecipe.updateFromApiModel(fetchedRecipe)
             } else {
               let recipeObjectID = modifiedRecipe.objectID
-              RecipeApi.sharedAPI.save(RecipeApiModel(recipe: modifiedRecipe), completionBlock: { recipeApiModel in
+              RecipeApi.sharedAPI.save(RecipeApiValueTransformer.modelValueFromRecipe(modifiedRecipe), completionBlock: { recipeApiModel in
                 if let recipeApiModel = recipeApiModel {
                   let saveContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
                   saveContext.parentContext = CoreDataStack.defaultStack.managedObjectContext
@@ -67,7 +67,8 @@ class SyncManager: NSObject {
     }
     for recipe in newRecipes {
       let recipeObjectID = recipe.objectID
-      RecipeApi.sharedAPI.save(RecipeApiModel(recipe: recipe), completionBlock: { recipeApiModel in
+      RecipeApi.sharedAPI.save(RecipeApiValueTransformer.modelValueFromRecipe(recipe), completionBlock: {
+        recipeApiModel in
         if let recipeApiModel = recipeApiModel {
           let saveContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
           saveContext.parentContext = CoreDataStack.defaultStack.managedObjectContext
