@@ -45,7 +45,7 @@ class RecipeApi: NSObject {
       if let jsonData = result.value as? [[String: AnyObject]] where result.isSuccess {
         var recipeApiModels = [RecipeApiModel]()
         for recipeKeyValue in jsonData {
-          recipeApiModels.append(RecipeApiModel(recipeKeyValue: recipeKeyValue))
+          recipeApiModels.append(RecipeApiValueTransformer.modelValueFromKeyValue(recipeKeyValue))
         }
         completionBlock?(recipes: recipeApiModels)
       } else {
@@ -61,7 +61,7 @@ class RecipeApi: NSObject {
       urlString = "\(urlString)/\(ID)"
       httpMethod = Alamofire.Method.PUT
     }
-    let serverRepresentation = recipe.serverRepresentation
+    let serverRepresentation = RecipeApiValueTransformer.apiRepresentationFromApiModel(recipe)
     let headers = [HTTPHeader.Authorization.rawValue: self.authorizationHeaderValue]
     Alamofire.upload(httpMethod, urlString, headers: headers, multipartFormData: { (multipartFormData: MultipartFormData) -> Void in
       for (key,value) in serverRepresentation {
@@ -80,7 +80,7 @@ class RecipeApi: NSObject {
             switch result {
             case .Success(let JSON):
               if let recipeKeyValue = JSON as? [String: AnyObject] {
-                let recipeApiModel = RecipeApiModel(recipeKeyValue: recipeKeyValue)
+                let recipeApiModel = RecipeApiValueTransformer.modelValueFromKeyValue(recipeKeyValue)
                 completionBlock?(recipeApiModel: recipeApiModel)
               }
             default:
