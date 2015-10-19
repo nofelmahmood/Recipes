@@ -18,7 +18,16 @@ extension RecipesListViewController: UICollectionViewDataSource {
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     if let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as? RecipeListCollectionViewCell {
       let recipe = self.recipes[indexPath.row]
-      cell.configureUsingRecipe(recipe)
+      cell.configureUsingRecipe(recipe, inScope: self.recipesScope)
+      recipe.photo({ photo in
+        if let photo = photo, let index = self.recipes.indexOf(recipe) {
+          NSOperationQueue.mainQueue().addOperationWithBlock({
+            if let correspondingCell = self.collectionView.cellForItemAtIndexPath(NSIndexPath(forItem: index, inSection: 0)) as? RecipeListCollectionViewCell {
+              correspondingCell.backgroundImageView.image = photo
+            }
+          })
+        }
+      })
       return cell
     }
     return UICollectionViewCell()
