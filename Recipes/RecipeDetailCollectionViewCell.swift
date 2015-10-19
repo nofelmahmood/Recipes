@@ -18,6 +18,7 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   @IBOutlet var scrollView: UIScrollView!
   @IBOutlet var nameTextField: UITextField!
   @IBOutlet var photoImageView: UIImageView!
+  @IBOutlet var photoEditView: UIView!
   @IBOutlet var descriptionTextView: UITextView!
   @IBOutlet var backgroundImageView: UIImageView!
   @IBOutlet var mainStackView: UIStackView!
@@ -52,6 +53,7 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   
   override func prepareForReuse() {
     self.scrollView.contentOffset = CGPoint(x: 0, y: 0)
+    self.photoEditView.hidden = true
     for view in self.instructionsStackView.subviews {
       view.removeFromSuperview()
     }
