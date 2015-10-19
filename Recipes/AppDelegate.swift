@@ -15,7 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
   var window: UIWindow?
   
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-    // Override point for customization after application launch.
+    UITabBar.appearance().tintColor = UIColor.appKeyColor()
+//     Override point for customization after application launch.
 //    SyncManager.sharedManager.perform({
 //      print("completed")
 //    })
