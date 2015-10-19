@@ -48,7 +48,7 @@ class RecipeViewModel: NSObject {
   var instructions: [String]? {
     get {
       if let separatedInstructions = self.recipe.instructions?.componentsSeparatedByString(RecipeInstructionsSeparator) {
-        if separatedInstructions.count > 1 && separatedInstructions.first!.isEmpty == false {
+        if separatedInstructions.count != 0 && separatedInstructions.first!.isEmpty == false {
           return separatedInstructions
         }
       }
