@@ -81,6 +81,7 @@ class RecipesListViewController: UIViewController {
   
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
+    UIApplication.sharedApplication().statusBarHidden = false
     self.tabBarController!.tabBar.frame = self.tabBarFrame
     self.tabBarController!.tabBar.hidden = false
     self.navigationController?.navigationBar.setBackgroundImage(nil, forBarMetrics: .Default)
@@ -91,6 +92,7 @@ class RecipesListViewController: UIViewController {
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    self.navigationController?.hidesBarsOnSwipe = true
     if self.firstTime {
       self.firstTime = false
       if self.recipesScope == RecipesScope.Favorites {
@@ -136,34 +138,14 @@ class RecipesListViewController: UIViewController {
   }
   
   func reloadCollectionViewDataWithNewData() {
-//    if self.scopeSelectorSegmentedControl.selectedSegmentIndex == RecipesScope.All {
-//      if self.recipesFilter == RecipesFilter.ShowAll {
-//        self.recipes = self.fetchedRecipes
-//      } else {
-//        self.recipes = self.fetchedRecipes.filter({ recipe in
-//          return self.recipesFilter == self.recipeFilterFromRecipeDifficulty(recipe.difficulty)
-//        })
-//      }
-//    } else {
-//      if self.recipesFilter == RecipesFilter.ShowAll {
-//        self.recipes = self.fetchedRecipes.filter({ recipe in
-//          guard let favorite = recipe.favorite else {
-//            return false
-//          }
-//          return favorite
-//        })
-//      } else {
-//        self.recipes = self.fetchedRecipes.filter({ recipe in
-//          guard let favorite = recipe.favorite else {
-//            return false
-//          }
-//          return favorite && self.recipesFilter == self.recipeFilterFromRecipeDifficulty(recipe.difficulty)
-//        })
-//      }
-//    }
     self.collectionView.performBatchUpdates({
       self.collectionView.reloadSections(NSIndexSet(index: 0))
       }, completion: nil)
+  }
+  
+  // MARK: Status Bar
+  override func prefersStatusBarHidden() -> Bool {
+    return false
   }
   
   // MARK: IBAction
