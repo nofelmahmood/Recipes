@@ -97,23 +97,17 @@ class RecipesListViewController: UIViewController {
         self.navigationBarTitleButton.setTitle("Favorites", forState: .Normal)
         self.navigationBarTitleButton.userInteractionEnabled = false
         self.navigationBarTitleButton.setImage(nil, forState: .Normal)
-        self.recipes = self.recipes.filter({ recipe in
-          guard let favorite = recipe.favorite else {
-            return false
-          }
-          return favorite
-          
-        })
-        self.collectionView.reloadData()
       }
     }
-//    self.navigationController?.setNavigationBarHidden(true, animated: true)
-//    self.navigationController!.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: .Default)
-//    self.navigationController!.navigationBar.shadowImage = UIImage()
-//    self.navigationController!.navigationBar.translucent = true
-//    self.navigationController!.view.backgroundColor = UIColor.clearColor()
-//    self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
-//    self.edgesForExtendedLayout = .None
+    if self.recipesScope == RecipesScope.Favorites {
+      self.recipes = self.fetchedRecipes.filter({ recipe in
+        guard let favorite = recipe.favorite else {
+          return false
+        }
+        return favorite
+      })
+      self.collectionView.reloadData()
+    }
   }
   
   func prepareDataSource() {
