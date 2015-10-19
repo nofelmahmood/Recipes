@@ -19,7 +19,7 @@ extension RecipesListViewController: UIScrollViewDelegate {
         let offsetFromCenter = CGPointMake(boundsCenter.x - cellCenter.x, boundsCenter.y - cellCenter.y)
         let cellSize = cell.bounds.size
         let maxVerticalOffset = (bounds.size.height / 2) + (cellSize.height / 2)
-        let scaleFactor = 18.0 / maxVerticalOffset
+        let scaleFactor = 27.0 / maxVerticalOffset
         let parallaxOffset = CGPointMake(0.0, -offsetFromCenter.y * scaleFactor)
         (cell as? UICollectionViewCellParallax)?.updateWithParallaxOffset(parallaxOffset)
       }
