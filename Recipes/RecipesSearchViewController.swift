@@ -17,10 +17,6 @@ let RecipeSearchTableViewCellIdentifier = "RecipeSearchTableViewCell"
 // MARK: UISearchControllerDelegate
 extension RecipesSearchViewController: UISearchControllerDelegate {
   
-  func didPresentSearchController(searchController: UISearchController) {
-    self.searchController.searchBar.becomeFirstResponder()
-  }
-  
   func didDismissSearchController(searchController: UISearchController) {
     self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }
@@ -37,41 +33,42 @@ extension RecipesSearchViewController: UISearchResultsUpdating {
     guard let recipes = self.recipes else {
       return
     }
-    
-//    self.searchResults = recipes.filter({ (recipe) -> Bool in
-//      if recipe.name.rangeOfString(searchString, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil {
-//        return true
-//      }
-//      return false
-//    })
-    
+    self.searchResults = recipes.filter({ (recipe) -> Bool in
+      if recipe.name.rangeOfString(searchString, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil {
+        return true
+      }
+      return false
+    })
     self.tableView.reloadData()
-    
   }
 }
 
 // MARK: UITableViewDataSource
-//extension RecipesSearchViewController: UITableViewDataSource {
-//  func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-//    return 1
-//  }
-//  
-//  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//    return self.searchResults.count
-//  }
-//  
-//  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-//    let cell = tableView.dequeueReusableCellWithIdentifier(RecipeSearchTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeSearchTableViewCell
-//    let recipe = self.searchResults[indexPath.row]
-//    cell.nameLabel.text = recipe.name
-//    if let id = recipe.id?.intValue {
-//      if let photo = self.cachedImages[id] {
-//        cell.photoImageView.image = photo
-//      }
-//    }
-//    return cell
-//  }
-//}
+extension RecipesSearchViewController: UITableViewDataSource {
+  func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    return 1
+  }
+  
+  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return self.searchResults.count
+  }
+  
+  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    let cell = tableView.dequeueReusableCellWithIdentifier(RecipeSearchTableViewCellIdentifier, forIndexPath: indexPath) as! RecipeSearchTableViewCell
+    let recipe = self.searchResults[indexPath.row]
+    cell.nameLabel.text = recipe.name
+    recipe.photo({ photo in
+      if let photo = photo, let index = self.searchResults.indexOf(recipe) {
+        NSOperationQueue.mainQueue().addOperationWithBlock({
+          if let correspondingCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: index, inSection: 0)) as? RecipeSearchTableViewCell {
+            correspondingCell.photoImageView.image = photo
+          }
+        })
+      }
+    })
+    return cell
+  }
+}
 
 // MARK: UITableViewDelegate
 extension RecipesSearchViewController: UITableViewDelegate {
@@ -86,9 +83,8 @@ class RecipesSearchViewController: UIViewController {
   @IBOutlet var tableView: UITableView!
   let searchController = UISearchController(searchResultsController: nil)
   
-  var recipes: [Recipe]?
-  var searchResults = [Recipe]()
-  var cachedImages = [Int32: UIImage]()
+  var recipes: [RecipeViewModel]!
+  var searchResults = [RecipeViewModel]()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -99,14 +95,19 @@ class RecipesSearchViewController: UIViewController {
     searchController.dimsBackgroundDuringPresentation = false
     searchController.searchBar.sizeToFit()
     self.navigationItem.titleView = self.searchController.searchBar
-    self.searchController.searchBar.searchBarStyle = UISearchBarStyle.Prominent
+    self.searchController.searchBar.searchBarStyle = UISearchBarStyle.Minimal
     self.searchController.delegate = self
     self.searchController.searchBar.returnKeyType = UIReturnKeyType.Done
+    self.searchController.active = true
   }
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    self.searchController.active = true
+    self.performSelector("focusSearchBar", withObject: nil, afterDelay: 0.1)
+  }
+  
+  func focusSearchBar() {
+    self.searchController.searchBar.becomeFirstResponder()
   }
   
   override func viewWillAppear(animated: Bool) {
@@ -114,6 +115,7 @@ class RecipesSearchViewController: UIViewController {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
   }
+  
   override func viewWillDisappear(animated: Bool) {
     super.viewWillDisappear(animated)
     NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
