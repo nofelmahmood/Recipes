@@ -16,18 +16,34 @@ extension RecipeListCollectionViewCell: UICollectionViewCellParallax {
 
 class RecipeListCollectionViewCell: UICollectionViewCell {
   @IBOutlet var backgroundImageView: UIImageView!
+  @IBOutlet var favoriteButton: UIButton?
   @IBOutlet var nameLabel: UILabel!
   @IBOutlet var backgroundImageViewCenterYConstraint: NSLayoutConstraint!
   
-  func configureUsingRecipe(recipe: RecipeViewModel) {
+  private var recipeViewModel: RecipeViewModel!
+  
+  func configureUsingRecipe(recipe: RecipeViewModel, inScope scope: Int) {
+    if scope == RecipesScope.Favorites {
+      self.favoriteButton?.hidden = true
+    }
+    self.recipeViewModel = recipe
     self.nameLabel.text = recipe.name
-    if let photo = recipe.photo {
-      self.backgroundImageView.image = photo
+    if let favorite = recipe.favorite {
+      self.favoriteButton?.selected = favorite
     }
   }
   
   override func prepareForReuse() {
-//    self.backgroundImageView.image = UIImage(named: "ImagePlaceholder")
+    self.backgroundImageView.image = UIImage(named: "ImagePlaceholder")
     self.nameLabel.text = ""
+    self.favoriteButton?.selected = false
+    self.favoriteButton?.hidden = false
   }
+  
+  // MARK: IBAction
+  @IBAction func favoriteButtonDidPress(sender: UIButton) {
+    sender.selected = !sender.selected
+    self.recipeViewModel.favorite = sender.selected
+  }
+
 }
