@@ -37,8 +37,8 @@ class Recipe: NSManagedObject {
     recipe.specification = recipeApiModel.specification
     recipe.favorite = recipeApiModel.favorite
     recipe.difficulty = recipeApiModel.difficulty
-    recipe.photoURL = recipeApiModel.url
-    recipe.photoThumbnailURL = recipeApiModel.thumbnail_url
+    recipe.photoURL = recipeApiModel.photo.url
+    recipe.photoThumbnailURL = recipeApiModel.photo.thumbnail_url
     recipe.createdAt = recipeApiModel.created_at
     recipe.updatedAt = recipeApiModel.updated_at
     recipe.isNew = NSNumber(bool: false)
@@ -131,8 +131,8 @@ class Recipe: NSManagedObject {
     self.difficulty = apiModel.difficulty
     self.createdAt = apiModel.created_at
     self.updatedAt = apiModel.updated_at
-    self.photoThumbnailURL = apiModel.thumbnail_url
-    self.photoURL = apiModel.url
+    self.photoThumbnailURL = apiModel.photo.thumbnail_url
+    self.photoURL = apiModel.photo.url
   }
   
   func recordChange() {
