@@ -84,10 +84,10 @@ class RecipeDetailViewController: UIViewController {
     // Do any additional setup after loading the view.
     self.tabBarController?.tabBar.hidden = true
     self.tabBarController?.tabBar.frame = CGRectZero
-    let containerViewBottomConstraint = NSLayoutConstraint(item: self.containerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
-    self.view.addConstraint(containerViewBottomConstraint)
-    let containerViewHeightConstraint = NSLayoutConstraint(item: self.containerView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 50.0)
-    self.view.addConstraint(containerViewHeightConstraint)
+//    let containerViewBottomConstraint = NSLayoutConstraint(item: self.containerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+//    self.view.addConstraint(containerViewBottomConstraint)
+//    let containerViewHeightConstraint = NSLayoutConstraint(item: self.containerView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 50.0)
+//    self.view.addConstraint(containerViewHeightConstraint)
     self.view.layoutIfNeeded()
     self.setNavigationBarTransparent(true)
     self.collectionView.pagingEnabled = true
@@ -97,6 +97,8 @@ class RecipeDetailViewController: UIViewController {
   
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
     UIApplication.sharedApplication().statusBarHidden = true
     self.collectionView.layoutIfNeeded()
     let indexPath = NSIndexPath(forItem: self.selectedRecipeIndex, inSection: 0)
@@ -109,13 +111,52 @@ class RecipeDetailViewController: UIViewController {
     self.navigationController?.setNavigationBarHidden(false, animated: false)
   }
   
+  override func viewWillDisappear(animated: Bool) {
+    super.viewWillDisappear(animated)
+    NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+    NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+  }
+  
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
   }
   
+  func visibleRecipeCell() -> RecipeDetailCollectionViewCell {
+    return self.collectionView.visibleCells().first as! RecipeDetailCollectionViewCell
+  }
+  
+  func keyboardWillShow(notification: NSNotification) {
+    guard let userInfo = notification.userInfo else {
+      return
+    }
+    var keyboardFrame = userInfo["UIKeyboardFrameEndUserInfoKey"]!.CGRectValue
+    let cell = self.visibleRecipeCell()
+    keyboardFrame = cell.scrollView.convertRect(keyboardFrame, fromView: nil)
+    let intersect = CGRectIntersection(keyboardFrame, cell.scrollView.bounds)
+    if !CGRectIsNull(intersect) {
+      let duration = userInfo["UIKeyboardAnimationDurationUserInfoKey"]!.doubleValue
+      UIView.animateWithDuration(duration, animations: { () -> Void in
+        cell.scrollView.contentInset = UIEdgeInsetsMake(0, 0, intersect.size.height, 0)
+        cell.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, intersect.size.height, 0)
+      })
+    }
+  }
+  
+  func keyboardWillHide(notification: NSNotification) {
+    guard let userInfo = notification.userInfo else {
+      return
+    }
+    let duration = userInfo["UIKeyboardAnimationDurationUserInfoKey"]!.doubleValue
+    let cell = self.visibleRecipeCell()
+    UIView.animateWithDuration(duration) { () -> Void in
+      cell.scrollView.contentInset = UIEdgeInsetsZero
+      cell.scrollView.scrollIndicatorInsets = UIEdgeInsetsZero
+    }
+  }
+  
   func setNavigationBarTransparent(transparent: Bool) {
     if transparent {
-      if navigationController!.navigationBar.backgroundImageForBarMetrics(UIBarMetrics.Default) != nil {
+      if navigationController?.navigationBar.backgroundImageForBarMetrics(UIBarMetrics.Default) != nil {
         return
       }
       UIView.animateWithDuration(0.2, animations: {
