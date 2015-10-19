@@ -654,7 +654,7 @@
             </objects>
             <point key="canvasLocation" x="2134" y="-177"/>
         </scene>
-        <!--All-->
+        <!--Recipes-->
         <scene sceneID="pP7-AE-yq6">
             <objects>
                 <viewController id="3pm-LG-1OF" sceneMemberID="viewController">
@@ -687,7 +687,7 @@
                             </mask>
                         </variation>
                     </view>
-                    <tabBarItem key="tabBarItem" title="All" image="Recipes" selectedImage="RecipesSelected" id="Ssg-cm-FNC"/>
+                    <tabBarItem key="tabBarItem" title="Recipes" image="Recipes" selectedImage="RecipesSelected" id="Ssg-cm-FNC"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dUo-oa-0Q6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
