@@ -9,18 +9,21 @@
 import UIKit
 import QuartzCore
 
-
 class RecipeInstructionViewController: UIViewController {
   @IBOutlet var mainStackView: UIStackView!
   @IBOutlet var instructionTextView: UITextView!
   @IBOutlet var numberLabel: UILabel!
   @IBOutlet var numberLabelBackgroundView: UIView!
-  
+      
   override func viewDidLoad() {
     super.viewDidLoad()
     self.numberLabel.backgroundColor = UIColor.whiteColor()
     self.numberLabel.layer.cornerRadius = self.numberLabel.frame.size.width/2
     self.numberLabel.clipsToBounds = true
+  }
+  
+  override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
   }
   
   func setUpWithInstruction(instruction: String, number: Int) {
