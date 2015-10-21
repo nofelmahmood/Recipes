@@ -14,6 +14,38 @@ extension RecipeDetailCollectionViewCell: UIScrollViewDelegate {
   }
 }
 
+extension RecipeDetailCollectionViewCell: UITextViewDelegate {
+  func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+    if range.length <= 1 && text.isEmpty && textView.text.isEmpty {
+      self.removeInstructionView(withInstructionTextView: textView, shiftFocusToPrevious: true)
+      return false
+    }
+    if text == "\n" {
+      if textView.text.isEmpty {
+        return false
+      }
+      if let instructionViewController = self.instructionViewController(forTextView: textView) {
+        if var index = self.instructionsStackView.arrangedSubviews.indexOf(instructionViewController.mainStackView) {
+          index = index + 1
+          if index < self.instructionsStackView.arrangedSubviews.count {
+            self.addInstructionView("", number: self.instructionsStackView.arrangedSubviews.count + 1, focusOnTextView: true, atIndex: index)
+          } else {
+            self.addInstructionView("", number: self.instructionsStackView.arrangedSubviews.count + 1, focusOnTextView: true, atIndex: nil)
+          }
+        }
+      }
+      return false
+    }
+    return true
+  }
+  
+  func textViewDidEndEditing(textView: UITextView) {
+    if textView.text.isEmpty {
+      self.removeInstructionView(withInstructionTextView: textView, shiftFocusToPrevious: false)
+    }
+  }
+}
+
 class RecipeDetailCollectionViewCell: UICollectionViewCell {
   @IBOutlet var scrollView: UIScrollView!
   @IBOutlet var nameTextField: UITextField!
@@ -24,6 +56,7 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   @IBOutlet var mainStackView: UIStackView!
   @IBOutlet var instructionsStackView: UIStackView!
   
+  var instructionViewControllers = [RecipeInstructionViewController]()
   var scrollViewDidScroll: ((contentOffset: CGPoint) -> Void)?
   
   var storyboard: UIStoryboard {
@@ -32,6 +65,7 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   
   override func awakeFromNib() {
     self.scrollView.delegate = self
+    self.photoEditView.hidden = true
   }
   
   func configureCellWithRecipe(recipe: RecipeViewModel) {
@@ -42,13 +76,64 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
     if let instructions = recipe.instructions {
       var number = 1
       for instruction in instructions {
-        let instructionViewController = self.storyboard.instantiateViewControllerWithIdentifier("RecipeInstructionViewController") as! RecipeInstructionViewController
-        _ = instructionViewController.view
-        instructionViewController.setUpWithInstruction("\(instruction) danjd jasnd jasdnj ndjsna jdsan jndsaj njasdn jasdnj njd njsadnj njsdnajsdanjd sanjnds ajndsaj njsdanjsdajsdan jdsna jds anj dsanjds anjdasnjadsn jas dnjasdnjdas nj anj asdn sadjn adsjnads jnads jnads jndas jads nj dasnjadsnj dasnjdas n adsjndsa jndas jndas jndasj n adsjna dsjnasdjnda sjnd asjdna sjadns jdas njdasnjads nj dasnjads njads njads njads n adsjnad sjnads jnads jnads jnads jads njads njsad nasd jn adsjans djdas njd asjnads jnjad nsjndas jnd asjnads njads jnd sanj adsnjnjads jndas jnads jnda sjnads jnad sjndas jnd asjnadsj njn adsjnd asjnads jnads jndas njda nsjjnads njdas jn adsnjdas jnad sjnd asjnads jnad sjnads jnadsjn jnads jnads jnad sjnad sjnads jna dsjna dsjnad sjnjnads jnads jnads jn asjn adsjn dsajnasd jnasd jnas djn adsjnajdns jnads jnads jnads jnads jnas djnads jnjnads jnads jna ds", number: number)
-        self.instructionsStackView.addArrangedSubview(instructionViewController.mainStackView)
+        self.addInstructionView(instruction, number: number, focusOnTextView: false, atIndex: nil)
         number++
       }
     }
+  }
+  
+  func addInstructionView(instructionText: String, number: Int, focusOnTextView:Bool, atIndex index: Int?) {
+    let instructionViewController = self.storyboard.instantiateViewControllerWithIdentifier("RecipeInstructionViewController") as! RecipeInstructionViewController
+    _ = instructionViewController.view
+    self.instructionViewControllers.append(instructionViewController)
+    instructionViewController.setUpWithInstruction(instructionText, number: number)
+    instructionViewController.instructionTextView.delegate = self
+    UIView.animateWithDuration(0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.6, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+      if let index = index {
+        self.instructionsStackView.insertArrangedSubview(instructionViewController.mainStackView, atIndex: index)
+      } else {
+        self.instructionsStackView.addArrangedSubview(instructionViewController.mainStackView)
+      }
+      }, completion: { completed in
+        if focusOnTextView {
+          instructionViewController.instructionTextView.becomeFirstResponder()
+        }
+    })
+  }
+  
+  func removeInstructionView(withInstructionTextView textView: UITextView, shiftFocusToPrevious: Bool) {
+    if let instructionViewController = self.instructionViewController(forTextView: textView) {
+      let index = self.instructionsStackView.arrangedSubviews.indexOf(instructionViewController.mainStackView)
+      self.instructionsStackView.removeArrangedSubview(instructionViewController.mainStackView)
+      UIView.animateWithDuration(1.0, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.2, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+        instructionViewController.mainStackView.hidden = true
+        }, completion: { completed in
+          instructionViewController.mainStackView.removeFromSuperview()
+          if shiftFocusToPrevious {
+            if var index = index where self.instructionsStackView.arrangedSubviews.count != 0 {
+              index = index - 1
+              if index >= 0 {
+                let mainStackView = self.instructionsStackView.arrangedSubviews[index] as! UIStackView
+                if let previousInstructionViewController = self.instructionViewController(forMainStackView: mainStackView) {
+                  previousInstructionViewController.instructionTextView.becomeFirstResponder()
+                }
+              }
+            }
+          }
+      })
+    }
+  }
+  
+  func instructionViewController(forTextView textView: UITextView) -> RecipeInstructionViewController? {
+    return self.instructionViewControllers.filter({ viewController in
+      return viewController.instructionTextView == textView
+    }).first
+  }
+  
+  func instructionViewController(forMainStackView stackView: UIStackView) -> RecipeInstructionViewController? {
+    return self.instructionViewControllers.filter({ viewController in
+      return viewController.mainStackView == stackView
+    }).first
   }
   
   override func prepareForReuse() {
