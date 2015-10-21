@@ -67,6 +67,8 @@ class RecipeDetailViewController: UIViewController {
   
   @IBOutlet var collectionView: UICollectionView!
   @IBOutlet var containerView: UIView!
+  @IBOutlet var deleteBarButtonItem: UIBarButtonItem!
+  @IBOutlet var editBarButtonItem: UIBarButtonItem!
   
   var selectedRecipeIndex: Int!
   var recipes: [RecipeViewModel]!
@@ -84,10 +86,6 @@ class RecipeDetailViewController: UIViewController {
     // Do any additional setup after loading the view.
     self.tabBarController?.tabBar.hidden = true
     self.tabBarController?.tabBar.frame = CGRectZero
-//    let containerViewBottomConstraint = NSLayoutConstraint(item: self.containerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
-//    self.view.addConstraint(containerViewBottomConstraint)
-//    let containerViewHeightConstraint = NSLayoutConstraint(item: self.containerView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 50.0)
-//    self.view.addConstraint(containerViewHeightConstraint)
     self.view.layoutIfNeeded()
     self.setNavigationBarTransparent(true)
     self.collectionView.pagingEnabled = true
@@ -198,11 +196,35 @@ class RecipeDetailViewController: UIViewController {
     }
   }
   
+  override func setEditing(editing: Bool, animated: Bool) {
+    super.setEditing(editing, animated: animated)
+    if editing {
+      self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonDidPress:")
+      self.navigationItem.rightBarButtonItems?.removeLast()
+      self.navigationItem.setHidesBackButton(true, animated: true)
+      self.collectionView.scrollEnabled = false
+    } else {
+      self.navigationItem.rightBarButtonItem = self.editBarButtonItem
+      self.navigationItem.rightBarButtonItems?.append(self.deleteBarButtonItem)
+      self.navigationItem.setHidesBackButton(false, animated: true)
+      self.collectionView.scrollEnabled = true
+    }
+  }
+  
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
   }
   
+  // MARK: IBAction
+  @IBAction func editButtonDidPress(sender: AnyObject) {
+    self.setEditing(true, animated: true)
+  }
+  
+  @IBAction func doneButtonDidPress(sender: AnyObject) {
+    self.setEditing(false, animated: true)
+  }
+
   // MARK: Status Bar
   override func prefersStatusBarHidden() -> Bool {
     return true
