@@ -209,6 +209,9 @@ class RecipeDetailViewController: UIViewController {
       self.navigationItem.setHidesBackButton(false, animated: true)
       self.collectionView.scrollEnabled = true
     }
+    if let cell = self.collectionView.visibleCells().first as? RecipeDetailCollectionViewCell {
+      cell.editing = editing
+    }
   }
   
   override func didReceiveMemoryWarning() {
