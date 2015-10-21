@@ -28,9 +28,9 @@ extension RecipeDetailCollectionViewCell: UITextViewDelegate {
         if var index = self.instructionsStackView.arrangedSubviews.indexOf(instructionViewController.mainStackView) {
           index = index + 1
           if index < self.instructionsStackView.arrangedSubviews.count {
-            self.addInstructionView("", number: self.instructionsStackView.arrangedSubviews.count + 1, focusOnTextView: true, atIndex: index)
+            self.addInstructionView("", focusOnTextView: true, atIndex: index)
           } else {
-            self.addInstructionView("", number: self.instructionsStackView.arrangedSubviews.count + 1, focusOnTextView: true, atIndex: nil)
+            self.addInstructionView("", focusOnTextView: true, atIndex: nil)
           }
         }
       }
@@ -55,6 +55,33 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   @IBOutlet var backgroundImageView: UIImageView!
   @IBOutlet var mainStackView: UIStackView!
   @IBOutlet var instructionsStackView: UIStackView!
+  var editing = false {
+    didSet {
+      if editing {
+        self.nameTextField.userInteractionEnabled = true
+        self.photoImageView.hidden = true
+        self.photoEditView.hidden = false
+        self.descriptionTextView.editable = true
+        for instructionViewController in self.instructionViewControllers {
+          instructionViewController.instructionTextView.editable = true
+        }
+        UIView.animateWithDuration(1.0, animations: {
+          self.mainStackView.layoutIfNeeded()
+        })
+      } else {
+        self.nameTextField.userInteractionEnabled = false
+        self.photoImageView.hidden = false
+        self.photoEditView.hidden = true
+        self.descriptionTextView.editable = false
+        for instructionViewController in self.instructionViewControllers {
+          instructionViewController.instructionTextView.editable = false
+        }
+        UIView.animateWithDuration(1.0, animations: {
+          self.mainStackView.layoutIfNeeded()
+        })
+      }
+    }
+  }
   
   var instructionViewControllers = [RecipeInstructionViewController]()
   var scrollViewDidScroll: ((contentOffset: CGPoint) -> Void)?
@@ -66,6 +93,7 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   override func awakeFromNib() {
     self.scrollView.delegate = self
     self.photoEditView.hidden = true
+    self.editing = false
   }
   
   func configureCellWithRecipe(recipe: RecipeViewModel) {
@@ -74,25 +102,24 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
       self.descriptionTextView.text = specification
     }
     if let instructions = recipe.instructions {
-      var number = 1
       for instruction in instructions {
-        self.addInstructionView(instruction, number: number, focusOnTextView: false, atIndex: nil)
-        number++
+        self.addInstructionView(instruction, focusOnTextView: false, atIndex: nil)
       }
     }
   }
-  
-  func addInstructionView(instructionText: String, number: Int, focusOnTextView:Bool, atIndex index: Int?) {
+
+  func addInstructionView(instructionText: String, focusOnTextView:Bool, atIndex index: Int?) {
     let instructionViewController = self.storyboard.instantiateViewControllerWithIdentifier("RecipeInstructionViewController") as! RecipeInstructionViewController
     _ = instructionViewController.view
     self.instructionViewControllers.append(instructionViewController)
-    instructionViewController.setUpWithInstruction(instructionText, number: number)
     instructionViewController.instructionTextView.delegate = self
     UIView.animateWithDuration(0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.6, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
       if let index = index {
+        instructionViewController.setUpWithInstruction(instructionText, number: index)
         self.instructionsStackView.insertArrangedSubview(instructionViewController.mainStackView, atIndex: index)
       } else {
         self.instructionsStackView.addArrangedSubview(instructionViewController.mainStackView)
+        instructionViewController.setUpWithInstruction(instructionText, number: self.instructionsStackView.arrangedSubviews.count)
       }
       }, completion: { completed in
         if focusOnTextView {
