@@ -424,7 +424,7 @@
                                                                 <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="TIy-cL-3Ju">
                                                                     <rect key="frame" x="0.0" y="1160" width="600" height="32"/>
                                                                     <subviews>
-                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text=" Steps" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ts0-6z-w82">
+                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" Steps" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ts0-6z-w82">
                                                                             <rect key="frame" x="0.0" y="0.0" width="600" height="32"/>
                                                                             <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="23"/>
                                                                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -481,19 +481,25 @@
                                     <outlet property="delegate" destination="KBO-P8-UaC" id="MLv-UI-LaK"/>
                                 </connections>
                             </collectionView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WMV-MN-btZ">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem image="HeartFilled" id="rBY-eb-SJm"/>
+                                </items>
+                            </toolbar>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lwg-it-Tsd">
                                 <rect key="frame" x="0.0" y="506" width="600" height="94"/>
-                                <connections>
-                                    <segue destination="z3R-l6-nk4" kind="embed" id="tgR-Td-ZQC"/>
-                                </connections>
                             </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="VIu-5R-Ycw" firstAttribute="top" secondItem="WMV-MN-btZ" secondAttribute="bottom" id="6FL-xD-mBW"/>
                             <constraint firstItem="Lwg-it-Tsd" firstAttribute="leading" secondItem="MSS-NQ-Igt" secondAttribute="leading" id="7zC-rC-ajA"/>
+                            <constraint firstAttribute="trailing" secondItem="WMV-MN-btZ" secondAttribute="trailing" id="8dv-CF-Xda"/>
                             <constraint firstItem="agn-ry-qzC" firstAttribute="leading" secondItem="MSS-NQ-Igt" secondAttribute="leading" id="AWz-Z8-W1H"/>
                             <constraint firstAttribute="trailing" secondItem="Lwg-it-Tsd" secondAttribute="trailing" id="DcJ-Dv-B6b"/>
                             <constraint firstAttribute="trailing" secondItem="agn-ry-qzC" secondAttribute="trailing" id="TLN-1H-DlR"/>
+                            <constraint firstItem="WMV-MN-btZ" firstAttribute="leading" secondItem="MSS-NQ-Igt" secondAttribute="leading" id="bDM-jc-Ijm"/>
                             <constraint firstItem="agn-ry-qzC" firstAttribute="top" secondItem="MSS-NQ-Igt" secondAttribute="top" id="cNe-Ur-v3R"/>
                             <constraint firstItem="Lwg-it-Tsd" firstAttribute="top" secondItem="agn-ry-qzC" secondAttribute="bottom" id="j7f-Hk-TZJ"/>
                             <constraint firstItem="VIu-5R-Ycw" firstAttribute="top" secondItem="agn-ry-qzC" secondAttribute="bottom" id="mY2-Mh-UdV"/>
@@ -515,7 +521,7 @@
                             <barButtonItem systemItem="compose" id="gzy-zQ-wM8">
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <action selector="didPressBarButtonItem:" destination="KBO-P8-UaC" id="3Ko-Eo-JJ4"/>
+                                    <action selector="editButtonDidPress:" destination="KBO-P8-UaC" id="qLE-0z-j3q"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem systemItem="trash" id="EcA-mO-Yue">
@@ -526,13 +532,35 @@
                             </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
-                    <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="collectionView" destination="agn-ry-qzC" id="ten-Bu-Xuu"/>
                         <outlet property="containerView" destination="Lwg-it-Tsd" id="hds-hd-YAV"/>
+                        <outlet property="deleteBarButtonItem" destination="EcA-mO-Yue" id="1wj-FQ-nxY"/>
+                        <outlet property="editBarButtonItem" destination="gzy-zQ-wM8" id="ghS-UY-5xu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RgQ-qt-S5D" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="uxk-a9-0Q0">
+                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <visualEffectView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J7n-MA-7z3">
+                            <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" id="3Qs-f7-xL2">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S4K-TY-1Zl">
+                                        <rect key="frame" x="97" y="44" width="46" height="30"/>
+                                        <state key="normal" title="Button"/>
+                                    </button>
+                                </subviews>
+                            </view>
+                            <blurEffect style="light"/>
+                        </visualEffectView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
             </objects>
             <point key="canvasLocation" x="4404" y="-327"/>
         </scene>
@@ -626,7 +654,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WXT-L5-cu3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5026" y="-587"/>
+            <point key="canvasLocation" x="4903" y="-768"/>
         </scene>
         <!--All-->
         <scene sceneID="O0g-AG-Xge">
