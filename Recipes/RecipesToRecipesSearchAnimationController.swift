@@ -15,7 +15,6 @@ extension RecipesToRecipesSearchAnimationController: UIViewControllerAnimatedTra
   
   func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
     if (transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as? UINavigationController)?.topViewController is RecipesSearchViewController {
-      let fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)!
       let toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)!
       let containerView = transitionContext.containerView()
       (toViewController as? UINavigationController)?.setNavigationBarHidden(true, animated: true)
