@@ -67,6 +67,7 @@ class RecipeDetailViewController: UIViewController {
   
   @IBOutlet var collectionView: UICollectionView!
   @IBOutlet var containerView: UIView!
+  @IBOutlet var containerViewHeightConstraint: NSLayoutConstraint!
   @IBOutlet var deleteBarButtonItem: UIBarButtonItem!
   @IBOutlet var editBarButtonItem: UIBarButtonItem!
   
@@ -100,13 +101,23 @@ class RecipeDetailViewController: UIViewController {
     UIApplication.sharedApplication().statusBarHidden = true
     self.collectionView.layoutIfNeeded()
     let indexPath = NSIndexPath(forItem: self.selectedRecipeIndex, inSection: 0)
-    self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: UICollectionViewScrollPosition.CenteredHorizontally, animated: false)    
+    self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: UICollectionViewScrollPosition.CenteredHorizontally, animated: false)
+//    if let cell = self.collectionView.visibleCells().first as? RecipeDetailCollectionViewCell {
+//      let arrangedSubviews = cell.mainStackView.arrangedSubviews.suffixFrom(1)
+//      for view in arrangedSubviews {
+//        view.hidden = true
+//      }
+//      cell.mainStackView.layoutIfNeeded()
+//    }
+//    self.containerViewHeightConstraint.constant = 0
+//    self.containerView.layoutIfNeeded()
   }
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     self.navigationController?.hidesBarsOnSwipe = false
     self.navigationController?.setNavigationBarHidden(false, animated: false)
+    
   }
   
   override func viewWillDisappear(animated: Bool) {
