@@ -32,6 +32,12 @@ extension RecipesListViewController: UIPopoverPresentationControllerDelegate {
   }
 }
 
+extension RecipesListViewController: UINavigationControllerDelegate {
+  func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    return self.toRecipeDetailViewControllerTransition
+  }
+}
+
 extension RecipesListViewController: UIViewControllerTransitioningDelegate {
   func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
     return self.toRecipesSearchViewControllerTransition
@@ -55,6 +61,7 @@ class RecipesListViewController: UIViewController {
   @IBOutlet var navigationBarTitleButton: UIButton!
   
   var toRecipesSearchViewControllerTransition: RecipesToRecipesSearchAnimationController!
+  var toRecipeDetailViewControllerTransition: RecipesToRecipeDetailViewAnimationController!
   var recipesFilter = RecipesFilter.ShowAll
   var recipes: [RecipeViewModel] = [RecipeViewModel]()
   var fetchedRecipes: [RecipeViewModel] = [RecipeViewModel]()
@@ -73,8 +80,10 @@ class RecipesListViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
+    self.navigationController?.delegate = self
     self.tabBarFrame = self.tabBarController!.tabBar.frame
     self.toRecipesSearchViewControllerTransition = RecipesToRecipesSearchAnimationController()
+    self.toRecipeDetailViewControllerTransition = RecipesToRecipeDetailViewAnimationController()
     self.prepareDataSource()
     self.collectionView.reloadData()
   }
