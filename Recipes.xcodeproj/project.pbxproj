@@ -28,7 +28,7 @@
 		3E993C411BB95CA700065E85 /* NSManagedObjectContext+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E993C401BB95CA700065E85 /* NSManagedObjectContext+Helper.swift */; settings = {ASSET_TAGS = (); }; };
 		3E9A27C51BD7990F009E3058 /* RecipeInstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9A27C41BD7990F009E3058 /* RecipeInstructionView.swift */; settings = {ASSET_TAGS = (); }; };
 		3E9A27C81BD79929009E3058 /* RecipeInstructionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E9A27C71BD79929009E3058 /* RecipeInstructionView.xib */; settings = {ASSET_TAGS = (); }; };
-		3E9A27CA1BD7A805009E3058 /* RecipesToRecipeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9A27C91BD7A805009E3058 /* RecipesToRecipeDetailViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		3E9A27CA1BD7A805009E3058 /* RecipesToRecipeDetailViewAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9A27C91BD7A805009E3058 /* RecipesToRecipeDetailViewAnimationController.swift */; settings = {ASSET_TAGS = (); }; };
 		3EA005DB1BAACCB900FB43C8 /* CoreSpotlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA005DA1BAACCB900FB43C8 /* CoreSpotlight.framework */; };
 		3EA8AE141BBA74A7005A4D68 /* RecipeApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8D06DC1B9DE99F00F5D56D /* RecipeApi.swift */; settings = {ASSET_TAGS = (); }; };
 		3EA8AE161BBA99A2005A4D68 /* RecipesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA8AE151BBA99A2005A4D68 /* RecipesListViewController.swift */; settings = {ASSET_TAGS = (); }; };
@@ -93,7 +93,7 @@
 		3E993C401BB95CA700065E85 /* NSManagedObjectContext+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Helper.swift"; sourceTree = "<group>"; };
 		3E9A27C41BD7990F009E3058 /* RecipeInstructionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeInstructionView.swift; sourceTree = "<group>"; };
 		3E9A27C71BD79929009E3058 /* RecipeInstructionView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RecipeInstructionView.xib; sourceTree = "<group>"; };
-		3E9A27C91BD7A805009E3058 /* RecipesToRecipeDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesToRecipeDetailViewController.swift; sourceTree = "<group>"; };
+		3E9A27C91BD7A805009E3058 /* RecipesToRecipeDetailViewAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesToRecipeDetailViewAnimationController.swift; sourceTree = "<group>"; };
 		3EA005DA1BAACCB900FB43C8 /* CoreSpotlight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreSpotlight.framework; path = System/Library/Frameworks/CoreSpotlight.framework; sourceTree = SDKROOT; };
 		3EA8AE151BBA99A2005A4D68 /* RecipesListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesListViewController.swift; sourceTree = "<group>"; };
 		3EA8AE191BBA9D52005A4D68 /* RecipeListCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeListCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -249,7 +249,7 @@
 			isa = PBXGroup;
 			children = (
 				3E6BAD561BC4EDA200086895 /* RecipesToRecipesSearchAnimationController.swift */,
-				3E9A27C91BD7A805009E3058 /* RecipesToRecipeDetailViewController.swift */,
+				3E9A27C91BD7A805009E3058 /* RecipesToRecipeDetailViewAnimationController.swift */,
 			);
 			name = Transitions;
 			sourceTree = "<group>";
@@ -573,7 +573,7 @@
 				3EA8AE1D1BBAA057005A4D68 /* RecipesListViewController+UICollectionViewDataSource.swift in Sources */,
 				3E7D61801B9417F800A8386E /* RecipesSearchViewController.swift in Sources */,
 				3E9A27C51BD7990F009E3058 /* RecipeInstructionView.swift in Sources */,
-				3E9A27CA1BD7A805009E3058 /* RecipesToRecipeDetailViewController.swift in Sources */,
+				3E9A27CA1BD7A805009E3058 /* RecipesToRecipeDetailViewAnimationController.swift in Sources */,
 				3EA8AE441BBBC630005A4D68 /* RecipesListViewController+UIScrollView.swift in Sources */,
 				3E060D431B95988400C71B5F /* AppDefaults.swift in Sources */,
 				3E10E3581B91EC1D00AA3F52 /* AppDelegate.swift in Sources */,
