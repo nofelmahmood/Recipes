@@ -55,6 +55,7 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   @IBOutlet var backgroundImageView: UIImageView!
   @IBOutlet var mainStackView: UIStackView!
   @IBOutlet var instructionsStackView: UIStackView!
+  var animateEditingChange = false
   var editing = false {
     didSet {
       if editing {
@@ -65,9 +66,13 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
         for instructionViewController in self.instructionViewControllers {
           instructionViewController.instructionTextView.editable = true
         }
-        UIView.animateWithDuration(1.0, animations: {
+        if self.animateEditingChange {
+          UIView.animateWithDuration(1.0, animations: {
+            self.mainStackView.layoutIfNeeded()
+          })
+        } else {
           self.mainStackView.layoutIfNeeded()
-        })
+        }
       } else {
         self.nameTextField.userInteractionEnabled = false
         self.photoImageView.hidden = false
@@ -76,9 +81,13 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
         for instructionViewController in self.instructionViewControllers {
           instructionViewController.instructionTextView.editable = false
         }
-        UIView.animateWithDuration(1.0, animations: {
+        if animateEditingChange {
+          UIView.animateWithDuration(1.0, animations: {
+            self.mainStackView.layoutIfNeeded()
+          })
+        } else {
           self.mainStackView.layoutIfNeeded()
-        })
+        }
       }
     }
   }
@@ -107,7 +116,7 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
       }
     }
   }
-
+  
   func addInstructionView(instructionText: String, focusOnTextView:Bool, atIndex index: Int?) {
     let instructionViewController = self.storyboard.instantiateViewControllerWithIdentifier("RecipeInstructionViewController") as! RecipeInstructionViewController
     _ = instructionViewController.view
@@ -166,6 +175,7 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   override func prepareForReuse() {
     self.scrollView.contentOffset = CGPoint(x: 0, y: 0)
     self.photoEditView.hidden = true
+    self.editing = false
     for view in self.instructionsStackView.subviews {
       view.removeFromSuperview()
     }
