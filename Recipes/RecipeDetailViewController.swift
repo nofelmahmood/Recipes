@@ -102,15 +102,6 @@ class RecipeDetailViewController: UIViewController {
     self.collectionView.layoutIfNeeded()
     let indexPath = NSIndexPath(forItem: self.selectedRecipeIndex, inSection: 0)
     self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: UICollectionViewScrollPosition.CenteredHorizontally, animated: false)
-//    if let cell = self.collectionView.visibleCells().first as? RecipeDetailCollectionViewCell {
-//      let arrangedSubviews = cell.mainStackView.arrangedSubviews.suffixFrom(1)
-//      for view in arrangedSubviews {
-//        view.hidden = true
-//      }
-//      cell.mainStackView.layoutIfNeeded()
-//    }
-//    self.containerViewHeightConstraint.constant = 0
-//    self.containerView.layoutIfNeeded()
   }
   
   override func viewDidAppear(animated: Bool) {
