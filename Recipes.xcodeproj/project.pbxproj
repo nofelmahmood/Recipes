@@ -15,7 +15,6 @@
 		3E10E3621B91EC1D00AA3F52 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E10E3611B91EC1D00AA3F52 /* Assets.xcassets */; };
 		3E10E3651B91EC1D00AA3F52 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E10E3631B91EC1D00AA3F52 /* LaunchScreen.storyboard */; };
 		3E2E5F921BB1A1E2008A24B1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2E5F911BB1A1E2008A24B1 /* QuartzCore.framework */; };
-		3E3B370D1BCF7E9A00215157 /* RecipeInstructionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3B370C1BCF7E9A00215157 /* RecipeInstructionViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		3E3B37111BCFE51900215157 /* RecipesSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3B37101BCFE51900215157 /* RecipesSelectorViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		3E3B37151BCFE5BF00215157 /* RecipePhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3B37141BCFE5BF00215157 /* RecipePhotoCollectionViewCell.swift */; settings = {ASSET_TAGS = (); }; };
 		3E3FCB011BA4B130001B38FD /* RecipeApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E3FCB001BA4B130001B38FD /* RecipeApiModel.swift */; settings = {ASSET_TAGS = (); }; };
@@ -79,7 +78,6 @@
 		3E10E36B1B91EC1D00AA3F52 /* RecipesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecipesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E10E3711B91EC1D00AA3F52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E2E5F911BB1A1E2008A24B1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		3E3B370C1BCF7E9A00215157 /* RecipeInstructionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeInstructionViewController.swift; sourceTree = "<group>"; };
 		3E3B37101BCFE51900215157 /* RecipesSelectorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipesSelectorViewController.swift; sourceTree = "<group>"; };
 		3E3B37141BCFE5BF00215157 /* RecipePhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipePhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		3E3FCB001BA4B130001B38FD /* RecipeApiModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeApiModel.swift; sourceTree = "<group>"; };
@@ -278,7 +276,6 @@
 			children = (
 				3E9A27C61BD79915009E3058 /* RecipeInstructionView */,
 				3E3B37121BCFE56300215157 /* RecipesSelectorViewController */,
-				3E3B370C1BCF7E9A00215157 /* RecipeInstructionViewController.swift */,
 				3EB69B911BCB818C0099F42C /* CustomCells */,
 				3EB69B8F1BCB7F7D0099F42C /* RecipeDetailViewController.swift */,
 			);
@@ -582,7 +579,6 @@
 				3E060D451B95DD0500C71B5F /* UIImage+Helper.swift in Sources */,
 				3EA8AE1A1BBA9D52005A4D68 /* RecipeListCollectionViewCell.swift in Sources */,
 				3E993C411BB95CA700065E85 /* NSManagedObjectContext+Helper.swift in Sources */,
-				3E3B370D1BCF7E9A00215157 /* RecipeInstructionViewController.swift in Sources */,
 				3E930A231BA1BC5900FF8B86 /* CoreDataStack.swift in Sources */,
 				3EB69B901BCB7F7D0099F42C /* RecipeDetailViewController.swift in Sources */,
 				3EA9EDD21BBA664C00D388E1 /* SyncManager.swift in Sources */,

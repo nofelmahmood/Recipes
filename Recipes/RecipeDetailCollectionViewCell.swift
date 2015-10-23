@@ -25,8 +25,8 @@ extension RecipeDetailCollectionViewCell: UITextViewDelegate {
       if textView.text.isEmpty {
         return false
       }
-      if let instructionViewController = self.instructionViewController(forTextView: textView) {
-        if var index = self.instructionsStackView.arrangedSubviews.indexOf(instructionViewController.mainStackView) {
+      if let instructionView = textView.superview?.superview?.superview as? RecipeInstructionView {
+        if var index = self.instructionsStackView.arrangedSubviews.indexOf(instructionView) {
           index = index + 1
           if index < self.instructionsStackView.arrangedSubviews.count {
             self.addInstructionView("", focusOnTextView: true, atIndex: index)
@@ -69,8 +69,10 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
         self.photoImageView.removeFromSuperview()
         self.photoEditButton.hidden = false
         self.descriptionTextView.editable = true
-        for instructionViewController in self.instructionViewControllers {
-          instructionViewController.instructionTextView.editable = true
+        for instructionView in self.instructionsStackView.arrangedSubviews {
+          if let instructionView = instructionView as? RecipeInstructionView {
+            instructionView.instructionTextView.editable = true
+          }
         }
         if self.animateEditingChange {
           UIView.animateWithDuration(1.0, animations: {
@@ -85,8 +87,10 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
         self.mainStackView.removeArrangedSubview(self.photoEditButton)
         self.photoEditButton.removeFromSuperview()
         self.descriptionTextView.editable = false
-        for instructionViewController in self.instructionViewControllers {
-          instructionViewController.instructionTextView.editable = false
+        for instructionView in self.instructionsStackView.arrangedSubviews {
+          if let instructionView = instructionView as? RecipeInstructionView {
+            instructionView.instructionTextView.editable = false
+          }
         }
         if animateEditingChange {
           UIView.animateWithDuration(1.0, animations: {
@@ -99,7 +103,6 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
     }
   }
   
-  var instructionViewControllers = [RecipeInstructionViewController]()
   var scrollViewDidScroll: ((contentOffset: CGPoint) -> Void)?
   
   var storyboard: UIStoryboard {
@@ -126,59 +129,55 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
     }
   }
   
-  func addInstructionView(instructionText: String, focusOnTextView:Bool, atIndex index: Int?) {
-    let instructionViewController = self.storyboard.instantiateViewControllerWithIdentifier("RecipeInstructionViewController") as! RecipeInstructionViewController
-    _ = instructionViewController.view
-    self.instructionViewControllers.append(instructionViewController)
-    instructionViewController.instructionTextView.delegate = self
-    UIView.animateWithDuration(0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.6, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
-      if let index = index {
-        instructionViewController.setUpWithInstruction(instructionText, number: index)
-        self.instructionsStackView.insertArrangedSubview(instructionViewController.mainStackView, atIndex: index)
-      } else {
-        self.instructionsStackView.addArrangedSubview(instructionViewController.mainStackView)
-        instructionViewController.setUpWithInstruction(instructionText, number: self.instructionsStackView.arrangedSubviews.count)
+  func refreshInstructionsNumbering() {
+    for instructionView in self.instructionsStackView.arrangedSubviews {
+      if let instructionView = instructionView as? RecipeInstructionView {
+        instructionView.numberLabel.text = "\((self.instructionsStackView.arrangedSubviews.indexOf(instructionView)!) + 1)"
       }
-      }, completion: { completed in
-        if focusOnTextView {
-          instructionViewController.instructionTextView.becomeFirstResponder()
+    }
+  }
+  
+  func addInstructionView(instructionText: String, focusOnTextView: Bool, atIndex index: Int?) {
+    if let instructionView = RecipeInstructionView.view {
+      instructionView.instructionTextView.delegate = self
+      UIView.animateWithDuration(0.5, animations: {
+        if let index = index {
+          instructionView.setUpWithInstruction(instructionText, number: index)
+          self.instructionsStackView.insertArrangedSubview(instructionView, atIndex: index)
+        } else {
+          self.instructionsStackView.addArrangedSubview(instructionView)
+          instructionView.setUpWithInstruction(instructionText, number: self.instructionsStackView.arrangedSubviews.count)
         }
-    })
+        self.refreshInstructionsNumbering()
+        }, completion: { completed in
+          if focusOnTextView {
+            instructionView.instructionTextView.becomeFirstResponder()
+          }
+      })
+    }
   }
   
   func removeInstructionView(withInstructionTextView textView: UITextView, shiftFocusToPrevious: Bool) {
-    if let instructionViewController = self.instructionViewController(forTextView: textView) {
-      let index = self.instructionsStackView.arrangedSubviews.indexOf(instructionViewController.mainStackView)
-      self.instructionsStackView.removeArrangedSubview(instructionViewController.mainStackView)
-      UIView.animateWithDuration(1.0, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.2, options: UIViewAnimationOptions.CurveEaseInOut, animations: {
-        instructionViewController.mainStackView.hidden = true
+    if let instructionView = textView.superview?.superview?.superview as? RecipeInstructionView {
+      let index = self.instructionsStackView.arrangedSubviews.indexOf(instructionView)
+      self.instructionsStackView.removeArrangedSubview(instructionView)
+      UIView.animateWithDuration(0.5, animations: {
+        instructionView.hidden = true
+        self.refreshInstructionsNumbering()
         }, completion: { completed in
-          instructionViewController.mainStackView.removeFromSuperview()
+          instructionView.removeFromSuperview()
           if shiftFocusToPrevious {
             if var index = index where self.instructionsStackView.arrangedSubviews.count != 0 {
               index = index - 1
               if index >= 0 {
-                let mainStackView = self.instructionsStackView.arrangedSubviews[index] as! UIStackView
-                if let previousInstructionViewController = self.instructionViewController(forMainStackView: mainStackView) {
-                  previousInstructionViewController.instructionTextView.becomeFirstResponder()
+                if let previousInstructionView = self.instructionsStackView.arrangedSubviews[index] as? RecipeInstructionView {
+                  previousInstructionView.instructionTextView.becomeFirstResponder()
                 }
               }
             }
           }
       })
     }
-  }
-  
-  func instructionViewController(forTextView textView: UITextView) -> RecipeInstructionViewController? {
-    return self.instructionViewControllers.filter({ viewController in
-      return viewController.instructionTextView == textView
-    }).first
-  }
-  
-  func instructionViewController(forMainStackView stackView: UIStackView) -> RecipeInstructionViewController? {
-    return self.instructionViewControllers.filter({ viewController in
-      return viewController.mainStackView == stackView
-    }).first
   }
   
   override func prepareForReuse() {
