@@ -347,7 +347,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" keyboardDismissMode="onDrag" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="agn-ry-qzC">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="hNH-U4-q44">
                                     <size key="itemSize" width="600" height="500"/>
@@ -357,7 +357,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.94999999999999996" contentMode="center" reuseIdentifier="RecipeDetailCollectionViewCell" id="CEb-8b-21V" customClass="RecipeDetailCollectionViewCell" customModule="Recipes" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="600" height="500"/>
+                                        <rect key="frame" x="0.0" y="50" width="600" height="500"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="500"/>
@@ -378,56 +378,43 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="600" height="500"/>
                                                     <subviews>
                                                         <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="dbO-Fh-BNQ">
-                                                            <rect key="frame" x="0.0" y="0.0" width="600" height="792"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="600" height="1252"/>
                                                             <subviews>
-                                                                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xzg-kx-K2S">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="600" height="0.0"/>
-                                                                    <subviews>
-                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aPK-Wb-sn9">
-                                                                            <rect key="frame" x="267" y="-26" width="67" height="52"/>
-                                                                            <state key="normal" image="Photo"/>
-                                                                        </button>
-                                                                    </subviews>
-                                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                                    <constraints>
-                                                                        <constraint firstItem="aPK-Wb-sn9" firstAttribute="centerX" secondItem="Xzg-kx-K2S" secondAttribute="centerX" id="Gnz-xe-4F8"/>
-                                                                        <constraint firstAttribute="width" secondItem="Xzg-kx-K2S" secondAttribute="height" multiplier="2:1.5" id="fuQ-iu-2ev"/>
-                                                                        <constraint firstItem="aPK-Wb-sn9" firstAttribute="centerY" secondItem="Xzg-kx-K2S" secondAttribute="centerY" id="hcY-6C-zv2"/>
-                                                                    </constraints>
-                                                                    <variation key="default">
-                                                                        <mask key="constraints">
-                                                                            <exclude reference="fuQ-iu-2ev"/>
-                                                                        </mask>
-                                                                    </variation>
-                                                                </view>
-                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nPf-TY-cnB">
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aPK-Wb-sn9">
                                                                     <rect key="frame" x="0.0" y="0.0" width="600" height="450"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" secondItem="aPK-Wb-sn9" secondAttribute="height" multiplier="2:1.5" id="tly-w8-3vo"/>
+                                                                    </constraints>
+                                                                    <state key="normal" image="Photo"/>
+                                                                </button>
+                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nPf-TY-cnB">
+                                                                    <rect key="frame" x="0.0" y="460" width="600" height="450"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" secondItem="nPf-TY-cnB" secondAttribute="height" multiplier="2:1.5" id="pr0-WG-gVh"/>
                                                                     </constraints>
                                                                 </imageView>
                                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Chocolate Home Backed Cake" placeholder="Recipe Name" textAlignment="center" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="DqG-sB-2y8">
-                                                                    <rect key="frame" x="0.0" y="460" width="600" height="40"/>
+                                                                    <rect key="frame" x="0.0" y="920" width="600" height="40"/>
                                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                                     <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="29"/>
                                                                     <textInputTraits key="textInputTraits"/>
                                                                 </textField>
                                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="zmm-mc-tEH">
-                                                                    <rect key="frame" x="0.0" y="510" width="600" height="169"/>
+                                                                    <rect key="frame" x="0.0" y="970" width="600" height="169"/>
                                                                     <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                                     <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="16"/>
                                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                                 </textView>
                                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k7U-EW-eGq">
-                                                                    <rect key="frame" x="0.0" y="689" width="600" height="1"/>
+                                                                    <rect key="frame" x="0.0" y="1149" width="600" height="1"/>
                                                                     <color key="backgroundColor" white="0.66666666666666663" alpha="0.5" colorSpace="calibratedWhite"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="1" id="XAS-hH-Sdm"/>
                                                                     </constraints>
                                                                 </view>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="TIy-cL-3Ju">
-                                                                    <rect key="frame" x="0.0" y="700" width="600" height="32"/>
+                                                                    <rect key="frame" x="0.0" y="1160" width="600" height="32"/>
                                                                     <subviews>
                                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" Steps" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ts0-6z-w82">
                                                                             <rect key="frame" x="0.0" y="0.0" width="600" height="32"/>
@@ -438,7 +425,7 @@
                                                                     </subviews>
                                                                 </stackView>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="LBj-gP-cB3">
-                                                                    <rect key="frame" x="0.0" y="742" width="600" height="50"/>
+                                                                    <rect key="frame" x="0.0" y="1202" width="600" height="50"/>
                                                                 </stackView>
                                                             </subviews>
                                                         </stackView>
@@ -489,8 +476,10 @@
                                             <outlet property="instructionsStackView" destination="LBj-gP-cB3" id="ukX-BN-UzY"/>
                                             <outlet property="mainStackView" destination="dbO-Fh-BNQ" id="mkQ-Sv-a27"/>
                                             <outlet property="nameTextField" destination="DqG-sB-2y8" id="mVy-an-Hz2"/>
-                                            <outlet property="photoEditView" destination="Xzg-kx-K2S" id="mTv-vH-wIG"/>
+                                            <outlet property="photoEditButton" destination="aPK-Wb-sn9" id="SVX-Tg-uBp"/>
+                                            <outlet property="photoEditButtonAspectRationConstraint" destination="tly-w8-3vo" id="BLi-VX-cyE"/>
                                             <outlet property="photoImageView" destination="nPf-TY-cnB" id="wmj-B3-0yb"/>
+                                            <outlet property="photoImageViewAspectRatioConstraint" destination="pr0-WG-gVh" id="eNZ-Jm-k4y"/>
                                             <outlet property="scrollView" destination="iFT-lr-pr5" id="FUg-Bv-iVa"/>
                                         </connections>
                                     </collectionViewCell>
@@ -521,7 +510,13 @@
                             <constraint firstAttribute="trailing" secondItem="agn-ry-qzC" secondAttribute="trailing" id="TLN-1H-DlR"/>
                             <constraint firstItem="agn-ry-qzC" firstAttribute="top" secondItem="MSS-NQ-Igt" secondAttribute="top" id="cNe-Ur-v3R"/>
                             <constraint firstItem="Lwg-it-Tsd" firstAttribute="leading" secondItem="MSS-NQ-Igt" secondAttribute="leading" id="fKj-x2-ohL"/>
+                            <constraint firstItem="VIu-5R-Ycw" firstAttribute="top" secondItem="agn-ry-qzC" secondAttribute="bottom" id="kDu-1f-pRe"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="7EF-73-TZg"/>
+                            </mask>
+                        </variation>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <navigationItem key="navigationItem" id="fUI-Mj-zac">

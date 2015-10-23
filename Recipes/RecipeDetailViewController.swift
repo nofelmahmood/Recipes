@@ -17,6 +17,7 @@ extension RecipeDetailViewController: UICollectionViewDataSource {
     if let cell = collectionView.dequeueReusableCellWithReuseIdentifier("RecipeDetailCollectionViewCell", forIndexPath: indexPath) as? RecipeDetailCollectionViewCell {
       let recipe = self.recipes[indexPath.row]
       cell.configureCellWithRecipe(recipe)
+      cell.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.containerViewHeightConstraint.constant, right: 0)
       recipe.photo({ image in
         if let image = image {
           NSOperationQueue.mainQueue().addOperationWithBlock({
@@ -205,11 +206,24 @@ class RecipeDetailViewController: UIViewController {
       self.navigationItem.rightBarButtonItems?.removeLast()
       self.navigationItem.setHidesBackButton(true, animated: true)
       self.collectionView.scrollEnabled = false
+      self.containerViewHeightConstraint.constant = 0
+      self.visibleRecipeCell().scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+      UIView.animateWithDuration(0.3, animations: {
+        self.view.layoutIfNeeded()
+        }, completion: { completed in
+          self.visibleRecipeCell().scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.containerViewHeightConstraint.constant, right: 0)
+      })
     } else {
       self.navigationItem.rightBarButtonItem = self.editBarButtonItem
       self.navigationItem.rightBarButtonItems?.append(self.deleteBarButtonItem)
       self.navigationItem.setHidesBackButton(false, animated: true)
       self.collectionView.scrollEnabled = true
+      self.containerViewHeightConstraint.constant = 44.0
+      UIView.animateWithDuration(0.3, animations: {
+        self.view.layoutIfNeeded()
+        }, completion: { completed in
+          self.visibleRecipeCell().scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.containerViewHeightConstraint.constant, right: 0)
+      })
     }
     if let cell = self.collectionView.visibleCells().first as? RecipeDetailCollectionViewCell {
       cell.editing = editing
@@ -229,12 +243,12 @@ class RecipeDetailViewController: UIViewController {
   @IBAction func doneButtonDidPress(sender: AnyObject) {
     self.setEditing(false, animated: true)
   }
-
+  
   // MARK: Status Bar
   override func prefersStatusBarHidden() -> Bool {
     return true
   }
-
+  
   /*
   // MARK: - Navigation
   
