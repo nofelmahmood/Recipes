@@ -40,6 +40,9 @@ extension RecipeDetailViewController: UICollectionViewDataSource {
           self.setNavigationBarTransparent(true)
         }
       })
+      cell.photoEditButtonDidPress = ({
+        self.showAlertControllerForSelectingPhoto()
+      })
       return cell
     }
     return UICollectionViewCell()
@@ -61,6 +64,25 @@ extension RecipeDetailViewController: UICollectionViewDelegate {
   func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
     self.setNavigationBarTransparent(true)
     self.navigationItem.title = ""
+  }
+}
+
+extension RecipeDetailViewController: UINavigationControllerDelegate {
+  
+}
+
+extension RecipeDetailViewController: UIImagePickerControllerDelegate {
+  func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+    self.dismissViewControllerAnimated(true, completion: {
+      if let selectedIndexPath = self.collectionView.indexPathsForVisibleItems().first {
+        let recipe = self.recipes[selectedIndexPath.row]
+        recipe.photo = image
+      }
+    })
+  }
+  
+  func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    self.dismissViewControllerAnimated(true, completion: nil)
   }
 }
 
@@ -233,6 +255,30 @@ class RecipeDetailViewController: UIViewController {
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
+  }
+  
+  func showAlertControllerForSelectingPhoto() {
+    let alertController = UIAlertController(title: "Recipe Photo", message: "a picture is worth a thousand words !", preferredStyle: UIAlertControllerStyle.ActionSheet)
+    let photoAlbumAlertAction = UIAlertAction(title: "Photo Library", style: UIAlertActionStyle.Default, handler: { alertAction in
+      self.showImagePicker(UIImagePickerControllerSourceType.PhotoLibrary)
+    })
+    let cameraAlertAction = UIAlertAction(title: "Camera", style: UIAlertActionStyle.Default, handler: { alertAction in
+      self.showImagePicker(UIImagePickerControllerSourceType.Camera)
+    })
+    let cancelAlertAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+    alertController.addAction(cameraAlertAction)
+    alertController.addAction(photoAlbumAlertAction)
+    alertController.addAction(cancelAlertAction)
+    self.presentViewController(alertController, animated: true, completion: nil)
+  }
+  
+  func showImagePicker(sourceType: UIImagePickerControllerSourceType) {
+    if UIImagePickerController.isSourceTypeAvailable(sourceType) {
+      let imagePickerController = UIImagePickerController()
+      imagePickerController.delegate = self
+      imagePickerController.sourceType = sourceType
+      self.presentViewController(imagePickerController, animated: true, completion: nil)
+    }
   }
   
   // MARK: IBAction
