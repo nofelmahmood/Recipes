@@ -104,10 +104,8 @@ class RecipeViewModel: NSObject {
       return nil
     } set {
       if let image = newValue {
-        self.photo = image
         self.recipe.photo = UIImageJPEGRepresentation(image, 1.0)
       } else {
-        self.photo = nil
         self.recipe.photo = nil
       }
     }
