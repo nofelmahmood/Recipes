@@ -8,84 +8,6 @@
 
 import UIKit
 
-extension RecipeDetailViewController: UICollectionViewDataSource {
-  func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return self.recipes.count
-  }
-  
-  func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    if let cell = collectionView.dequeueReusableCellWithReuseIdentifier("RecipeDetailCollectionViewCell", forIndexPath: indexPath) as? RecipeDetailCollectionViewCell {
-      let recipe = self.recipes[indexPath.row]
-      cell.configureCellWithRecipe(recipe)
-      cell.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.containerViewHeightConstraint.constant, right: 0)
-      recipe.photo({ image in
-        if let image = image {
-          NSOperationQueue.mainQueue().addOperationWithBlock({
-            if let correspondingCell = self.collectionView.cellForItemAtIndexPath(NSIndexPath(forItem: indexPath.row, inSection: 0)) as? RecipeDetailCollectionViewCell {
-              correspondingCell.photoImageView.image = image
-              correspondingCell.backgroundImageView.image = image
-            }
-          })
-        }
-      })
-      cell.scrollViewDidScroll = ({ contentOffset in
-        if contentOffset.y >= (cell.photoImageView.frame.size.height - self.navigationController!.navigationBar.frame.size.height - UIApplication.sharedApplication().statusBarFrame.size.height) {
-          self.setNavigationBarTransparent(false)
-          if contentOffset.y >= cell.descriptionTextView.frame.origin.y - UIApplication.sharedApplication().statusBarFrame.size.height - self.navigationController!.navigationBar.frame.size.height {
-            self.navigationItem.title = cell.nameTextField.text
-          } else {
-            self.navigationItem.title = ""
-          }
-        } else {
-          self.setNavigationBarTransparent(true)
-        }
-      })
-      cell.photoEditButtonDidPress = ({
-        self.showAlertControllerForSelectingPhoto()
-      })
-      return cell
-    }
-    return UICollectionViewCell()
-  }
-}
-
-extension RecipeDetailViewController: UIScrollViewDelegate {
-  func scrollViewDidScroll(scrollView: UIScrollView) {
-    if let visibleItemIndexPath = self.collectionView.indexPathsForVisibleItems().first {
-      if let previousSelectedIndexPath = self.recipesSelectorViewController?.collectionView.indexPathsForVisibleItems().first {
-        self.recipesSelectorViewController?.collectionView.deselectItemAtIndexPath(previousSelectedIndexPath, animated: false)
-      }
-      self.recipesSelectorViewController?.collectionView.selectItemAtIndexPath(visibleItemIndexPath, animated: true, scrollPosition: UICollectionViewScrollPosition.CenteredHorizontally)
-    }
-  }
-}
-
-extension RecipeDetailViewController: UICollectionViewDelegate {
-  func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-    self.setNavigationBarTransparent(true)
-    self.navigationItem.title = ""
-  }
-}
-
-extension RecipeDetailViewController: UINavigationControllerDelegate {
-  
-}
-
-extension RecipeDetailViewController: UIImagePickerControllerDelegate {
-  func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
-    self.dismissViewControllerAnimated(true, completion: {
-      if let selectedIndexPath = self.collectionView.indexPathsForVisibleItems().first {
-        let recipe = self.recipes[selectedIndexPath.row]
-        recipe.photo = image
-      }
-    })
-  }
-  
-  func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-    self.dismissViewControllerAnimated(true, completion: nil)
-  }
-}
-
 class RecipeDetailViewController: UIViewController {
   
   @IBOutlet var collectionView: UICollectionView!
@@ -108,6 +30,10 @@ class RecipeDetailViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
+    let popRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handlePopRecognizer:")
+    popRecognizer.edges = UIRectEdge.Top
+    self.view.addGestureRecognizer(popRecognizer)
+    
     self.tabBarController?.tabBar.hidden = true
     self.tabBarController?.tabBar.frame = CGRectZero
     self.view.layoutIfNeeded()
@@ -115,6 +41,9 @@ class RecipeDetailViewController: UIViewController {
     self.collectionView.pagingEnabled = true
     (self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(width: self.view.frame.size.width, height: self.collectionView.frame.size.height)
     self.collectionView.reloadData()
+  }
+  
+  func handlePopRecognizer(recognizer: UIScreenEdgePanGestureRecognizer) {
   }
   
   override func viewWillAppear(animated: Bool) {
@@ -183,15 +112,15 @@ class RecipeDetailViewController: UIViewController {
         return
       }
       UIView.animateWithDuration(0.2, animations: {
-        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        self.navigationController?.navigationBar.tintColor = UIColor.darkGrayColor()
         if let leftBarButtons = self.navigationItem.leftBarButtonItems {
           for barButton in leftBarButtons {
-            barButton.tintColor = UIColor.whiteColor()
+            barButton.tintColor = UIColor.darkGrayColor()
           }
         }
         if let rightBarButtons = self.navigationItem.rightBarButtonItems {
           for barButton in rightBarButtons {
-            barButton.tintColor = UIColor.whiteColor()
+            barButton.tintColor = UIColor.darkGrayColor()
           }
         }
         }, completion: { completed in

@@ -26,42 +26,13 @@ struct RecipesListViewControllerSegue {
   static let RecipeDetailViewController = "RecipeDetailViewController"
 }
 
-extension RecipesListViewController: UIPopoverPresentationControllerDelegate {
-  func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
-    return UIModalPresentationStyle.None
-  }
-}
-
-extension RecipesListViewController: UINavigationControllerDelegate {
-  func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    return self.toRecipeDetailViewControllerTransition
-  }
-}
-
-extension RecipesListViewController: UIViewControllerTransitioningDelegate {
-  func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    return self.toRecipesSearchViewControllerTransition
-  }
-  
-  func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    return self.toRecipesSearchViewControllerTransition
-  }
-}
-
-extension RecipesListViewController: RecipesFilterViewControllerDelegate {
-  func recipesFilterViewController(controller: RecipesFilterViewController, didSelectFilter filter: String) {
-    self.recipesFilter = filter
-    self.reloadCollectionViewDataWithNewData()
-    self.dismissViewControllerAnimated(true, completion: nil)
-  }
-}
-
 class RecipesListViewController: UIViewController {
   @IBOutlet var collectionView: UICollectionView!
   @IBOutlet var navigationBarTitleButton: UIButton!
   
   var toRecipesSearchViewControllerTransition: RecipesToRecipesSearchAnimationController!
   var toRecipeDetailViewControllerTransition: RecipesToRecipeDetailViewAnimationController!
+  var interactivePopTransition: UIPercentDrivenInteractiveTransition!
   var recipesFilter = RecipesFilter.ShowAll
   var recipes: [RecipeViewModel] = [RecipeViewModel]()
   var fetchedRecipes: [RecipeViewModel] = [RecipeViewModel]()
@@ -80,6 +51,7 @@ class RecipesListViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
+    self.interactivePopTransition = UIPercentDrivenInteractiveTransition()
     self.navigationController?.delegate = self
     self.tabBarFrame = self.tabBarController!.tabBar.frame
     self.toRecipesSearchViewControllerTransition = RecipesToRecipesSearchAnimationController()
@@ -181,6 +153,11 @@ class RecipesListViewController: UIViewController {
       if let recipesSearchViewController = (segue.destinationViewController as? UINavigationController)?.topViewController as? RecipesSearchViewController {
         recipesSearchViewController.recipes = self.fetchedRecipes
         recipesSearchViewController.navigationController?.transitioningDelegate = self
+        UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0)
+        view.drawViewHierarchyInRect(self.view.bounds, afterScreenUpdates: false)
+        let snapshotImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        recipesSearchViewController.imageToBlur = snapshotImage
       }
     } else if segue.identifier == RecipesListViewControllerSegue.RecipesFilterViewController {
       let destinationController = segue.destinationViewController as? RecipesFilterViewController

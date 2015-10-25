@@ -26,6 +26,8 @@ class RecipePhotoCollectionViewCell: UICollectionViewCell {
       self.photoImageView.layer.masksToBounds = true
     } else {
       self.photoImageView.layer.borderWidth = 0.0
+      self.photoImageView.layer.cornerRadius = 0.0
+      self.photoImageView.layer.masksToBounds = false
     }
   }
   
@@ -33,7 +35,10 @@ class RecipePhotoCollectionViewCell: UICollectionViewCell {
     super.prepareForReuse()
     self.photoImageView.image = nil
     self.photoImageView.layer.borderWidth = 0.0
-    self.performSelection(self.selected)
+    self.photoImageView.layer.cornerRadius = 0.0
+    self.photoImageView.layer.masksToBounds = false
+    self.selected = false
+    self.performSelection(false)
   }
 }
 

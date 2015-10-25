@@ -8,35 +8,6 @@
 
 import UIKit
 
-extension RecipesFilterViewController: UITableViewDataSource {
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return 4
-  }
-    
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    if let cell = tableView.dequeueReusableCellWithIdentifier("RecipesFilterTableViewCell", forIndexPath: indexPath) as? RecipesFilterTableViewCell {
-      if indexPath.row == 0 {
-        cell.nameLabel.text = RecipeDifficulty.Easy
-      } else if indexPath.row == 1 {
-        cell.nameLabel.text = RecipeDifficulty.Medium
-      } else if indexPath.row == 2 {
-        cell.nameLabel.text = RecipeDifficulty.Hard
-      } else {
-        cell.nameLabel.textColor = UIColor.appKeyColor()
-        cell.nameLabel.text = "Show All"
-      }
-      return cell
-    }
-    return UITableViewCell()
-  }
-}
-
-extension RecipesFilterViewController: UITableViewDelegate {
-  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    self.delegate?.recipesFilterViewController(self, didSelectFilter: self.selectedRecipesFilter())
-  }
-}
-
 protocol RecipesFilterViewControllerDelegate {
   func recipesFilterViewController(controller: RecipesFilterViewController, didSelectFilter filter: String)
 }
@@ -52,7 +23,6 @@ class RecipesFilterViewController: UIViewController {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
     self.selectFilterRow()
-    
   }
   
   func selectFilterRow() {
