@@ -10,15 +10,18 @@ import UIKit
 
 extension RecipesSelectorViewController: UICollectionViewDataSource {
   func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return self.recipes.count
+    return self.recipes.count + 1
   }
   
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     if let cell = collectionView.dequeueReusableCellWithReuseIdentifier("RecipePhotoCollectionViewCell", forIndexPath: indexPath) as? RecipePhotoCollectionViewCell {
-      let recipe = self.recipes[indexPath.row]
-      if self.recipeDetailViewController.selectedRecipeIndex == indexPath.row {
-        cell.performSelection(true)
+      if indexPath.row == 0 {
+        cell.photoImageView.image = UIImage(named: "Add")
+        cell.photoImageViewHeightConstraint.constant = 23.0
+        cell.photoImageViewWidthConstraint.constant = 23.0
+        return cell
       }
+      let recipe = self.recipes[(indexPath.row - 1)]
       recipe.photo({ image in
         if let image = image {
           NSOperationQueue.mainQueue().addOperationWithBlock({

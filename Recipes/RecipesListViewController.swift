@@ -47,6 +47,7 @@ class RecipesListViewController: UIViewController {
     }
   }
   var firstTime = true
+  var segueToRecipeDetailForNewRecipe = false
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -89,8 +90,11 @@ class RecipesListViewController: UIViewController {
         }
         return favorite
       })
-      self.collectionView.reloadData()
     }
+    self.prepareDataSource()
+    self.collectionView.performBatchUpdates({
+      self.collectionView.reloadSections(NSIndexSet(index: 0))
+      }, completion: nil)
   }
   
   func prepareDataSource() {
@@ -137,9 +141,13 @@ class RecipesListViewController: UIViewController {
   @IBAction func filterBarItemDidPress(sender: AnyObject) {
     self.performSegueWithIdentifier(RecipesListViewControllerSegue.RecipesFilterViewController, sender: self)
   }
+  
+  @IBAction func addBarItemDidPress(sender: AnyObject) {
+    self.segueToRecipeDetailForNewRecipe = true
+    self.performSegueWithIdentifier(RecipesListViewControllerSegue.RecipeDetailViewController, sender: self)
+  }
 
   // MARK: - Navigation
-  
   // In a storyboard-based application, you will often want to do a little preparation before navigation
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
     // Get the new view controller using segue.destinationViewController.
@@ -147,7 +155,14 @@ class RecipesListViewController: UIViewController {
     if segue.identifier == RecipesListViewControllerSegue.RecipeDetailViewController {
       if let recipeDetailViewController = segue.destinationViewController as? RecipeDetailViewController {
         recipeDetailViewController.recipes = self.recipes
-        recipeDetailViewController.selectedRecipeIndex = (self.collectionView.indexPathsForSelectedItems()!.first)!.row
+        recipeDetailViewController.selectedRecipeIndex = 0
+        if self.segueToRecipeDetailForNewRecipe {
+          self.segueToRecipeDetailForNewRecipe = false
+          recipeDetailViewController.displayedForCreatingRecipe = true
+        } else {
+          recipeDetailViewController.selectedRecipeIndex = (self.collectionView.indexPathsForSelectedItems()!.first)!.row
+          recipeDetailViewController.displayedForCreatingRecipe = false
+        }
       }
     } else if segue.identifier == RecipesListViewControllerSegue.RecipesSearchViewController {
       if let recipesSearchViewController = (segue.destinationViewController as? UINavigationController)?.topViewController as? RecipesSearchViewController {

@@ -14,21 +14,23 @@ class RecipePhotoCollectionViewCell: UICollectionViewCell {
   @IBOutlet var photoImageViewWidthConstraint: NSLayoutConstraint!
   @IBOutlet var photoImageViewHeightConstraint: NSLayoutConstraint!
   
-  override func awakeFromNib() {
-    self.photoImageView.image = nil
+  override var selected: Bool {
+    didSet {
+      if self.selected {
+        self.photoImageView.layer.cornerRadius = 1.0
+        self.photoImageView.layer.borderColor = UIColor.appKeyColor().CGColor
+        self.photoImageView.layer.borderWidth = 2.0
+        self.photoImageView.layer.masksToBounds = true
+      } else {
+        self.photoImageView.layer.borderWidth = 0.0
+        self.photoImageView.layer.cornerRadius = 0.0
+        self.photoImageView.layer.masksToBounds = false
+      }
+    }
   }
   
-  func performSelection(select: Bool) {
-    if select {
-      self.photoImageView.layer.cornerRadius = 1.0
-      self.photoImageView.layer.borderColor = UIColor.appKeyColor().CGColor
-      self.photoImageView.layer.borderWidth = 2.0
-      self.photoImageView.layer.masksToBounds = true
-    } else {
-      self.photoImageView.layer.borderWidth = 0.0
-      self.photoImageView.layer.cornerRadius = 0.0
-      self.photoImageView.layer.masksToBounds = false
-    }
+  override func awakeFromNib() {
+    self.photoImageView.image = nil
   }
   
   override func prepareForReuse() {
@@ -37,8 +39,8 @@ class RecipePhotoCollectionViewCell: UICollectionViewCell {
     self.photoImageView.layer.borderWidth = 0.0
     self.photoImageView.layer.cornerRadius = 0.0
     self.photoImageView.layer.masksToBounds = false
-    self.selected = false
-    self.performSelection(false)
+    self.photoImageViewWidthConstraint.constant = 44.0
+    self.photoImageViewHeightConstraint.constant = 44.0
   }
 }
 

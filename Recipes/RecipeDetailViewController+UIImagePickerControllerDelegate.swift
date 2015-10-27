@@ -19,11 +19,21 @@ extension RecipeDetailViewController: UIImagePickerControllerDelegate {
       if let selectedIndexPath = self.collectionView.indexPathsForVisibleItems().first {
         let recipe = self.recipes[selectedIndexPath.row]
         recipe.photo = image
+        if let cell = self.collectionView.cellForItemAtIndexPath(selectedIndexPath) as? RecipeDetailCollectionViewCell {
+          cell.photoImageView.image = image
+          cell.editing = true
+        }
       }
     })
   }
   
   func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-    self.dismissViewControllerAnimated(true, completion: nil)
+    self.dismissViewControllerAnimated(true, completion: {
+      if let selectedIndexPath = self.collectionView.indexPathsForVisibleItems().first {
+        if let cell = self.collectionView.cellForItemAtIndexPath(selectedIndexPath) as? RecipeDetailCollectionViewCell {
+          cell.editing = true
+        }
+      }
+    })
   }
 }

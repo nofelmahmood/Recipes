@@ -34,6 +34,10 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
         self.photoEditButton.hidden = false
         self.descriptionTextView.editable = true
         for instructionView in self.instructionsStackView.arrangedSubviews {
+          if instructionView is UILabel {
+            instructionView.removeFromSuperview()
+            continue
+          }
           if let instructionView = instructionView as? RecipeInstructionView {
             instructionView.instructionTextView.editable = true
           }
@@ -56,6 +60,16 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
               })
             }
           })
+          if let recipeName = self.nameTextField.text {
+            self.recipe.name = recipeName
+          }
+          if let recipeDescription = self.descriptionTextView.text {
+            self.recipe.specification = recipeDescription
+          }
+          if let recipeInstructions = self.instructions() {
+            self.recipe.instructions = recipeInstructions
+          }
+          CoreDataStack.defaultStack.saveContext()
         }
         self.mainStackView.insertArrangedSubview(self.photoImageView, atIndex: 0)
         self.mainStackView.removeArrangedSubview(self.photoEditButton)
@@ -106,7 +120,18 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
           instructionView.instructionTextView.editable = false
         }
       }
+    } else {
+      self.addInstructionsPlaceholder()
     }
+  }
+  
+  func addInstructionsPlaceholder() {
+    let label = UILabel()
+    label.text = "  Edit to add some steps to this recipe !"
+    label.textColor = UIColor.darkGrayColor()
+    label.font = UIFont(name: "Avenir", size: 18.0)
+    label.numberOfLines = 0
+    self.instructionsStackView.addArrangedSubview(label)
   }
   
   func refreshInstructionsNumbering() {
@@ -158,6 +183,19 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
           }
       })
     }
+  }
+  
+  func instructions() -> [String]? {
+    guard self.instructionsStackView.arrangedSubviews.count > 0 else {
+      return nil
+    }
+    var instructionsArray = [String]()
+    for instructionView in self.instructionsStackView.arrangedSubviews {
+      if let instructionView = instructionView as? RecipeInstructionView {
+        instructionsArray.append(instructionView.instructionTextView.text)
+      }
+    }
+    return instructionsArray
   }
   
   override func prepareForReuse() {

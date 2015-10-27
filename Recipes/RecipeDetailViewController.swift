@@ -17,6 +17,7 @@ class RecipeDetailViewController: UIViewController {
   @IBOutlet var editBarButtonItem: UIBarButtonItem!
   
   var selectedRecipeIndex: Int!
+  var displayedForCreatingRecipe = false
   var recipes: [RecipeViewModel]!
   var recipesSelectorViewController: RecipesSelectorViewController? {
     for viewController in self.childViewControllers {
@@ -33,7 +34,6 @@ class RecipeDetailViewController: UIViewController {
     let popRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handlePopRecognizer:")
     popRecognizer.edges = UIRectEdge.Top
     self.view.addGestureRecognizer(popRecognizer)
-    
     self.tabBarController?.tabBar.hidden = true
     self.tabBarController?.tabBar.frame = CGRectZero
     self.view.layoutIfNeeded()
@@ -44,6 +44,7 @@ class RecipeDetailViewController: UIViewController {
   }
   
   func handlePopRecognizer(recognizer: UIScreenEdgePanGestureRecognizer) {
+    
   }
   
   override func viewWillAppear(animated: Bool) {
@@ -52,15 +53,17 @@ class RecipeDetailViewController: UIViewController {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
     UIApplication.sharedApplication().statusBarHidden = true
     self.collectionView.layoutIfNeeded()
-    let indexPath = NSIndexPath(forItem: self.selectedRecipeIndex, inSection: 0)
-    self.collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: UICollectionViewScrollPosition.CenteredHorizontally, animated: false)
+    if !self.displayedForCreatingRecipe {
+      let indexPath = NSIndexPath(forItem: self.selectedRecipeIndex, inSection: 0)
+      self.collectionView.selectItemAtIndexPath(indexPath, animated: true, scrollPosition: UICollectionViewScrollPosition.CenteredHorizontally)
+      self.recipesSelectorViewController?.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: indexPath.row + 1, inSection: 0), animated: true, scrollPosition: UICollectionViewScrollPosition.CenteredHorizontally)
+    }
   }
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     self.navigationController?.hidesBarsOnSwipe = false
     self.navigationController?.setNavigationBarHidden(false, animated: false)
-    
   }
   
   override func viewWillDisappear(animated: Bool) {
@@ -163,6 +166,7 @@ class RecipeDetailViewController: UIViewController {
         self.view.layoutIfNeeded()
         }, completion: { completed in
           self.visibleRecipeCell().scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.containerViewHeightConstraint.constant, right: 0)
+          self.visibleRecipeCell().editing = true
       })
     } else {
       self.navigationItem.rightBarButtonItem = self.editBarButtonItem
@@ -174,6 +178,7 @@ class RecipeDetailViewController: UIViewController {
         self.view.layoutIfNeeded()
         }, completion: { completed in
           self.visibleRecipeCell().scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.containerViewHeightConstraint.constant, right: 0)
+          self.visibleRecipeCell().editing = false
       })
     }
     if let cell = self.collectionView.visibleCells().first as? RecipeDetailCollectionViewCell {
@@ -213,6 +218,30 @@ class RecipeDetailViewController: UIViewController {
   // MARK: IBAction
   @IBAction func editButtonDidPress(sender: AnyObject) {
     self.setEditing(true, animated: true)
+  }
+  
+  @IBAction func deleteButtonDidPress(sender: AnyObject) {
+    if let visibleItemIndexPath = self.collectionView.indexPathsForVisibleItems().first {
+      let recipe = self.recipes[visibleItemIndexPath.row]
+      let alertController = UIAlertController(title: "Delete \"\(recipe.name)\"", message: "Are you sure ?", preferredStyle: UIAlertControllerStyle.ActionSheet)
+      let yesAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.Destructive, handler: { alertAction in
+        recipe.deleteUnderlyingRecipe()
+        CoreDataStack.defaultStack.saveContext()
+        if let index = self.recipes.indexOf(recipe) {
+          self.recipes.removeAtIndex(index)
+          self.collectionView.performBatchUpdates({
+            self.collectionView.deleteItemsAtIndexPaths([visibleItemIndexPath])
+            self.recipesSelectorViewController?.collectionView.performBatchUpdates({
+              self.recipesSelectorViewController?.collectionView.deleteItemsAtIndexPaths([NSIndexPath(forItem: visibleItemIndexPath.row + 1, inSection: 0)])
+              }, completion: nil)
+            }, completion: nil)
+        }
+      })
+      let noAction = UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil)
+      alertController.addAction(yesAction)
+      alertController.addAction(noAction)
+      self.presentViewController(alertController, animated: true, completion: nil)
+    }
   }
   
   @IBAction func doneButtonDidPress(sender: AnyObject) {
