@@ -8,10 +8,64 @@
 
 import Foundation
 import CoreData
+import UIKit
+import CoreSpotlight
+import MobileCoreServices
+
+protocol SpotlightSearchable {
+  static var domainIdentifier: String {get}
+  var userActivityUserInfo: [NSObject: AnyObject] {get}
+//  var userActivity: NSUserActivity {get}
+  var attributeSet: CSSearchableItemAttributeSet {get}
+}
+
+extension Recipe: SpotlightSearchable {
+  static var domainIdentifier: String {
+    return "com.hyper.recipes.recipeSpotlightSearch"
+  }
+  
+  var userActivityUserInfo: [NSObject: AnyObject] {
+    return ["id": self.objectID]
+  }
+  
+//  var userActivity: NSUserActivity {
+//    let activity = NSUserActivity(activityType: Recipe.domainIdentifier)
+//    activity.title = self.name
+//    activity.userInfo = self.userActivityUserInfo
+//    activity.contentAttributeSet = self.attributeSet
+//    activity.eligibleForHandoff = false
+//    activity.eligibleForSearch = true
+//    var keywords = Set<String>()
+//    let components = self.name!.componentsSeparatedByString(" ")
+//    for component in components {
+//      keywords.insert(component)
+//    }
+//    activity.keywords = keywords
+//    return activity
+//  }
+  
+  var searchableItem: CSSearchableItem {
+    return CSSearchableItem(uniqueIdentifier: "\(self.id!)", domainIdentifier: Recipe.domainIdentifier, attributeSet: self.attributeSet)
+  }
+  
+  var attributeSet: CSSearchableItemAttributeSet {
+    let attributeSet = CSSearchableItemAttributeSet(
+      itemContentType: kUTTypeItem as String)
+    attributeSet.title = name
+    attributeSet.contentDescription = self.specification
+    if let photo = self.photo {
+      if let image = UIImage(data: photo) {
+        attributeSet.thumbnailData = UIImageJPEGRepresentation(image, 0.9)
+      }
+    }
+    attributeSet.keywords = self.name?.componentsSeparatedByString(" ")
+    return attributeSet
+  }
+}
 
 class Recipe: NSManagedObject {
   
-  // Insert code here to add functionality to your managed object subclass
+  // Insert code here to add functionality to your managed object subclass  
   class var excludedKeysFromChangeTracking: [String] {
     return ["createdAt","id","lastSyncedAt","photoThumbnailURL","photoURL","updatedAt","isNew","changedKeys"]
   }
@@ -26,7 +80,7 @@ class Recipe: NSManagedObject {
     recipe.updatedAt = date
     return recipe
   }
-    
+  
   class func insertNewRecipe(usingRecipeApiModel recipeApiModel: RecipeApiModel, inManagedObjectContext context: NSManagedObjectContext) -> Recipe? {
     guard let recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: context) as? Recipe else {
       return nil
@@ -112,15 +166,38 @@ class Recipe: NSManagedObject {
   }
   
   class func deleteRecipe(recipe: Recipe) -> Bool {
-    if let recipeID = recipe.id, context = recipe.managedObjectContext {
-      if let _ = Tombstone.insertNewTombstone(forRecipeID: recipeID, inManagedObjectContext: context) {
-        context.deleteObject(recipe)
+    if let recipeID = recipe.id {
+      if let _ = Tombstone.insertNewTombstone(forRecipeID: recipeID, inManagedObjectContext: recipe.managedObjectContext!) {
+        recipe.managedObjectContext!.deleteObject(recipe)
         return true
       } else {
         return false
       }
+    } else {
+      recipe.managedObjectContext?.deleteObject(recipe)
+      return true
     }
-    return true
+  }
+  
+  override func willSave() {
+    if let id = self.id where self.deleted == true {
+      CSSearchableIndex.defaultSearchableIndex().deleteSearchableItemsWithIdentifiers(["\(id)"], completionHandler: { error in
+        if let error = error {
+          print("Error while indexing")
+        }
+      })
+    }
+  }
+  
+  override func didSave() {
+    if let _ = self.id {
+      CSSearchableIndex.defaultSearchableIndex().indexSearchableItems([self.searchableItem], completionHandler: { error in
+        if let error = error {
+          print("Error while indexing")
+        }
+        
+      })
+    }
   }
   
   func updateFromApiModel(apiModel: RecipeApiModel) {
