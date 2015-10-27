@@ -134,6 +134,9 @@
                         <nil key="title"/>
                         <barButtonItem key="leftBarButtonItem" systemItem="add" id="ro5-ME-JDq">
                             <color key="tintColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="addBarItemDidPress:" destination="xQV-RP-pL6" id="LPS-ob-YBA"/>
+                            </connections>
                         </barButtonItem>
                         <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="jCd-gg-zMg">
                             <rect key="frame" x="238" y="11" width="124" height="22"/>
@@ -245,7 +248,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="E8u-Kw-knH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3441" y="-593"/>
+            <point key="canvasLocation" x="3356" y="-611"/>
         </scene>
         <!--Search Recipes-->
         <scene sceneID="K1u-K7-hzN">
@@ -556,13 +559,13 @@
                             <barButtonItem systemItem="trash" id="EcA-mO-Yue">
                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <action selector="didPressBarButtonItem:" destination="KBO-P8-UaC" id="9mw-5V-dEO"/>
+                                    <action selector="deleteButtonDidPress:" destination="KBO-P8-UaC" id="6DS-N3-7GR"/>
                                 </connections>
                             </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
-                        <outlet property="collectionView" destination="agn-ry-qzC" id="ten-Bu-Xuu"/>
+                        <outlet property="collectionView" destination="agn-ry-qzC" id="kyO-P5-Mbo"/>
                         <outlet property="containerView" destination="Lwg-it-Tsd" id="hds-hd-YAV"/>
                         <outlet property="containerViewHeightConstraint" destination="OR7-GM-oKB" id="clB-hE-be8"/>
                         <outlet property="deleteBarButtonItem" destination="EcA-mO-Yue" id="1wj-FQ-nxY"/>
@@ -576,7 +579,7 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="4404" y="-327"/>
+            <point key="canvasLocation" x="3935" y="-454"/>
         </scene>
         <!--All-->
         <scene sceneID="O0g-AG-Xge">
@@ -717,7 +720,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pg3-tP-N32" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3588" y="133"/>
+            <point key="canvasLocation" x="3556" y="269"/>
         </scene>
         <!--Recipes Selector View Controller-->
         <scene sceneID="L2y-eg-BYp">
@@ -751,7 +754,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="VER-aS-bdm">
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="VER-aS-bdm">
                                                             <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="44" id="A4w-Vv-pzG"/>
@@ -763,8 +766,16 @@
                                                 </view>
                                                 <constraints>
                                                     <constraint firstItem="VER-aS-bdm" firstAttribute="top" secondItem="jQp-E7-bv7" secondAttribute="top" id="8Fs-Dz-V0o"/>
+                                                    <constraint firstItem="VER-aS-bdm" firstAttribute="centerY" secondItem="jQp-E7-bv7" secondAttribute="centerY" id="L99-x8-Nth"/>
+                                                    <constraint firstItem="VER-aS-bdm" firstAttribute="centerX" secondItem="jQp-E7-bv7" secondAttribute="centerX" id="oKJ-cL-arX"/>
                                                     <constraint firstItem="VER-aS-bdm" firstAttribute="leading" secondItem="jQp-E7-bv7" secondAttribute="leading" id="p7d-tR-5pA"/>
                                                 </constraints>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="8Fs-Dz-V0o"/>
+                                                        <exclude reference="p7d-tR-5pA"/>
+                                                    </mask>
+                                                </variation>
                                                 <connections>
                                                     <outlet property="photoImageView" destination="VER-aS-bdm" id="eRg-gp-Vcu"/>
                                                     <outlet property="photoImageViewHeightConstraint" destination="Jra-2U-ZEw" id="JOL-6U-XdV"/>
@@ -808,7 +819,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O6f-Li-xJe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4404" y="127.5"/>
+            <point key="canvasLocation" x="4631" y="-16"/>
         </scene>
     </scenes>
     <resources>
