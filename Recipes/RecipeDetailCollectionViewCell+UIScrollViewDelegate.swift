@@ -11,5 +11,6 @@ import UIKit
 extension RecipeDetailCollectionViewCell: UIScrollViewDelegate {
   func scrollViewDidScroll(scrollView: UIScrollView) {
     self.scrollViewDidScroll?(contentOffset: scrollView.contentOffset)
+    
   }
 }
