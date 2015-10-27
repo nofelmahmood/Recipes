@@ -153,6 +153,10 @@ class RecipeViewModel: NSObject {
     }
   }
   
+  func deleteUnderlyingRecipe() -> Bool {
+    return Recipe.deleteRecipe(self.recipe)
+  }
+  
   func photo(completionBlock: ((image: UIImage?) -> Void)) {
     if let photo = self.recipe.photo {
       completionBlock(image: UIImage(data: photo))
