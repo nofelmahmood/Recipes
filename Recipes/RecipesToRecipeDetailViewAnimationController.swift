@@ -10,7 +10,7 @@ import UIKit
 
 extension RecipesToRecipeDetailViewAnimationController: UIViewControllerAnimatedTransitioning {
   func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
-    return 0.5
+    return 0.35
   }
   
   func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
