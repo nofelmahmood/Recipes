@@ -14,12 +14,8 @@ extension UINavigationBar {
     if view.isKindOfClass(UIImageView.self) && view.bounds.size.height <= 1.0 {
       return view as? UIImageView
     }
-    for view in view.subviews {
-      let imageView = UINavigationBar.findHairlineImageView(view)
-      if let imageView = imageView {
-        return imageView
-      }
-    }
-    return nil
+    guard let imageView = view.subviews.filter({ UINavigationBar.findHairlineImageView($0) != nil }).first
+      else { return nil }
+    return imageView as? UIImageView
   }
 }
