@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import CoreSpotlight
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
@@ -17,11 +18,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     UITabBar.appearance().tintColor = UIColor.appKeyColor()
 //     Override point for customization after application launch.
-//    SyncManager.sharedManager.perform({
-//      print("completed")
-//    })
 
     return true
+  }
+  
+  func application(application: UIApplication, continueUserActivity userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
+    if let recipesListViewController = ((self.window?.rootViewController as? UITabBarController)?.selectedViewController?.childViewControllers.first as? UINavigationController)?.topViewController as? RecipesListViewController {
+      if let recipeID = (userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? NSString)?.intValue {
+        recipesListViewController.handleUserActivityWithRecipeID(recipeID)
+      }
+    }
+    return false
   }
   
   func applicationWillResignActive(application: UIApplication) {
