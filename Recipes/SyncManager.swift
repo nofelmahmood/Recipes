@@ -12,13 +12,20 @@ import CoreData
 class SyncManager: NSObject {
   
   static let sharedManager = SyncManager()
+  var managedObjectContext: NSManagedObjectContext!
+  
+  override init() {
+    self.managedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+    self.managedObjectContext.parentContext = CoreDataStack.defaultStack.managedObjectContext
+    super.init()
+  }
   
   func perform(completion: (() -> Void)?) {
     RecipeApi.sharedAPI.recipes({ fetchedRecipes in
       if let fetchedRecipes = fetchedRecipes {
         let fetchedRecipesIDs = fetchedRecipes.map({ $0.id! })
         let mainContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-        mainContext.parentContext = CoreDataStack.defaultStack.managedObjectContext
+        mainContext.parentContext = self.managedObjectContext
         let tombstoneEntries = Recipe.deletedRecipeTombstoneEntriesSinceLastSync(inContext: mainContext)
         self.deleteFromServer(tombstoneEntries)
         let newRecipes = Recipe.newRecipesSinceLastSync(inContext: mainContext)
@@ -40,7 +47,7 @@ class SyncManager: NSObject {
               RecipeApi.sharedAPI.save(RecipeApiValueTransformer.modelValueFromRecipe(modifiedRecipe), completionBlock: { recipeApiModel in
                 if let recipeApiModel = recipeApiModel {
                   let saveContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-                  saveContext.parentContext = CoreDataStack.defaultStack.managedObjectContext
+                  saveContext.parentContext = self.managedObjectContext
                   if let recipeToModify = saveContext.objectWithID(recipeObjectID) as? Recipe {
                     recipeToModify.updatedAt = recipeApiModel.updated_at
                     let _ = try? saveContext.saveIfHasChanges()
@@ -55,7 +62,7 @@ class SyncManager: NSObject {
         let _ = try? mainContext.saveIfHasChanges()
       }
       NSOperationQueue.mainQueue().addOperationWithBlock({
-        let _ = try? CoreDataStack.defaultStack.managedObjectContext.saveIfHasChanges()
+        let _ = try? self.managedObjectContext.saveIfHasChanges()
       })
       completion?()
     })
@@ -71,7 +78,7 @@ class SyncManager: NSObject {
         recipeApiModel in
         if let recipeApiModel = recipeApiModel {
           let saveContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-          saveContext.parentContext = CoreDataStack.defaultStack.managedObjectContext
+          saveContext.parentContext = self.managedObjectContext
           let currentRecipe = Recipe.recipeWithObjectID(recipeObjectID, inContext: saveContext)
           currentRecipe.id = recipeApiModel.id
           let _ = try? saveContext.save()
@@ -89,7 +96,7 @@ class SyncManager: NSObject {
       RecipeApi.sharedAPI.delete(tombstone.recordID!.integerValue, completionBlock: { successful in
         if successful {
           let deleteContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-          deleteContext.parentContext = CoreDataStack.defaultStack.managedObjectContext
+          deleteContext.parentContext = self.managedObjectContext
           deleteContext.deleteObject(deleteContext.objectWithID(tombstoneObjectID))
           let _ = try? deleteContext.save()
         }
