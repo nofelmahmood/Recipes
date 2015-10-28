@@ -14,8 +14,6 @@ import MobileCoreServices
 
 protocol SpotlightSearchable {
   static var domainIdentifier: String {get}
-  var userActivityUserInfo: [NSObject: AnyObject] {get}
-//  var userActivity: NSUserActivity {get}
   var attributeSet: CSSearchableItemAttributeSet {get}
 }
 
@@ -24,28 +22,10 @@ extension Recipe: SpotlightSearchable {
     return "com.hyper.recipes.recipeSpotlightSearch"
   }
   
-  var userActivityUserInfo: [NSObject: AnyObject] {
-    return ["id": self.objectID]
-  }
-  
-//  var userActivity: NSUserActivity {
-//    let activity = NSUserActivity(activityType: Recipe.domainIdentifier)
-//    activity.title = self.name
-//    activity.userInfo = self.userActivityUserInfo
-//    activity.contentAttributeSet = self.attributeSet
-//    activity.eligibleForHandoff = false
-//    activity.eligibleForSearch = true
-//    var keywords = Set<String>()
-//    let components = self.name!.componentsSeparatedByString(" ")
-//    for component in components {
-//      keywords.insert(component)
-//    }
-//    activity.keywords = keywords
-//    return activity
-//  }
-  
   var searchableItem: CSSearchableItem {
-    return CSSearchableItem(uniqueIdentifier: "\(self.id!)", domainIdentifier: Recipe.domainIdentifier, attributeSet: self.attributeSet)
+    let attributeSet = self.attributeSet
+    attributeSet.relatedUniqueIdentifier = "\(self.id!)"
+    return CSSearchableItem(uniqueIdentifier: "\(self.id!)", domainIdentifier: Recipe.domainIdentifier, attributeSet: attributeSet)
   }
   
   var attributeSet: CSSearchableItemAttributeSet {
@@ -82,21 +62,29 @@ class Recipe: NSManagedObject {
   }
   
   class func insertNewRecipe(usingRecipeApiModel recipeApiModel: RecipeApiModel, inManagedObjectContext context: NSManagedObjectContext) -> Recipe? {
-    guard let recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: context) as? Recipe else {
-      return nil
+    let predicate = NSPredicate(format: "id == %@", recipeApiModel.id!)
+    let fetchRequest = NSFetchRequest(entityName: "Recipe")
+    fetchRequest.predicate = predicate
+    var error: NSError? = nil
+    let count = context.countForFetchRequest(fetchRequest, error: &error)
+    if count != NSNotFound && count == 0 {
+      guard let recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: context) as? Recipe else {
+        return nil
+      }
+      recipe.id = recipeApiModel.id
+      recipe.name = recipeApiModel.name
+      recipe.instructions = recipeApiModel.instructions
+      recipe.specification = recipeApiModel.specification
+      recipe.favorite = recipeApiModel.favorite
+      recipe.difficulty = recipeApiModel.difficulty
+      recipe.photoURL = recipeApiModel.photo.url
+      recipe.photoThumbnailURL = recipeApiModel.photo.thumbnail_url
+      recipe.createdAt = recipeApiModel.created_at
+      recipe.updatedAt = recipeApiModel.updated_at
+      recipe.isNew = NSNumber(bool: false)
+      return recipe
     }
-    recipe.id = recipeApiModel.id
-    recipe.name = recipeApiModel.name
-    recipe.instructions = recipeApiModel.instructions
-    recipe.specification = recipeApiModel.specification
-    recipe.favorite = recipeApiModel.favorite
-    recipe.difficulty = recipeApiModel.difficulty
-    recipe.photoURL = recipeApiModel.photo.url
-    recipe.photoThumbnailURL = recipeApiModel.photo.thumbnail_url
-    recipe.createdAt = recipeApiModel.created_at
-    recipe.updatedAt = recipeApiModel.updated_at
-    recipe.isNew = NSNumber(bool: false)
-    return recipe
+    return nil
   }
   
   class func recipeWithObjectID(objectID: NSManagedObjectID, inContext context: NSManagedObjectContext) -> Recipe {
@@ -182,7 +170,7 @@ class Recipe: NSManagedObject {
   override func willSave() {
     if let id = self.id where self.deleted == true {
       CSSearchableIndex.defaultSearchableIndex().deleteSearchableItemsWithIdentifiers(["\(id)"], completionHandler: { error in
-        if let error = error {
+        if let _ = error {
           print("Error while indexing")
         }
       })
@@ -192,7 +180,7 @@ class Recipe: NSManagedObject {
   override func didSave() {
     if let _ = self.id {
       CSSearchableIndex.defaultSearchableIndex().indexSearchableItems([self.searchableItem], completionHandler: { error in
-        if let error = error {
+        if let _ = error {
           print("Error while indexing")
         }
         
