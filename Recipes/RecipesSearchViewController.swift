@@ -41,6 +41,7 @@ class RecipesSearchViewController: UIViewController {
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
+    self.navigationItem.backBarButtonItem?.title = ""
     self.backgroundImageView.image = self.imageToBlur
     self.performSelector("focusSearchBar", withObject: nil, afterDelay: 0.1)
   }
@@ -96,20 +97,21 @@ class RecipesSearchViewController: UIViewController {
   
   // MARK: - Navigation
   
-  // In a storyboard-based application, you will often want to do a little preparation before navigation
-//  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//  // Get the new view controller using segue.destinationViewController.
-//  // Pass the selected object to the new view controller.
-//    if segue.identifier == RecipeSearchSegue.RecipeModifier.rawValue {
-//      guard let recipesModifierViewController = (segue.destinationViewController as? UINavigationController)?.viewControllers.first as? RecipeModifierViewController else {
-//        return
-//      }
-//      if let indexPath = self.tableView.indexPathForSelectedRow {
-//        if self.recipes != nil && self.recipes!.count > 0 && indexPath.row < self.recipes!.count {
-//          let selectedRecipe = self.recipes![indexPath.row]
-//          recipesModifierViewController.recipe = selectedRecipe
-//        }
-//      }
-//    }
-//  }
+//   In a storyboard-based application, you will often want to do a little preparation before navigation
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+  // Get the new view controller using segue.destinationViewController.
+  // Pass the selected object to the new view controller.
+    if segue.identifier == "RecipeDetailViewController" {
+      let recipeDetailViewController = segue.destinationViewController as? RecipeDetailViewController
+      recipeDetailViewController?.recipes = self.recipes
+      if let selectedIndexPath = self.tableView.indexPathForSelectedRow {
+        let recipe = self.searchResults[selectedIndexPath.row]
+        if let index = self.recipes.indexOf(recipe) {
+          recipeDetailViewController?.selectedRecipeIndex = index
+        }
+      }
+      recipeDetailViewController?.displayedForCreatingRecipe = false
+      
+    }
+  }
 }

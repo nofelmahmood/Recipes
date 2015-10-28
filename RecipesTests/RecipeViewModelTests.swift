@@ -1,8 +1,8 @@
 //
-//  SyncManagerTests.swift
+//  RecipeViewModelTests.swift
 //  Recipes
 //
-//  Created by Nofel Mahmood on 25/10/2015.
+//  Created by Nofel Mahmood on 28/10/2015.
 //  Copyright © 2015 Hyper. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import XCTest
 import CoreData
 @testable import Recipes
 
-class SyncManagerTests: XCTestCase {
+class RecipeViewModelTests: XCTestCase {
   
   override func setUp() {
     super.setUp()
@@ -22,22 +22,19 @@ class SyncManagerTests: XCTestCase {
     super.tearDown()
   }
   
-  func testSyncManager() {
-    let expectation = self.expectationWithDescription("SyncManager")
-    SyncManager.sharedManager.perform({
-      expectation.fulfill()
-    })
+  func testInitializationFromRecipeModel() {
+    let recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: CoreDataStack.defaultStack.managedObjectContext) as? Recipe
+    XCTAssertNotNil(RecipeViewModel(withModel: recipe!))
+  }
+  
+  func testRecipeViewModel() {
+    XCTAssertNotNil(Recipe.allForView(inContext: CoreDataStack.defaultStack.managedObjectContext))
   }
   
   func testPerformanceExample() {
     // This is an example of a performance test case.
-    let expectation = self.expectationWithDescription("SyncManager.perform")
-    self.waitForExpectationsWithTimeout(5.0, handler: nil)
     self.measureBlock {
       // Put the code you want to measure the time of here.
-      SyncManager.sharedManager.perform({
-        expectation.fulfill()
-      })
     }
   }
   

@@ -375,11 +375,12 @@
                     <connections>
                         <outlet property="backgroundImageView" destination="UQO-52-sYr" id="pFI-ao-aZH"/>
                         <outlet property="tableView" destination="Y1Z-OP-t2s" id="G1s-Bb-RiA"/>
+                        <segue destination="KBO-P8-UaC" kind="show" identifier="RecipeDetailViewController" id="XIh-b8-lyA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lNz-S7-WkU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3588" y="942"/>
+            <point key="canvasLocation" x="4274" y="277"/>
         </scene>
         <!--Recipe Detail View Controller-->
         <scene sceneID="iu4-mC-KwM">
@@ -601,7 +602,7 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="3935" y="-454"/>
+            <point key="canvasLocation" x="5001" y="9"/>
         </scene>
         <!--All-->
         <scene sceneID="O0g-AG-Xge">
@@ -841,7 +842,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O6f-Li-xJe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4631" y="-16"/>
+            <point key="canvasLocation" x="5001" y="454"/>
         </scene>
     </scenes>
     <resources>
@@ -854,5 +855,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="qXt-nM-syb"/>
+        <segue reference="XIh-b8-lyA"/>
     </inferredMetricsTieBreakers>
 </document>
