@@ -246,6 +246,7 @@ class RecipeDetailViewController: UIViewController {
   
   @IBAction func doneButtonDidPress(sender: AnyObject) {
     self.setEditing(false, animated: true)
+    CoreDataStack.defaultStack.saveContext()
   }
   
   // MARK: Status Bar

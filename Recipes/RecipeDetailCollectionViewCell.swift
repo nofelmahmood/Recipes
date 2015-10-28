@@ -42,6 +42,9 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
             instructionView.instructionTextView.editable = true
           }
         }
+        if self.instructionsStackView.arrangedSubviews.count == 0 {
+          self.addInstructionView("", focusOnTextView: false, atIndex: nil)
+        }
         if self.animateEditingChange {
           UIView.animateWithDuration(1.0, animations: {
             self.mainStackView.layoutIfNeeded()
@@ -69,7 +72,6 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
           if let recipeInstructions = self.instructions() {
             self.recipe.instructions = recipeInstructions
           }
-          CoreDataStack.defaultStack.saveContext()
         }
         self.mainStackView.insertArrangedSubview(self.photoImageView, atIndex: 0)
         self.mainStackView.removeArrangedSubview(self.photoEditButton)
@@ -78,6 +80,14 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
         for instructionView in self.instructionsStackView.arrangedSubviews {
           if let instructionView = instructionView as? RecipeInstructionView {
             instructionView.instructionTextView.editable = false
+          }
+        }
+        if self.instructionsStackView.arrangedSubviews.count == 1 {
+          if let instructionView = self.instructionsStackView.arrangedSubviews.first as? RecipeInstructionView {
+            if instructionView.instructionTextView.text.isEmpty {
+              instructionView.removeFromSuperview()
+              self.addInstructionsPlaceholder()
+            }
           }
         }
         if animateEditingChange {

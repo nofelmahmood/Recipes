@@ -138,21 +138,39 @@
                                 <action selector="addBarItemDidPress:" destination="xQV-RP-pL6" id="LPS-ob-YBA"/>
                             </connections>
                         </barButtonItem>
-                        <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="jCd-gg-zMg">
-                            <rect key="frame" x="238" y="11" width="124" height="22"/>
+                        <view key="titleView" contentMode="scaleToFill" id="I32-NY-ebM">
+                            <rect key="frame" x="180" y="6" width="240" height="33"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="24"/>
-                            <inset key="imageEdgeInsets" minX="112" minY="3" maxX="0.0" maxY="0.0"/>
-                            <state key="normal" title="Recipes" image="Filter">
-                                <color key="titleColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
-                            </state>
-                            <connections>
-                                <action selector="filterBarItemDidPress:" destination="xQV-RP-pL6" eventType="touchUpInside" id="kaw-KF-cdG"/>
-                                <segue destination="BTG-vL-10a" kind="popoverPresentation" identifier="RecipesFilterViewController" popoverAnchorView="jCd-gg-zMg" id="oUY-NE-DXe">
-                                    <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
-                                </segue>
-                            </connections>
-                        </button>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nLj-XI-s4H">
+                                    <rect key="frame" x="57" y="-3" width="127" height="28"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="127" id="FxJ-Vz-63f"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="20"/>
+                                    <inset key="imageEdgeInsets" minX="112" minY="3" maxX="0.0" maxY="0.0"/>
+                                    <state key="normal" title="Recipes" image="Filter">
+                                        <color key="titleColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="filterBarItemDidPress:" destination="xQV-RP-pL6" eventType="touchUpInside" id="EeD-r1-LJU"/>
+                                    </connections>
+                                </button>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QmI-fR-rnq">
+                                    <rect key="frame" x="109" y="23" width="38" height="14"/>
+                                    <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="10"/>
+                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstItem="nLj-XI-s4H" firstAttribute="top" secondItem="I32-NY-ebM" secondAttribute="top" constant="-3" id="Irq-MK-k2V"/>
+                                <constraint firstItem="QmI-fR-rnq" firstAttribute="top" secondItem="nLj-XI-s4H" secondAttribute="bottom" id="S9N-kh-qTG"/>
+                                <constraint firstItem="nLj-XI-s4H" firstAttribute="centerX" secondItem="I32-NY-ebM" secondAttribute="centerX" id="T4y-iW-7w5"/>
+                                <constraint firstItem="QmI-fR-rnq" firstAttribute="centerX" secondItem="I32-NY-ebM" secondAttribute="centerX" constant="8" id="hcp-uJ-tI9"/>
+                            </constraints>
+                        </view>
                         <barButtonItem key="rightBarButtonItem" systemItem="search" id="5eK-V1-Off">
                             <color key="tintColor" red="1" green="0.0" blue="0.40784313729999999" alpha="1" colorSpace="calibratedRGB"/>
                             <connections>
@@ -162,9 +180,13 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="1ol-L8-rOd" id="gtu-VL-Ugk"/>
-                        <outlet property="navigationBarTitleButton" destination="jCd-gg-zMg" id="q3q-mL-G1Z"/>
+                        <outlet property="navigationBarFilterNameLabel" destination="QmI-fR-rnq" id="Axk-E7-XMT"/>
+                        <outlet property="navigationBarTitleButton" destination="nLj-XI-s4H" id="8Z4-1F-afv"/>
                         <segue destination="PwC-Nt-C7j" kind="presentation" identifier="RecipesSearchViewController" id="WP5-VL-8wg"/>
                         <segue destination="KBO-P8-UaC" kind="show" identifier="RecipeDetailViewController" id="qpd-ud-CN6"/>
+                        <segue destination="BTG-vL-10a" kind="popoverPresentation" identifier="RecipesFilterViewController" popoverAnchorView="nLj-XI-s4H" id="JzD-6Z-Ohf">
+                            <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                        </segue>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xyk-KV-Jnv" userLabel="First Responder" sceneMemberID="firstResponder"/>
