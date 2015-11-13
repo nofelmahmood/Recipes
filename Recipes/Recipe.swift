@@ -1,172 +1,223 @@
 //
-//  RecipeModel.swift
+//  Recipe.swift
 //  Recipes
 //
-//  Created by Nofel Mahmood on 07/09/2015.
+//  Created by Nofel Mahmood on 24/09/2015.
 //  Copyright © 2015 Hyper. All rights reserved.
 //
 
+import Foundation
+import CoreData
 import UIKit
+import CoreSpotlight
+import MobileCoreServices
 
-enum RecipeDifficulty: Int {
-  case Easy = 1
-  case Medium = 2
-  case Hard = 3
+protocol SpotlightSearchable {
+  static var domainIdentifier: String {get}
+  var attributeSet: CSSearchableItemAttributeSet {get}
 }
 
-class Recipe: NSObject {
-  
-  var difficulty: NSNumber = NSNumber(integer: 1) {
-    didSet {
-      self.hasChanges = true
-    }
-  }
-  var favorite: Bool? {
-    didSet {
-      self.hasChanges = true
-    }
-  }
-  var id: NSNumber? {
-    didSet {
-      self.hasChanges = true
-    }
-  }
-  var name: String {
-    didSet {
-      self.hasChanges = true
-    }
-  }
-  var specification: String? {
-    didSet {
-      self.hasChanges = true
-    }
-  }
-  var instructions: [String]? {
-    didSet {
-      self.hasChanges = true
-    }
-  }
-  var photoURL: String? {
-    didSet {
-      self.hasChanges = true
-    }
-  }
-  var photoThumbnailURL: String? {
-    didSet {
-      self.hasChanges = true
-    }
-  }
-  var photoData: NSData? {
-    didSet {
-      self.hasChanges = true
-    }
+extension Recipe: SpotlightSearchable {
+  static var domainIdentifier: String {
+    return "com.hyper.recipes.recipeSpotlightSearch"
   }
   
-  private var hasChanges = false
-  private var fromRemote: Bool {
-    if self.id != nil {
-      return true
-    }
-    return false
+  var searchableItem: CSSearchableItem {
+    let attributeSet = self.attributeSet
+    attributeSet.relatedUniqueIdentifier = "\(self.id!)"
+    return CSSearchableItem(uniqueIdentifier: "\(self.id!)", domainIdentifier: Recipe.domainIdentifier, attributeSet: attributeSet)
   }
   
-  private var serverRepresentation: [String: AnyObject] {
-    var representation = [RecipeKey.Name.rawValue: self.name, RecipeKey.Difficulty.rawValue: self.difficulty]
-    if let favorite = favorite {
-      representation[RecipeKey.Favorite.rawValue] = favorite
+  var attributeSet: CSSearchableItemAttributeSet {
+    let attributeSet = CSSearchableItemAttributeSet(
+      itemContentType: kUTTypeItem as String)
+    attributeSet.title = name
+    attributeSet.contentDescription = self.specification
+    if let photo = self.photo {
+      if let image = UIImage(data: photo) {
+        attributeSet.thumbnailData = UIImageJPEGRepresentation(image, 0.9)
+      }
     }
-    if let description = self.specification {
-      representation[RecipeKey.Description.rawValue] = description
-    }
-    if let instructions = self.instructions?.joinWithSeparator(",") {
-      representation[RecipeKey.Instructions.rawValue] = instructions
-    }
-    
-    return [RecipeKey.Recipe.rawValue: representation]
+    attributeSet.keywords = self.name?.componentsSeparatedByString(" ")
+    return attributeSet
   }
-  
-  init(fillFromRemoteKeyValue keyValue:[String: AnyObject]) {
-    self.name = ""
-    super.init()
-    self.fill(keyValue)
-    self.hasChanges = false
-  }
-  
-  override init() {
-    self.name = ""
-    super.init()
-    self.hasChanges = false
-  }
+}
 
-  func changed() -> Bool {
-    return self.hasChanges
+class Recipe: NSManagedObject {
+  
+  // Insert code here to add functionality to your managed object subclass  
+  class var excludedKeysFromChangeTracking: [String] {
+    return ["createdAt","id","lastSyncedAt","photoThumbnailURL","photoURL","updatedAt","isNew","changedKeys"]
   }
   
-  func difficultyDescription() -> String? {
-    switch(difficulty) {
-    case RecipeDifficulty.Easy.rawValue:
-      return "\(RecipeDifficulty.Easy)"
-    case RecipeDifficulty.Medium.rawValue:
-      return "\(RecipeDifficulty.Medium)"
-    case RecipeDifficulty.Hard.rawValue:
-      return "\(RecipeDifficulty.Hard)"
-    default: break
+  class func insertNewRecipe(inManagedObjectContext context: NSManagedObjectContext) -> Recipe? {
+    guard let recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: context) as? Recipe else {
+      return nil
+    }
+    recipe.isNew = NSNumber(bool: true)
+    let date = NSDate()
+    recipe.createdAt = date
+    recipe.updatedAt = date
+    return recipe
+  }
+  
+  class func insertNewRecipe(usingRecipeApiModel recipeApiModel: RecipeApiModel, inManagedObjectContext context: NSManagedObjectContext) -> Recipe? {
+    let predicate = NSPredicate(format: "id == %@", recipeApiModel.id!)
+    let fetchRequest = NSFetchRequest(entityName: "Recipe")
+    fetchRequest.predicate = predicate
+    var error: NSError? = nil
+    let count = context.countForFetchRequest(fetchRequest, error: &error)
+    if count != NSNotFound && count == 0 {
+      guard let recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: context) as? Recipe else {
+        return nil
+      }
+      recipe.id = recipeApiModel.id
+      recipe.name = recipeApiModel.name
+      recipe.instructions = recipeApiModel.instructions
+      recipe.specification = recipeApiModel.specification
+      recipe.favorite = recipeApiModel.favorite
+      recipe.difficulty = recipeApiModel.difficulty
+      recipe.photoURL = recipeApiModel.photo.url
+      recipe.photoThumbnailURL = recipeApiModel.photo.thumbnail_url
+      recipe.createdAt = recipeApiModel.created_at
+      recipe.updatedAt = recipeApiModel.updated_at
+      recipe.isNew = NSNumber(bool: false)
+      return recipe
     }
     return nil
   }
   
-  func addInstruction(name: String){
-    if self.instructions != nil {
-      self.instructions?.append(name)
+  class func recipeWithObjectID(objectID: NSManagedObjectID, inContext context: NSManagedObjectContext) -> Recipe {
+    return context.objectWithID(objectID) as! Recipe
+  }
+  
+  class func all(inContext context: NSManagedObjectContext) -> [Recipe]? {
+    let fetchRequest = NSFetchRequest(entityName: "Recipe")
+    fetchRequest.sortDescriptors = [NSSortDescriptor(key: "updatedAt", ascending: false),NSSortDescriptor(key: "createdAt", ascending: false)]
+    let result = try? context.executeFetchRequest(fetchRequest)
+    if let recipes = result as? [Recipe] {
+      return recipes
+    }
+    return nil
+  }
+  
+  class func allForView(inContext context: NSManagedObjectContext) -> [RecipeViewModel]? {
+    return Recipe.all(inContext: context)?.map({ RecipeViewModel(withModel: $0) })
+  }
+  
+  class func deleteAll(inContext context: NSManagedObjectContext) {
+    let fetchRequest = NSFetchRequest(entityName: "Recipe")
+    if let result = try? context.executeFetchRequest(fetchRequest) {
+      if let recipes = result as? [Recipe] {
+        for recipe in recipes {
+          guard let recipeID = recipe.id else {
+            context.deleteObject(recipe)
+            continue
+          }
+          _ = Tombstone.insertNewTombstone(forRecipeID: recipeID, inManagedObjectContext: context)
+          context.deleteObject(recipe)
+        }
+        let _ = try? context.saveIfHasChanges()
+      }
+    }
+  }
+  
+  class func recipes(withIDs ids: [NSNumber], inContext context: NSManagedObjectContext) -> [Recipe]? {
+    let fetchRequest = NSFetchRequest(entityName: "Recipe")
+    fetchRequest.predicate = NSPredicate(format: "id IN %@", ids)
+    let result = try? context.executeFetchRequest(fetchRequest)
+    if let recipes = result as? [Recipe] {
+      return recipes
+    }
+    return nil
+  }
+  
+  class func deleteRecipes(exceptWithIDs ids: [NSNumber], inContext context: NSManagedObjectContext) {
+    let fetchRequest = NSFetchRequest(entityName: "Recipe")
+    fetchRequest.predicate = NSPredicate(format: "NOT (id IN %@)", ids)
+    let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+    _ = try? context.executeRequest(batchDeleteRequest)
+  }
+  
+  class func newRecipesSinceLastSync(inContext context: NSManagedObjectContext) -> [Recipe]? {
+    let fetchRequest = NSFetchRequest(entityName: "Recipe")
+    fetchRequest.predicate = NSPredicate(format: "isNew == %@", NSNumber(bool: true))
+    let result = try? context.executeFetchRequest(fetchRequest)
+    if let recipes = result as? [Recipe] {
+      return recipes
+    }
+    return nil
+  }
+  
+  class func deletedRecipeTombstoneEntriesSinceLastSync(inContext context: NSManagedObjectContext) -> [Tombstone]? {
+    return Tombstone.all(inContext: context)
+  }
+  
+  class func deleteRecipe(recipe: Recipe) -> Bool {
+    if let recipeID = recipe.id {
+      if let _ = Tombstone.insertNewTombstone(forRecipeID: recipeID, inManagedObjectContext: recipe.managedObjectContext!) {
+        recipe.managedObjectContext!.deleteObject(recipe)
+        return true
+      } else {
+        return false
+      }
     } else {
-      self.instructions = [name]
+      recipe.managedObjectContext?.deleteObject(recipe)
+      return true
     }
   }
   
-  private func fill(keyValue: [String: AnyObject]) {
-    if let id = keyValue[RecipeKey.ID.rawValue] as? NSNumber {
-      self.id = id
-    }
-    if let name = keyValue[RecipeKey.Name.rawValue] as? String {
-      self.name = name
-    }
-    if let description = keyValue[RecipeKey.Description.rawValue] as? String {
-      self.specification = description
-    }
-    if let instructions = (keyValue[RecipeKey.Instructions.rawValue] as? String)?.componentsSeparatedByString(",") {
-      self.instructions = instructions
-    }
-    if let favorite = (keyValue[RecipeKey.Favorite.rawValue] as? NSNumber)?.boolValue {
-      self.favorite = favorite
-    }
-    if let difficulty = keyValue[RecipeKey.Difficulty.rawValue] as? NSNumber {
-      self.difficulty = difficulty
-    }
-    if let photo = keyValue[PhotoKey.Photo.rawValue] as? [String: String] {
-      if let photoURL = photo[PhotoKey.URL.rawValue] {
-        self.photoURL = photoURL
-      }
-      if let photoThumbnailURL = photo[PhotoKey.ThumbnailURL.rawValue] {
-        self.photoThumbnailURL = photoThumbnailURL
-      }
-    }
-  }
-  
-  func createOrUpdateOnRemote(completionBlock: ((successful: Bool)-> Void)?) {
-    RecipeApi.sharedAPI.createOrUpdate(withRecipeID: self.id?.integerValue, usingRecipeParameters: self.serverRepresentation, photoData: self.photoData) { (successful) -> Void in
-      completionBlock?(successful: successful)
-    }
-  }
-  
-  func deleteFromRemote(completionBlock: ((successful: Bool) -> Void)?) {
-    if let id = self.id?.integerValue {
-      RecipeApi.sharedAPI.delete(id, completionBlock: { (error) -> Void in
-        if error == nil {
-          completionBlock?(successful: true)
-        } else {
-          completionBlock?(successful: false)
+  override func willSave() {
+    if let id = self.id where self.deleted == true {
+      CSSearchableIndex.defaultSearchableIndex().deleteSearchableItemsWithIdentifiers(["\(id)"], completionHandler: { error in
+        if let _ = error {
+          print("Error while indexing")
         }
       })
+    }
+  }
+  
+  override func didSave() {
+    if let _ = self.id {
+      CSSearchableIndex.defaultSearchableIndex().indexSearchableItems([self.searchableItem], completionHandler: { error in
+        if let _ = error {
+          print("Error while indexing")
+        }
+        
+      })
+    }
+  }
+  
+  func updateFromApiModel(apiModel: RecipeApiModel) {
+    self.name = apiModel.name
+    self.instructions = apiModel.instructions
+    self.specification = apiModel.specification
+    self.favorite = apiModel.favorite
+    self.difficulty = apiModel.difficulty
+    self.createdAt = apiModel.created_at
+    self.updatedAt = apiModel.updated_at
+    self.photoThumbnailURL = apiModel.photo.thumbnail_url
+    self.photoURL = apiModel.photo.url
+  }
+  
+  func recordChange() {
+    if !self.objectID.temporaryID {
+      let changedAttributeKeys = Array(self.changedValues().keys).filter {
+        return !Recipe.excludedKeysFromChangeTracking.contains($0)
+      }
+      if changedAttributeKeys.count > 0 {
+        if self.changedKeys != nil {
+          let changedKeysString = self.changedKeys!.componentsSeparatedByString(",")
+          let changedAttributeKeys = changedAttributeKeys.filter {
+            return !changedKeysString.contains($0)
+          }
+          if changedAttributeKeys.count > 0 {
+            self.changedKeys!.appendContentsOf(changedAttributeKeys.joinWithSeparator(","))
+          }
+        } else {
+          self.changedKeys = changedAttributeKeys.joinWithSeparator(",")
+        }
+      }
     }
   }
 }

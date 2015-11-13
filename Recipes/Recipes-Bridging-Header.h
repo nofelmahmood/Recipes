@@ -8,7 +8,6 @@
 
 #ifndef Recipes_Bridging_Header_h
 #define Recipes_Bridging_Header_h
-#import <AFNetworking/AFNetworking.h>
 
 
 #endif /* Recipes_Bridging_Header_h */

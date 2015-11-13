@@ -2,7 +2,7 @@
 //  RecipeSearchTableViewCell.swift
 //  Recipes
 //
-//  Created by Nofel Mahmood on 31/08/2015.
+//  Created by Nofel Mahmood on 01/10/2015.
 //  Copyright © 2015 Hyper. All rights reserved.
 //
 
@@ -25,7 +25,6 @@ class RecipeSearchTableViewCell: UITableViewCell {
   }
   
   override func prepareForReuse() {
-    super.prepareForReuse()
     self.nameLabel.text = ""
     self.photoImageView.image = UIImage(named: "ImagePlaceholder")
   }

@@ -4,25 +4,34 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>AFNetworking.xcscheme</key>
+		<key>Alamofire.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
 		<key>Pods.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>1F45448D90950F16942115095DB975BF</key>
+		<key>7DC9D6A76FC256358A1FFD99C92E5B61</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>E0A0843C35E4406010926441E5E9C150</key>
+		<key>D9A87691444085A0D5E4A2F111BE3056</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E9AD967CAA74F482799165449970707E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
