@@ -53,10 +53,10 @@ class RecipesListViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
-    collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-    let collectionViewLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-    collectionViewLayout.itemSize = CGSize(width: collectionView.frame.width, height: 289.0)
-    collectionViewLayout.invalidateLayout()
+//    collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//    let collectionViewLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+//    collectionViewLayout.itemSize = CGSize(width: collectionView.frame.width, height: 289.0)
+//    collectionViewLayout.invalidateLayout()
     interactivePopTransition = UIPercentDrivenInteractiveTransition()
     navigationController?.delegate = self
     tabBarFrame = tabBarController!.tabBar.frame
@@ -176,7 +176,6 @@ class RecipesListViewController: UIViewController {
   // MARK: Trait Collection
   override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
     let collectionViewLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-    collectionViewLayout.itemSize = CGSize(width: collectionView.frame.width, height: 289.0)
     collectionViewLayout.invalidateLayout()
   }
 
