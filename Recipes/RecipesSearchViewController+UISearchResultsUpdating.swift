@@ -11,19 +11,19 @@ import UIKit
 extension RecipesSearchViewController: UISearchResultsUpdating {
   func updateSearchResultsForSearchController(searchController: UISearchController) {
     guard let searchString = searchController.searchBar.text else {
-      self.searchResults.removeAll()
-      self.tableView.reloadData()
+      searchResults.removeAll()
+      tableView.reloadData()
       return
     }
-    guard let recipes = self.recipes else {
+    guard let recipes = recipes else {
       return
     }
-    self.searchResults = recipes.filter({ (recipe) -> Bool in
+    searchResults = recipes.filter({ (recipe) -> Bool in
       if recipe.name.rangeOfString(searchString, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil {
         return true
       }
       return false
     })
-    self.tableView.reloadData()
+    tableView.reloadData()
   }
 }

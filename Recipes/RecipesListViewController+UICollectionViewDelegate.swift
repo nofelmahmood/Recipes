@@ -10,6 +10,6 @@ import UIKit
 
 extension RecipesListViewController: UICollectionViewDelegate {
   func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-    self.performSegueWithIdentifier("RecipeDetailViewController", sender: self)
+    performSegueWithIdentifier("RecipeDetailViewController", sender: self)
   }
 }

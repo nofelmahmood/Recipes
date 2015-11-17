@@ -13,16 +13,16 @@ class RecipesSelectorViewController: UIViewController {
   var selectedItemIndexPath: NSIndexPath!
   
   var recipes: [RecipeViewModel] {
-    return (self.parentViewController as! RecipeDetailViewController).recipes
+    return (parentViewController as! RecipeDetailViewController).recipes
   }
   var recipeDetailViewController: RecipeDetailViewController {
-    return self.parentViewController as! RecipeDetailViewController
+    return parentViewController as! RecipeDetailViewController
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
-    self.collectionView.reloadData()
+    collectionView.reloadData()
   }
   
   override func didReceiveMemoryWarning() {
@@ -33,14 +33,6 @@ class RecipesSelectorViewController: UIViewController {
   override func prefersStatusBarHidden() -> Bool {
     return true
   }
-  /*
+
   // MARK: - Navigation
-  
-  // In a storyboard-based application, you will often want to do a little preparation before navigation
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-  // Get the new view controller using segue.destinationViewController.
-  // Pass the selected object to the new view controller.
-  }
-  */
-  
 }

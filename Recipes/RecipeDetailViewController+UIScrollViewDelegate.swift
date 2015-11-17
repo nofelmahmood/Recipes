@@ -11,8 +11,8 @@ import UIKit
 extension RecipeDetailViewController: UIScrollViewDelegate {
   
   func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-    if let visibleItemIndexPath = self.collectionView.indexPathsForVisibleItems().first {
-      self.recipesSelectorViewController?.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: visibleItemIndexPath.row + 1, inSection: 0), animated: true, scrollPosition: UICollectionViewScrollPosition.CenteredHorizontally)
+    if let visibleItemIndexPath = collectionView.indexPathsForVisibleItems().first {
+      recipesSelectorViewController?.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: visibleItemIndexPath.row + 1, inSection: 0), animated: true, scrollPosition: UICollectionViewScrollPosition.CenteredHorizontally)
     }
   }
 }

@@ -10,6 +10,6 @@ import UIKit
 
 extension RecipesSearchViewController: UITableViewDelegate {
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    self.performSegueWithIdentifier("RecipeDetailViewController", sender: self)
+    performSegueWithIdentifier("RecipeDetailViewController", sender: self)
   }
 }

@@ -10,10 +10,6 @@ import UIKit
 
 extension RecipesListViewController: UINavigationControllerDelegate {
   func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    return self.toRecipeDetailViewControllerTransition
+    return toRecipeDetailViewControllerTransition
   }
-  
-  //  func navigationController(navigationController: UINavigationController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-  //    return self.interactivePopTransition
-  //  }
 }

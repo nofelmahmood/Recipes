@@ -22,23 +22,23 @@ class RecipesFilterViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
-    self.selectFilterRow()
+    selectFilterRow()
   }
   
   func selectFilterRow() {
-    if self.selectedFilter == RecipesFilter.ShowAll {
-      self.tableView.selectRowAtIndexPath(NSIndexPath(forRow: 3, inSection: 0), animated: true, scrollPosition: .None)
-    } else if self.selectedFilter == RecipesFilter.Hard {
-       self.tableView.selectRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 0), animated: true, scrollPosition: .None)
-    } else if self.selectedFilter == RecipesFilter.Medium {
-      self.tableView.selectRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0), animated: true, scrollPosition: .None)
-    } else if self.selectedFilter == RecipesFilter.Easy {
-      self.tableView.selectRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), animated: true, scrollPosition: .None)
+    if selectedFilter == RecipesFilter.ShowAll {
+      tableView.selectRowAtIndexPath(NSIndexPath(forRow: 3, inSection: 0), animated: true, scrollPosition: .None)
+    } else if selectedFilter == RecipesFilter.Hard {
+       tableView.selectRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 0), animated: true, scrollPosition: .None)
+    } else if selectedFilter == RecipesFilter.Medium {
+      tableView.selectRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0), animated: true, scrollPosition: .None)
+    } else if selectedFilter == RecipesFilter.Easy {
+      tableView.selectRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), animated: true, scrollPosition: .None)
     }
   }
   
   func selectedRecipesFilter() -> String {
-    if let selectedRowIndexPath = self.tableView.indexPathForSelectedRow {
+    if let selectedRowIndexPath = tableView.indexPathForSelectedRow {
       switch(selectedRowIndexPath.row) {
       case 0:
         return RecipesFilter.Easy
@@ -57,16 +57,5 @@ class RecipesFilterViewController: UIViewController {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
   }
-  
-  
-  /*
-  // MARK: - Navigation
-  
-  // In a storyboard-based application, you will often want to do a little preparation before navigation
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-  // Get the new view controller using segue.destinationViewController.
-  // Pass the selected object to the new view controller.
-  }
-  */
   
 }

@@ -10,7 +10,7 @@ import UIKit
 
 extension RecipeDetailViewController: UICollectionViewDelegate {
   func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-    self.setNavigationBarTransparent(true)
-    self.navigationItem.title = ""
+    setNavigationBarTransparent(true)
+    navigationItem.title = ""
   }
 }

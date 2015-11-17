@@ -27,13 +27,13 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   var editing = false {
     didSet {
       if editing {
-        self.nameTextField.userInteractionEnabled = true
-        self.mainStackView.insertArrangedSubview(self.photoEditButton, atIndex: 0)
-        self.mainStackView.removeArrangedSubview(self.photoImageView)
-        self.photoImageView.removeFromSuperview()
-        self.photoEditButton.hidden = false
-        self.descriptionTextView.editable = true
-        for instructionView in self.instructionsStackView.arrangedSubviews {
+        nameTextField.userInteractionEnabled = true
+        mainStackView.insertArrangedSubview(photoEditButton, atIndex: 0)
+        mainStackView.removeArrangedSubview(photoImageView)
+        photoImageView.removeFromSuperview()
+        photoEditButton.hidden = false
+        descriptionTextView.editable = true
+        for instructionView in instructionsStackView.arrangedSubviews {
           if instructionView is UILabel {
             instructionView.removeFromSuperview()
             continue
@@ -42,20 +42,20 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
             instructionView.instructionTextView.editable = true
           }
         }
-        if self.instructionsStackView.arrangedSubviews.count == 0 {
-          self.addInstructionView("", focusOnTextView: false, atIndex: nil)
+        if instructionsStackView.arrangedSubviews.count == 0 {
+          addInstructionView("", focusOnTextView: false, atIndex: nil)
         }
-        if self.animateEditingChange {
+        if animateEditingChange {
           UIView.animateWithDuration(1.0, animations: {
             self.mainStackView.layoutIfNeeded()
           })
         } else {
-          self.mainStackView.layoutIfNeeded()
+          mainStackView.layoutIfNeeded()
         }
       } else {
-        self.nameTextField.userInteractionEnabled = false
-        if self.recipe != nil {
-          self.recipe.photo({ image in
+        nameTextField.userInteractionEnabled = false
+        if recipe != nil {
+          recipe.photo({ image in
             if let image = image {
               NSOperationQueue.mainQueue().addOperationWithBlock({
                 self.photoImageView.image = image
@@ -63,30 +63,30 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
               })
             }
           })
-          if let recipeName = self.nameTextField.text {
-            self.recipe.name = recipeName
+          if let recipeName = nameTextField.text {
+            recipe.name = recipeName
           }
-          if let recipeDescription = self.descriptionTextView.text {
-            self.recipe.specification = recipeDescription
+          if let recipeDescription = descriptionTextView.text {
+            recipe.specification = recipeDescription
           }
-          if let recipeInstructions = self.instructions() {
-            self.recipe.instructions = recipeInstructions
+          if let recipeInstructions = instructions() {
+            recipe.instructions = recipeInstructions
           }
         }
-        self.mainStackView.insertArrangedSubview(self.photoImageView, atIndex: 0)
-        self.mainStackView.removeArrangedSubview(self.photoEditButton)
-        self.photoEditButton.removeFromSuperview()
-        self.descriptionTextView.editable = false
-        for instructionView in self.instructionsStackView.arrangedSubviews {
+        mainStackView.insertArrangedSubview(photoImageView, atIndex: 0)
+        mainStackView.removeArrangedSubview(photoEditButton)
+        photoEditButton.removeFromSuperview()
+        descriptionTextView.editable = false
+        for instructionView in instructionsStackView.arrangedSubviews {
           if let instructionView = instructionView as? RecipeInstructionView {
             instructionView.instructionTextView.editable = false
           }
         }
-        if self.instructionsStackView.arrangedSubviews.count == 1 {
-          if let instructionView = self.instructionsStackView.arrangedSubviews.first as? RecipeInstructionView {
+        if instructionsStackView.arrangedSubviews.count == 1 {
+          if let instructionView = instructionsStackView.arrangedSubviews.first as? RecipeInstructionView {
             if instructionView.instructionTextView.text.isEmpty {
               instructionView.removeFromSuperview()
-              self.addInstructionsPlaceholder()
+              addInstructionsPlaceholder()
             }
           }
         }
@@ -95,7 +95,7 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
             self.mainStackView.layoutIfNeeded()
           })
         } else {
-          self.mainStackView.layoutIfNeeded()
+          mainStackView.layoutIfNeeded()
         }
       }
     }
@@ -108,30 +108,30 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   }
   
   override func awakeFromNib() {
-    self.scrollView.delegate = self
-    self.photoEditButton.hidden = true
-    self.photoEditButton.layer.borderWidth = 1.0
-    self.photoEditButton.layer.borderColor = UIColor.lightGrayColor().CGColor
-    self.editing = false
+    scrollView.delegate = self
+    photoEditButton.hidden = true
+    photoEditButton.layer.borderWidth = 1.0
+    photoEditButton.layer.borderColor = UIColor.lightGrayColor().CGColor
+    editing = false
   }
   
   func configureCellWithRecipe(recipe: RecipeViewModel) {
     self.recipe = recipe
-    self.nameTextField.text = recipe.name
+    nameTextField.text = recipe.name
     if let specification = recipe.specification {
-      self.descriptionTextView.text = specification
+      descriptionTextView.text = specification
     }
     if let instructions = recipe.instructions {
       for instruction in instructions {
-        self.addInstructionView(instruction, focusOnTextView: false, atIndex: nil)
+        addInstructionView(instruction, focusOnTextView: false, atIndex: nil)
       }
-      for instructionView in self.instructionsStackView.arrangedSubviews {
+      for instructionView in instructionsStackView.arrangedSubviews {
         if let instructionView = instructionView as? RecipeInstructionView {
           instructionView.instructionTextView.editable = false
         }
       }
     } else {
-      self.addInstructionsPlaceholder()
+      addInstructionsPlaceholder()
     }
   }
   
@@ -141,13 +141,13 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
     label.textColor = UIColor.darkGrayColor()
     label.font = UIFont(name: "Avenir", size: 18.0)
     label.numberOfLines = 0
-    self.instructionsStackView.addArrangedSubview(label)
+    instructionsStackView.addArrangedSubview(label)
   }
   
   func refreshInstructionsNumbering() {
-    for instructionView in self.instructionsStackView.arrangedSubviews {
+    for instructionView in instructionsStackView.arrangedSubviews {
       if let instructionView = instructionView as? RecipeInstructionView {
-        instructionView.numberLabel.text = "\((self.instructionsStackView.arrangedSubviews.indexOf(instructionView)!) + 1)"
+        instructionView.numberLabel.text = "\((instructionsStackView.arrangedSubviews.indexOf(instructionView)!) + 1)"
       }
     }
   }
@@ -174,8 +174,8 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   
   func removeInstructionView(withInstructionTextView textView: UITextView, shiftFocusToPrevious: Bool) {
     if let instructionView = textView.superview?.superview?.superview as? RecipeInstructionView {
-      let index = self.instructionsStackView.arrangedSubviews.indexOf(instructionView)
-      self.instructionsStackView.removeArrangedSubview(instructionView)
+      let index = instructionsStackView.arrangedSubviews.indexOf(instructionView)
+      instructionsStackView.removeArrangedSubview(instructionView)
       UIView.animateWithDuration(0.5, animations: {
         instructionView.hidden = true
         self.refreshInstructionsNumbering()
@@ -196,11 +196,11 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   }
   
   func instructions() -> [String]? {
-    guard self.instructionsStackView.arrangedSubviews.count > 0 else {
+    guard instructionsStackView.arrangedSubviews.count > 0 else {
       return nil
     }
     var instructionsArray = [String]()
-    for instructionView in self.instructionsStackView.arrangedSubviews {
+    for instructionView in instructionsStackView.arrangedSubviews {
       if let instructionView = instructionView as? RecipeInstructionView {
         instructionsArray.append(instructionView.instructionTextView.text)
       }
@@ -209,15 +209,15 @@ class RecipeDetailCollectionViewCell: UICollectionViewCell {
   }
   
   override func prepareForReuse() {
-    self.scrollView.contentOffset = CGPoint(x: 0, y: 0)
-    self.photoEditButton.hidden = true
-    self.editing = false
-    for view in self.instructionsStackView.subviews {
+    scrollView.contentOffset = CGPoint(x: 0, y: 0)
+    photoEditButton.hidden = true
+    editing = false
+    for view in instructionsStackView.subviews {
       view.removeFromSuperview()
     }
   }
   
   @IBAction func photoEditButtonDidPress(sender: AnyObject) {
-    self.photoEditButtonDidPress?()
+    photoEditButtonDidPress?()
   }
 }

@@ -25,8 +25,8 @@ class RecipeSearchTableViewCell: UITableViewCell {
   }
   
   override func prepareForReuse() {
-    self.nameLabel.text = ""
-    self.photoImageView.image = UIImage(named: "ImagePlaceholder")
+    nameLabel.text = ""
+    photoImageView.image = UIImage(named: "ImagePlaceholder")
   }
   
 }

@@ -10,6 +10,6 @@ import UIKit
 
 extension RecipesFilterViewController: UITableViewDelegate {
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    self.delegate?.recipesFilterViewController(self, didSelectFilter: self.selectedRecipesFilter())
+    delegate?.recipesFilterViewController(self, didSelectFilter: selectedRecipesFilter())
   }
 }

@@ -10,10 +10,10 @@ import UIKit
 
 extension RecipesListViewController: UIScrollViewDelegate {
   func scrollViewDidScroll(scrollView: UIScrollView) {
-    let visibleCells = self.collectionView.visibleCells()
+    let visibleCells = collectionView.visibleCells()
     for cell in visibleCells {
       if (cell as? UICollectionViewCellParallax) != nil {
-        let bounds = self.collectionView.bounds
+        let bounds = collectionView.bounds
         let boundsCenter = CGPoint(x: CGRectGetMidX(bounds), y: CGRectGetMidY(bounds))
         let cellCenter = cell.center
         let offsetFromCenter = CGPointMake(boundsCenter.x - cellCenter.x, boundsCenter.y - cellCenter.y)

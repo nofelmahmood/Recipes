@@ -10,13 +10,13 @@ import UIKit
 
 extension RecipesListViewController: RecipesFilterViewControllerDelegate {
   func recipesFilterViewController(controller: RecipesFilterViewController, didSelectFilter filter: String) {
-    self.recipesFilter = filter
-    if self.recipesFilter == RecipesFilter.ShowAll {
-      self.navigationBarFilterNameLabel.text = ""
+    recipesFilter = filter
+    if recipesFilter == RecipesFilter.ShowAll {
+      navigationBarFilterNameLabel.text = ""
     } else {
-      self.navigationBarFilterNameLabel.text = self.recipesFilter
+      navigationBarFilterNameLabel.text = recipesFilter
     }
-    self.reloadCollectionViewDataWithNewData()
-    self.dismissViewControllerAnimated(true, completion: nil)
+    reloadCollectionViewDataWithNewData()
+    dismissViewControllerAnimated(true, completion: nil)
   }
 }

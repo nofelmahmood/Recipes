@@ -23,56 +23,56 @@ class RecipeViewModel: NSObject {
   
   var id: NSNumber? {
     get {
-      return self.recipe.id
+      return recipe.id
     } set {
-      self.recipe.id = newValue
+      recipe.id = newValue
     }
   }
   
   var name: String {
     get {
-      return self.recipe.name!
+      return recipe.name!
     } set {
-      self.recipe.name = newValue
+      recipe.name = newValue
     }
   }
   
   var specification: String? {
     get {
-      return self.recipe.specification
+      return recipe.specification
     } set {
-      self.recipe.specification = newValue
+      recipe.specification = newValue
     }
   }
   
   var instructions: [String]? {
     get {
-      if let separatedInstructions = self.recipe.instructions?.componentsSeparatedByString(RecipeInstructionsSeparator) {
+      if let separatedInstructions = recipe.instructions?.componentsSeparatedByString(RecipeInstructionsSeparator) {
         if separatedInstructions.count != 0 && separatedInstructions.first!.isEmpty == false {
           return separatedInstructions
         }
       }
       return nil
     } set {
-      self.recipe.instructions = newValue?.joinWithSeparator(RecipeInstructionsSeparator)
+      recipe.instructions = newValue?.joinWithSeparator(RecipeInstructionsSeparator)
     }
   }
   
   var favorite: Bool? {
     get {
-      return self.recipe.favorite?.boolValue
+      return recipe.favorite?.boolValue
     } set {
       if let newValue = newValue {
-        self.recipe.favorite = NSNumber(bool: newValue)
+        recipe.favorite = NSNumber(bool: newValue)
       } else {
-        self.recipe.favorite = nil
+        recipe.favorite = nil
       }
     }
   }
   
   var difficulty: String {
     get {
-      switch(self.recipe.difficulty!.integerValue) {
+      switch(recipe.difficulty!.integerValue) {
       case 1:
         return RecipeDifficulty.Easy
       case 2:
@@ -86,11 +86,11 @@ class RecipeViewModel: NSObject {
     } set {
       switch(newValue) {
       case RecipeDifficulty.Easy:
-        self.recipe.difficulty = NSNumber(integer: 1)
+        recipe.difficulty = NSNumber(integer: 1)
       case RecipeDifficulty.Medium:
-        self.recipe.difficulty = NSNumber(integer: 2)
+        recipe.difficulty = NSNumber(integer: 2)
       case RecipeDifficulty.Hard:
-        self.recipe.difficulty = NSNumber(integer: 3)
+        recipe.difficulty = NSNumber(integer: 3)
       default: break
       }
     }
@@ -98,21 +98,21 @@ class RecipeViewModel: NSObject {
   
   var photo: UIImage? {
     get {
-      if let photoData = self.recipe.photo {
+      if let photoData = recipe.photo {
         return UIImage(data: photoData)
       }
       return nil
     } set {
       if let image = newValue {
-        self.recipe.photo = UIImageJPEGRepresentation(image, 1.0)
+        recipe.photo = UIImageJPEGRepresentation(image, 1.0)
       } else {
-        self.recipe.photo = nil
+        recipe.photo = nil
       }
     }
   }
   
   var photoURL: NSURL? {
-    if let photoURLString = self.recipe.photoURL {
+    if let photoURLString = recipe.photoURL {
       if let photoURL = NSURL(string: photoURLString) {
         return photoURL
       } else {
@@ -124,7 +124,7 @@ class RecipeViewModel: NSObject {
   }
   
   var photoThumbnailURL: NSURL? {
-    if let thumbnailURLString = self.recipe.photoThumbnailURL {
+    if let thumbnailURLString = recipe.photoThumbnailURL {
       if let thumbnailURL = NSURL(string: thumbnailURLString) {
         return thumbnailURL
       } else {
@@ -147,21 +147,21 @@ class RecipeViewModel: NSObject {
     if let recipe = recipeModel {
       self.recipe = recipe
     } else {
-      self.recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: CoreDataStack.defaultStack.managedObjectContext) as? Recipe
-      self.recipe.createdAt = NSDate()
+      recipe = NSEntityDescription.insertNewObjectForEntityForName("Recipe", inManagedObjectContext: CoreDataStack.defaultStack.managedObjectContext) as? Recipe
+      recipe.createdAt = NSDate()
       try! CoreDataStack.defaultStack.managedObjectContext.save()
     }
   }
   
   func deleteUnderlyingRecipe() -> Bool {
-    return Recipe.deleteRecipe(self.recipe)
+    return Recipe.deleteRecipe(recipe)
   }
   
   func photo(completionBlock: ((image: UIImage?) -> Void)) {
-    if let photo = self.recipe.photo {
+    if let photo = recipe.photo {
       completionBlock(image: UIImage(data: photo))
       return
-    } else if let thumbnailURL = self.recipe.photoThumbnailURL {
+    } else if let thumbnailURL = recipe.photoThumbnailURL {
       RecipeApi.sharedAPI.downloadPhotoFromURL(thumbnailURL, completion: { image in
         completionBlock(image: image)
         if let image = image {
@@ -175,7 +175,7 @@ class RecipeViewModel: NSObject {
   
   func save() {
     if CoreDataStack.defaultStack.managedObjectContext.hasChanges {
-      self.recipe.updatedAt = NSDate()
+      recipe.updatedAt = NSDate()
       try! CoreDataStack.defaultStack.managedObjectContext.save()
     }
   }

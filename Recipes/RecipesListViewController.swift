@@ -41,7 +41,7 @@ class RecipesListViewController: UIViewController {
   var tabBarFrame : CGRect!
   
   var recipesScope: Int {
-    if self.tabBarController!.selectedIndex == RecipesScope.All {
+    if tabBarController!.selectedIndex == RecipesScope.All {
       return RecipesScope.All
     } else {
       return RecipesScope.Favorites
@@ -53,47 +53,51 @@ class RecipesListViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
-    self.interactivePopTransition = UIPercentDrivenInteractiveTransition()
-    self.navigationController?.delegate = self
-    self.tabBarFrame = self.tabBarController!.tabBar.frame
-    self.toRecipesSearchViewControllerTransition = RecipesToRecipesSearchAnimationController()
-    self.toRecipeDetailViewControllerTransition = RecipesToRecipeDetailViewAnimationController()
-    self.prepareDataSource()
-    self.collectionView.reloadData()
+    collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    let collectionViewLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+    collectionViewLayout.itemSize = CGSize(width: collectionView.frame.width, height: 289.0)
+    collectionViewLayout.invalidateLayout()
+    interactivePopTransition = UIPercentDrivenInteractiveTransition()
+    navigationController?.delegate = self
+    tabBarFrame = tabBarController!.tabBar.frame
+    toRecipesSearchViewControllerTransition = RecipesToRecipesSearchAnimationController()
+    toRecipeDetailViewControllerTransition = RecipesToRecipeDetailViewAnimationController()
+    prepareDataSource()
+    collectionView.reloadData()
   }
   
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
     UIApplication.sharedApplication().statusBarHidden = false
-    self.tabBarController!.tabBar.frame = self.tabBarFrame
-    self.tabBarController!.tabBar.hidden = false
-    self.navigationController?.navigationBar.setBackgroundImage(nil, forBarMetrics: .Default)
-    self.navigationController?.navigationBar.shadowImage = nil
+    tabBarController!.tabBar.frame = tabBarFrame
+    tabBarController!.tabBar.hidden = false
+    navigationController?.navigationBar.setBackgroundImage(nil, forBarMetrics: .Default)
+    navigationController?.navigationBar.shadowImage = nil
     let btn = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
-    self.navigationController?.navigationBar.topItem?.backBarButtonItem=btn
+    navigationController?.navigationBar.topItem?.backBarButtonItem=btn
   }
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    self.navigationController?.hidesBarsOnSwipe = true
-    if self.firstTime {
-      self.firstTime = false
-      if self.recipesScope == RecipesScope.Favorites {
-        self.navigationBarTitleButton.setTitle("Favorites", forState: .Normal)
-        self.navigationBarTitleButton.userInteractionEnabled = false
-        self.navigationBarTitleButton.setImage(nil, forState: .Normal)
+    navigationController?.hidesBarsOnSwipe = true
+    if firstTime {
+      firstTime = false
+      if recipesScope == RecipesScope.Favorites {
+        navigationBarTitleButton.setTitle("Favorites", forState: .Normal)
+        navigationBarTitleButton.userInteractionEnabled = false
+        navigationBarTitleButton.setImage(nil, forState: .Normal)
       }
     }
-    if self.recipesScope == RecipesScope.Favorites {
-      self.recipes = self.fetchedRecipes.filter({ recipe in
+    if recipesScope == RecipesScope.Favorites {
+      recipes = fetchedRecipes.filter({ recipe in
         guard let favorite = recipe.favorite else {
           return false
         }
         return favorite
       })
     }
-    self.prepareDataSource()
-    self.collectionView.performBatchUpdates({
+    prepareDataSource()
+    collectionView.performBatchUpdates({
       self.collectionView.reloadSections(NSIndexSet(index: 0))
       }, completion: nil)
     
@@ -110,16 +114,16 @@ class RecipesListViewController: UIViewController {
   
   func prepareDataSource() {
     if let allRecipes = Recipe.allForView(inContext: CoreDataStack.defaultStack.managedObjectContext) {
-      self.recipes = allRecipes
-      if self.recipesScope == RecipesScope.Favorites {
-        self.recipes = self.fetchedRecipes.filter({ recipe in
+      recipes = allRecipes
+      if recipesScope == RecipesScope.Favorites {
+        recipes = fetchedRecipes.filter({ recipe in
           guard let favorite = recipe.favorite else {
             return false
           }
           return favorite
         })
       }
-      self.fetchedRecipes = allRecipes
+      fetchedRecipes = allRecipes
     }
   }
   
@@ -142,34 +146,40 @@ class RecipesListViewController: UIViewController {
   }
   
   func reloadCollectionViewDataWithNewData() {
-    if self.recipesScope == RecipesScope.All {
-      if self.recipesFilter == RecipesFilter.ShowAll {
-        self.recipes = self.fetchedRecipes
+    if recipesScope == RecipesScope.All {
+      if recipesFilter == RecipesFilter.ShowAll {
+        recipes = fetchedRecipes
       } else {
-        self.recipes = self.fetchedRecipes.filter({
-          return $0.difficulty == self.recipesFilter
+        recipes = fetchedRecipes.filter({
+          return $0.difficulty == recipesFilter
         })
       }
     }
-    self.collectionView.performBatchUpdates({
+    collectionView.performBatchUpdates({
       self.collectionView.reloadSections(NSIndexSet(index: 0))
       }, completion: nil)
   }
   
   // MARK: NSUserActivity
   func handleUserActivityWithRecipeID(recipeID: Int32) {
-    if let recipe = self.recipes.filter({
+    if let recipe = recipes.filter({
       if let id = $0.id?.intValue {
         return recipeID == id
       }
       return false }).first {
-        if let index = self.recipes.indexOf(recipe) {
-          self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: index, inSection: 0), animated: false, scrollPosition: UICollectionViewScrollPosition.None)
-          self.performSegueWithIdentifier(RecipesListViewControllerSegue.RecipeDetailViewController, sender: self)
+        if let index = recipes.indexOf(recipe) {
+          collectionView.selectItemAtIndexPath(NSIndexPath(forItem: index, inSection: 0), animated: false, scrollPosition: UICollectionViewScrollPosition.None)
+          performSegueWithIdentifier(RecipesListViewControllerSegue.RecipeDetailViewController, sender: self)
         }
     }
   }
-  
+  // MARK: Trait Collection
+  override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    let collectionViewLayout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+    collectionViewLayout.itemSize = CGSize(width: collectionView.frame.width, height: 289.0)
+    collectionViewLayout.invalidateLayout()
+  }
+
   // MARK: Status Bar
   override func prefersStatusBarHidden() -> Bool {
     return false
@@ -177,51 +187,49 @@ class RecipesListViewController: UIViewController {
   
   // MARK: IBAction
   @IBAction func searchBarItemDidPress(sender: AnyObject) {
-    self.performSegueWithIdentifier(RecipesListViewControllerSegue.RecipesSearchViewController, sender: self)
+    performSegueWithIdentifier(RecipesListViewControllerSegue.RecipesSearchViewController, sender: self)
   }
   
   @IBAction func filterBarItemDidPress(sender: AnyObject) {
-    self.performSegueWithIdentifier(RecipesListViewControllerSegue.RecipesFilterViewController, sender: self)
+    performSegueWithIdentifier(RecipesListViewControllerSegue.RecipesFilterViewController, sender: self)
   }
   
   @IBAction func addBarItemDidPress(sender: AnyObject) {
-    self.segueToRecipeDetailForNewRecipe = true
-    self.performSegueWithIdentifier(RecipesListViewControllerSegue.RecipeDetailViewController, sender: self)
+    segueToRecipeDetailForNewRecipe = true
+    performSegueWithIdentifier(RecipesListViewControllerSegue.RecipeDetailViewController, sender: self)
   }
   
   // MARK: - Navigation
-  // In a storyboard-based application, you will often want to do a little preparation before navigation
+  
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    // Get the new view controller using segue.destinationViewController.
-    // Pass the selected object to the new view controller.
     if segue.identifier == RecipesListViewControllerSegue.RecipeDetailViewController {
       if let recipeDetailViewController = segue.destinationViewController as? RecipeDetailViewController {
-        recipeDetailViewController.recipes = self.recipes
+        recipeDetailViewController.recipes = recipes
         recipeDetailViewController.selectedRecipeIndex = 0
-        if self.segueToRecipeDetailForNewRecipe {
-          self.segueToRecipeDetailForNewRecipe = false
+        if segueToRecipeDetailForNewRecipe {
+          segueToRecipeDetailForNewRecipe = false
           recipeDetailViewController.displayedForCreatingRecipe = true
         } else {
-          recipeDetailViewController.selectedRecipeIndex = (self.collectionView.indexPathsForSelectedItems()!.first)!.row
+          recipeDetailViewController.selectedRecipeIndex = (collectionView.indexPathsForSelectedItems()!.first)!.row
           recipeDetailViewController.displayedForCreatingRecipe = false
         }
       }
     } else if segue.identifier == RecipesListViewControllerSegue.RecipesSearchViewController {
       if let recipesSearchViewController = (segue.destinationViewController as? UINavigationController)?.topViewController as? RecipesSearchViewController {
-        recipesSearchViewController.recipes = self.fetchedRecipes
+        recipesSearchViewController.recipes = fetchedRecipes
         recipesSearchViewController.navigationController?.transitioningDelegate = self
         UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0)
-        view.drawViewHierarchyInRect(self.view.bounds, afterScreenUpdates: false)
+        view.drawViewHierarchyInRect(view.bounds, afterScreenUpdates: false)
         let snapshotImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         recipesSearchViewController.imageToBlur = snapshotImage
       }
     } else if segue.identifier == RecipesListViewControllerSegue.RecipesFilterViewController {
       let destinationController = segue.destinationViewController as? RecipesFilterViewController
-      destinationController?.selectedFilter = self.recipesFilter
+      destinationController?.selectedFilter = recipesFilter
       destinationController?.popoverPresentationController?.delegate  = self
       destinationController?.preferredContentSize = CGSize(width: 200.0, height: 220.0)
-      destinationController?.popoverPresentationController?.sourceRect = CGRect(x: (self.navigationBarTitleButton.frame.size.width/2) - 60, y: self.navigationBarTitleButton.frame.origin.y, width: self.navigationBarTitleButton.frame.size.width, height: self.navigationBarTitleButton.frame.size.height)
+      destinationController?.popoverPresentationController?.sourceRect = CGRect(x: (navigationBarTitleButton.frame.size.width/2) - 60, y: navigationBarTitleButton.frame.origin.y, width: navigationBarTitleButton.frame.size.width, height: navigationBarTitleButton.frame.size.height)
       destinationController?.delegate = self
     }
   }

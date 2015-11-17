@@ -11,7 +11,7 @@ import UIKit
 extension RecipeDetailCollectionViewCell: UITextViewDelegate {
   func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
     if range.length <= 1 && text.isEmpty && textView.text.isEmpty {
-      self.removeInstructionView(withInstructionTextView: textView, shiftFocusToPrevious: true)
+      removeInstructionView(withInstructionTextView: textView, shiftFocusToPrevious: true)
       return false
     }
     if text == "\n" {
@@ -19,12 +19,12 @@ extension RecipeDetailCollectionViewCell: UITextViewDelegate {
         return false
       }
       if let instructionView = textView.superview?.superview?.superview as? RecipeInstructionView {
-        if var index = self.instructionsStackView.arrangedSubviews.indexOf(instructionView) {
+        if var index = instructionsStackView.arrangedSubviews.indexOf(instructionView) {
           index = index + 1
-          if index < self.instructionsStackView.arrangedSubviews.count {
-            self.addInstructionView("", focusOnTextView: true, atIndex: index)
+          if index < instructionsStackView.arrangedSubviews.count {
+            addInstructionView("", focusOnTextView: true, atIndex: index)
           } else {
-            self.addInstructionView("", focusOnTextView: true, atIndex: nil)
+            addInstructionView("", focusOnTextView: true, atIndex: nil)
           }
         }
       }
@@ -35,7 +35,7 @@ extension RecipeDetailCollectionViewCell: UITextViewDelegate {
   
   func textViewDidEndEditing(textView: UITextView) {
     if textView.text.isEmpty {
-      self.removeInstructionView(withInstructionTextView: textView, shiftFocusToPrevious: false)
+      removeInstructionView(withInstructionTextView: textView, shiftFocusToPrevious: false)
     }
   }
 }

@@ -16,32 +16,30 @@ class RecipePhotoCollectionViewCell: UICollectionViewCell {
   
   override var selected: Bool {
     didSet {
-      if self.selected {
-        self.photoImageView.layer.cornerRadius = 1.0
-        self.photoImageView.layer.borderColor = UIColor.appKeyColor().CGColor
-        self.photoImageView.layer.borderWidth = 2.0
-        self.photoImageView.layer.masksToBounds = true
+      if selected {
+        photoImageView.layer.cornerRadius = 1.0
+        photoImageView.layer.borderColor = UIColor.appKeyColor().CGColor
+        photoImageView.layer.borderWidth = 2.0
+        photoImageView.layer.masksToBounds = true
       } else {
-        self.photoImageView.layer.borderWidth = 0.0
-        self.photoImageView.layer.cornerRadius = 0.0
-        self.photoImageView.layer.masksToBounds = false
+        photoImageView.layer.borderWidth = 0.0
+        photoImageView.layer.cornerRadius = 0.0
+        photoImageView.layer.masksToBounds = false
       }
     }
   }
   
   override func awakeFromNib() {
-    self.photoImageView.image = nil
+    photoImageView.image = nil
   }
   
   override func prepareForReuse() {
     super.prepareForReuse()
-    self.photoImageView.image = nil
-    self.photoImageView.layer.borderWidth = 0.0
-    self.photoImageView.layer.cornerRadius = 0.0
-    self.photoImageView.layer.masksToBounds = false
-    self.photoImageViewWidthConstraint.constant = 44.0
-    self.photoImageViewHeightConstraint.constant = 44.0
+    photoImageView.image = nil
+    photoImageView.layer.borderWidth = 0.0
+    photoImageView.layer.cornerRadius = 0.0
+    photoImageView.layer.masksToBounds = false
+    photoImageViewWidthConstraint.constant = 44.0
+    photoImageViewHeightConstraint.constant = 44.0
   }
 }
-
-

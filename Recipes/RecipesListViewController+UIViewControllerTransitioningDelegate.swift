@@ -10,10 +10,10 @@ import UIKit
 
 extension RecipesListViewController: UIViewControllerTransitioningDelegate {
   func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    return self.toRecipesSearchViewControllerTransition
+    return toRecipesSearchViewControllerTransition
   }
   
   func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-    return self.toRecipesSearchViewControllerTransition
+    return toRecipesSearchViewControllerTransition
   }
 }

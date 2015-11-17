@@ -10,6 +10,6 @@ import UIKit
 
 extension RecipesSearchViewController: UISearchControllerDelegate {
   func didDismissSearchController(searchController: UISearchController) {
-    self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
   }
 }

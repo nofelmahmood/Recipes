@@ -40,7 +40,7 @@ class RecipeApi: NSObject {
   // MARK: Api Calls
   func recipes(completionBlock: ((recipes: [RecipeApiModel]?)->())?) {
     let urlString = ApiEndPoint.Base + ApiEndPoint.Recipes
-    let headers = [HTTPHeader.ContentType.rawValue: HTTPHeaderJSONTypeValue, HTTPHeader.Accept.rawValue: HTTPHeaderJSONTypeValue, HTTPHeader.Authorization.rawValue: self.authorizationHeaderValue]
+    let headers = [HTTPHeader.ContentType.rawValue: HTTPHeaderJSONTypeValue, HTTPHeader.Accept.rawValue: HTTPHeaderJSONTypeValue, HTTPHeader.Authorization.rawValue: authorizationHeaderValue]
     Alamofire.request(.GET, urlString, parameters: nil, encoding: .JSON, headers: headers).responseJSON { _,_, result in
       if let jsonData = result.value as? [[String: AnyObject]] where result.isSuccess {
         var recipeApiModels = [RecipeApiModel]()
@@ -62,7 +62,7 @@ class RecipeApi: NSObject {
       httpMethod = Alamofire.Method.PUT
     }
     let serverRepresentation = RecipeApiValueTransformer.apiRepresentationFromApiModel(recipe)
-    let headers = [HTTPHeader.Authorization.rawValue: self.authorizationHeaderValue]
+    let headers = [HTTPHeader.Authorization.rawValue: authorizationHeaderValue]
     Alamofire.upload(httpMethod, urlString, headers: headers, multipartFormData: { (multipartFormData: MultipartFormData) -> Void in
       for (key,value) in serverRepresentation {
         if let value = value.description {
@@ -96,7 +96,7 @@ class RecipeApi: NSObject {
   
   func delete(recipeID: Int, completionBlock: ((successful: Bool) -> Void)?) {
     let urlString = ApiEndPoint.Base + ApiEndPoint.Recipes + "/" + "\(recipeID)"
-    let headers = [HTTPHeader.Authorization.rawValue: self.authorizationHeaderValue]
+    let headers = [HTTPHeader.Authorization.rawValue: authorizationHeaderValue]
     Alamofire.request(.DELETE, urlString, parameters: nil, encoding: .URL, headers: headers).responseString { _,_, result  in
       completionBlock?(successful: result.isSuccess)
     }

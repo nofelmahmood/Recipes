@@ -17,7 +17,7 @@ class RecipesFilterTableViewCell: UITableViewCell {
   }
   
   override func prepareForReuse() {
-    self.nameLabel.textColor = UIColor.darkGrayColor()
+    nameLabel.textColor = UIColor.darkGrayColor()
   }
   
   override func setSelected(selected: Bool, animated: Bool) {
@@ -25,9 +25,9 @@ class RecipesFilterTableViewCell: UITableViewCell {
     
     // Configure the view for the selected state
     if selected {
-      self.accessoryType = UITableViewCellAccessoryType.Checkmark
+      accessoryType = UITableViewCellAccessoryType.Checkmark
     } else {
-      self.accessoryType = UITableViewCellAccessoryType.None
+      accessoryType = UITableViewCellAccessoryType.None
     }
   }
   

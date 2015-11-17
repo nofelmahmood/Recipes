@@ -11,8 +11,8 @@ import CoreData
 
 extension NSManagedObjectContext {
   func saveIfHasChanges() throws {
-    if self.hasChanges {
-      try self.save()
+    if hasChanges {
+      try save()
     }
   }
 }

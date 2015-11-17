@@ -28,26 +28,26 @@ class RecipesSearchViewController: UIViewController {
     super.viewDidLoad()
     
     // Do any additional setup after loading the view.
-    self.searchController.searchResultsUpdater = self
+    searchController.searchResultsUpdater = self
     searchController.hidesNavigationBarDuringPresentation = false
     searchController.dimsBackgroundDuringPresentation = false
     searchController.searchBar.sizeToFit()
-    self.navigationItem.titleView = self.searchController.searchBar
-    self.searchController.searchBar.searchBarStyle = UISearchBarStyle.Minimal
-    self.searchController.delegate = self
-    self.searchController.searchBar.returnKeyType = UIReturnKeyType.Done
-    self.searchController.active = true
+    navigationItem.titleView = searchController.searchBar
+    searchController.searchBar.searchBarStyle = UISearchBarStyle.Minimal
+    searchController.delegate = self
+    searchController.searchBar.returnKeyType = UIReturnKeyType.Done
+    searchController.active = true
   }
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    self.navigationItem.backBarButtonItem?.title = ""
-    self.backgroundImageView.image = self.imageToBlur
-    self.performSelector("focusSearchBar", withObject: nil, afterDelay: 0.1)
+    navigationItem.backBarButtonItem?.title = ""
+    backgroundImageView.image = imageToBlur
+    performSelector("focusSearchBar", withObject: nil, afterDelay: 0.1)
   }
   
   func focusSearchBar() {
-    self.searchController.searchBar.becomeFirstResponder()
+    searchController.searchBar.becomeFirstResponder()
   }
   
   override func viewWillAppear(animated: Bool) {
@@ -73,8 +73,8 @@ class RecipesSearchViewController: UIViewController {
       return
     }
     var keyboardFrame = userInfo["UIKeyboardFrameEndUserInfoKey"]!.CGRectValue
-    keyboardFrame = self.tableView.convertRect(keyboardFrame, fromView: nil)
-    let intersect = CGRectIntersection(keyboardFrame, self.tableView.bounds)
+    keyboardFrame = tableView.convertRect(keyboardFrame, fromView: nil)
+    let intersect = CGRectIntersection(keyboardFrame, tableView.bounds)
     if !CGRectIsNull(intersect) {
       let duration = userInfo["UIKeyboardAnimationDurationUserInfoKey"]!.doubleValue
       UIView.animateWithDuration(duration, animations: { () -> Void in
@@ -97,21 +97,17 @@ class RecipesSearchViewController: UIViewController {
   
   // MARK: - Navigation
   
-//   In a storyboard-based application, you will often want to do a little preparation before navigation
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-  // Get the new view controller using segue.destinationViewController.
-  // Pass the selected object to the new view controller.
     if segue.identifier == "RecipeDetailViewController" {
       let recipeDetailViewController = segue.destinationViewController as? RecipeDetailViewController
-      recipeDetailViewController?.recipes = self.recipes
-      if let selectedIndexPath = self.tableView.indexPathForSelectedRow {
-        let recipe = self.searchResults[selectedIndexPath.row]
-        if let index = self.recipes.indexOf(recipe) {
+      recipeDetailViewController?.recipes = recipes
+      if let selectedIndexPath = tableView.indexPathForSelectedRow {
+        let recipe = searchResults[selectedIndexPath.row]
+        if let index = recipes.indexOf(recipe) {
           recipeDetailViewController?.selectedRecipeIndex = index
         }
       }
       recipeDetailViewController?.displayedForCreatingRecipe = false
-      
     }
   }
 }

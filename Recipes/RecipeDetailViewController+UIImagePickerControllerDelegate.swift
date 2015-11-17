@@ -15,7 +15,7 @@ extension RecipeDetailViewController: UINavigationControllerDelegate {
 
 extension RecipeDetailViewController: UIImagePickerControllerDelegate {
   func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
-    self.dismissViewControllerAnimated(true, completion: {
+    dismissViewControllerAnimated(true, completion: {
       if let selectedIndexPath = self.collectionView.indexPathsForVisibleItems().first {
         let recipe = self.recipes[selectedIndexPath.row]
         recipe.photo = image
@@ -28,7 +28,7 @@ extension RecipeDetailViewController: UIImagePickerControllerDelegate {
   }
   
   func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-    self.dismissViewControllerAnimated(true, completion: {
+    dismissViewControllerAnimated(true, completion: {
       if let selectedIndexPath = self.collectionView.indexPathsForVisibleItems().first {
         if let cell = self.collectionView.cellForItemAtIndexPath(selectedIndexPath) as? RecipeDetailCollectionViewCell {
           cell.editing = true

@@ -28,16 +28,7 @@ class RecipeInstructionView: UIView {
   }
   
   func setUpWithInstruction(instruction: String, number: Int) {
-    self.instructionTextView.text = instruction
-    self.numberLabel.text = "\(number)"
-  }
-  
-  /*
-  // Only override drawRect: if you perform custom drawing.
-  // An empty implementation adversely affects performance during animation.
-  override func drawRect(rect: CGRect) {
-  // Drawing code
-  }
-  */
-  
+    instructionTextView.text = instruction
+    numberLabel.text = "\(number)"
+  }  
 }

@@ -10,18 +10,18 @@ import UIKit
 
 extension RecipeDetailViewController: UICollectionViewDataSource {
   func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return self.recipes.count
+    return recipes.count
   }
   
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     if let cell = collectionView.dequeueReusableCellWithReuseIdentifier("RecipeDetailCollectionViewCell", forIndexPath: indexPath) as? RecipeDetailCollectionViewCell {
-      let recipe = self.recipes[indexPath.row]
+      let recipe = recipes[indexPath.row]
       cell.configureCellWithRecipe(recipe)
-      cell.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.containerViewHeightConstraint.constant, right: 0)
+      cell.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: containerViewHeightConstraint.constant, right: 0)
       recipe.photo({ image in
         if let image = image {
           NSOperationQueue.mainQueue().addOperationWithBlock({
-            if let correspondingCell = self.collectionView.cellForItemAtIndexPath(NSIndexPath(forItem: indexPath.row, inSection: 0)) as? RecipeDetailCollectionViewCell {
+            if let correspondingCell = collectionView.cellForItemAtIndexPath(NSIndexPath(forItem: indexPath.row, inSection: 0)) as? RecipeDetailCollectionViewCell {
               correspondingCell.photoImageView.image = image
               correspondingCell.backgroundImageView.image = image
             }

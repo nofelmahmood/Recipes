@@ -10,7 +10,7 @@ import UIKit
 
 extension RecipesSelectorViewController: UICollectionViewDataSource {
   func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return self.recipes.count + 1
+    return recipes.count + 1
   }
   
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -21,11 +21,11 @@ extension RecipesSelectorViewController: UICollectionViewDataSource {
         cell.photoImageViewWidthConstraint.constant = 23.0
         return cell
       }
-      let recipe = self.recipes[(indexPath.row - 1)]
+      let recipe = recipes[(indexPath.row - 1)]
       recipe.photo({ image in
         if let image = image {
           NSOperationQueue.mainQueue().addOperationWithBlock({
-            if let correspondingCell = self.collectionView.cellForItemAtIndexPath(NSIndexPath(forItem: indexPath.row, inSection: 0)) as? RecipePhotoCollectionViewCell {
+            if let correspondingCell = collectionView.cellForItemAtIndexPath(NSIndexPath(forItem: indexPath.row, inSection: 0)) as? RecipePhotoCollectionViewCell {
               correspondingCell.photoImageView.image = image
             }
           })

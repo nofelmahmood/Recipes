@@ -15,8 +15,8 @@ class SyncManager: NSObject {
   var managedObjectContext: NSManagedObjectContext!
   
   override init() {
-    self.managedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-    self.managedObjectContext.parentContext = CoreDataStack.defaultStack.managedObjectContext
+    managedObjectContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+    managedObjectContext.parentContext = CoreDataStack.defaultStack.managedObjectContext
     super.init()
   }
   

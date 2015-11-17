@@ -12,16 +12,15 @@ extension RecipesSelectorViewController: UICollectionViewDelegate {
   func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     if indexPath.row == 0 {
       let newRecipe = RecipeViewModel(withModel: nil)
-      self.recipeDetailViewController.recipes.insert(newRecipe, atIndex: 0)
-      self.recipeDetailViewController.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.CenteredHorizontally, animated: true)
-      self.recipeDetailViewController.setEditing(true, animated: true)
+      recipeDetailViewController.recipes.insert(newRecipe, atIndex: 0)
+      recipeDetailViewController.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.CenteredHorizontally, animated: true)
+      recipeDetailViewController.setEditing(true, animated: true)
     } else {
-      self.recipeDetailViewController.collectionView.layoutIfNeeded()
-      self.recipeDetailViewController.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: indexPath.row - 1, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.CenteredHorizontally, animated: true)
+      recipeDetailViewController.collectionView.layoutIfNeeded()
+      recipeDetailViewController.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: indexPath.row - 1, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.CenteredHorizontally, animated: true)
     }
   }
   
   func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
-
   }
 }

@@ -20,7 +20,7 @@ class RecipeDetailViewController: UIViewController {
   var displayedForCreatingRecipe = false
   var recipes: [RecipeViewModel]!
   var recipesSelectorViewController: RecipesSelectorViewController? {
-    for viewController in self.childViewControllers {
+    for viewController in childViewControllers {
       if viewController is RecipesSelectorViewController {
         return viewController as? RecipesSelectorViewController
       }
@@ -33,14 +33,14 @@ class RecipeDetailViewController: UIViewController {
     // Do any additional setup after loading the view.
     let popRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "handlePopRecognizer:")
     popRecognizer.edges = UIRectEdge.Top
-    self.view.addGestureRecognizer(popRecognizer)
-    self.tabBarController?.tabBar.hidden = true
-    self.tabBarController?.tabBar.frame = CGRectZero
-    self.view.layoutIfNeeded()
-    self.setNavigationBarTransparent(true)
-    self.collectionView.pagingEnabled = true
-    (self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(width: self.view.frame.size.width, height: self.collectionView.frame.size.height)
-    self.collectionView.reloadData()
+    view.addGestureRecognizer(popRecognizer)
+    tabBarController?.tabBar.hidden = true
+    tabBarController?.tabBar.frame = CGRectZero
+    view.layoutIfNeeded()
+    setNavigationBarTransparent(true)
+    collectionView.pagingEnabled = true
+    (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).itemSize = CGSize(width: view.frame.size.width, height: collectionView.frame.size.height)
+    collectionView.reloadData()
   }
   
   func handlePopRecognizer(recognizer: UIScreenEdgePanGestureRecognizer) {
@@ -52,18 +52,18 @@ class RecipeDetailViewController: UIViewController {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
     UIApplication.sharedApplication().statusBarHidden = true
-    self.collectionView.layoutIfNeeded()
-    if !self.displayedForCreatingRecipe {
-      let indexPath = NSIndexPath(forItem: self.selectedRecipeIndex, inSection: 0)
-      self.collectionView.selectItemAtIndexPath(indexPath, animated: true, scrollPosition: UICollectionViewScrollPosition.CenteredHorizontally)
-      self.recipesSelectorViewController?.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: indexPath.row + 1, inSection: 0), animated: true, scrollPosition: UICollectionViewScrollPosition.CenteredHorizontally)
+    collectionView.layoutIfNeeded()
+    if !displayedForCreatingRecipe {
+      let indexPath = NSIndexPath(forItem: selectedRecipeIndex, inSection: 0)
+      collectionView.selectItemAtIndexPath(indexPath, animated: true, scrollPosition: UICollectionViewScrollPosition.CenteredHorizontally)
+      recipesSelectorViewController?.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: indexPath.row + 1, inSection: 0), animated: true, scrollPosition: UICollectionViewScrollPosition.CenteredHorizontally)
     }
   }
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    self.navigationController?.hidesBarsOnSwipe = false
-    self.navigationController?.setNavigationBarHidden(false, animated: false)
+    navigationController?.hidesBarsOnSwipe = false
+    navigationController?.setNavigationBarHidden(false, animated: false)
   }
   
   override func viewWillDisappear(animated: Bool) {
@@ -77,7 +77,7 @@ class RecipeDetailViewController: UIViewController {
   }
   
   func visibleRecipeCell() -> RecipeDetailCollectionViewCell {
-    return self.collectionView.visibleCells().first as! RecipeDetailCollectionViewCell
+    return collectionView.visibleCells().first as! RecipeDetailCollectionViewCell
   }
   
   func keyboardWillShow(notification: NSNotification) {
@@ -85,7 +85,7 @@ class RecipeDetailViewController: UIViewController {
       return
     }
     var keyboardFrame = userInfo["UIKeyboardFrameEndUserInfoKey"]!.CGRectValue
-    let cell = self.visibleRecipeCell()
+    let cell = visibleRecipeCell()
     keyboardFrame = cell.scrollView.convertRect(keyboardFrame, fromView: nil)
     let intersect = CGRectIntersection(keyboardFrame, cell.scrollView.bounds)
     if !CGRectIsNull(intersect) {
@@ -102,7 +102,7 @@ class RecipeDetailViewController: UIViewController {
       return
     }
     let duration = userInfo["UIKeyboardAnimationDurationUserInfoKey"]!.doubleValue
-    let cell = self.visibleRecipeCell()
+    let cell = visibleRecipeCell()
     UIView.animateWithDuration(duration) { () -> Void in
       cell.scrollView.contentInset = UIEdgeInsetsZero
       cell.scrollView.scrollIndicatorInsets = UIEdgeInsetsZero
@@ -156,12 +156,12 @@ class RecipeDetailViewController: UIViewController {
   override func setEditing(editing: Bool, animated: Bool) {
     super.setEditing(editing, animated: animated)
     if editing {
-      self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonDidPress:")
-      self.navigationItem.rightBarButtonItems?.removeLast()
-      self.navigationItem.setHidesBackButton(true, animated: true)
-      self.collectionView.scrollEnabled = false
-      self.containerViewHeightConstraint.constant = 0
-      self.visibleRecipeCell().scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+      navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonDidPress:")
+      navigationItem.rightBarButtonItems?.removeLast()
+      navigationItem.setHidesBackButton(true, animated: true)
+      collectionView.scrollEnabled = false
+      containerViewHeightConstraint.constant = 0
+      visibleRecipeCell().scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
       UIView.animateWithDuration(0.3, animations: {
         self.view.layoutIfNeeded()
         }, completion: { completed in
@@ -169,11 +169,11 @@ class RecipeDetailViewController: UIViewController {
           self.visibleRecipeCell().editing = true
       })
     } else {
-      self.navigationItem.rightBarButtonItem = self.editBarButtonItem
-      self.navigationItem.rightBarButtonItems?.append(self.deleteBarButtonItem)
-      self.navigationItem.setHidesBackButton(false, animated: true)
-      self.collectionView.scrollEnabled = true
-      self.containerViewHeightConstraint.constant = 44.0
+      navigationItem.rightBarButtonItem = editBarButtonItem
+      navigationItem.rightBarButtonItems?.append(deleteBarButtonItem)
+      navigationItem.setHidesBackButton(false, animated: true)
+      collectionView.scrollEnabled = true
+      containerViewHeightConstraint.constant = 44.0
       UIView.animateWithDuration(0.3, animations: {
         self.view.layoutIfNeeded()
         }, completion: { completed in
@@ -181,7 +181,7 @@ class RecipeDetailViewController: UIViewController {
           self.visibleRecipeCell().editing = false
       })
     }
-    if let cell = self.collectionView.visibleCells().first as? RecipeDetailCollectionViewCell {
+    if let cell = collectionView.visibleCells().first as? RecipeDetailCollectionViewCell {
       cell.editing = editing
     }
   }
@@ -203,7 +203,7 @@ class RecipeDetailViewController: UIViewController {
     alertController.addAction(cameraAlertAction)
     alertController.addAction(photoAlbumAlertAction)
     alertController.addAction(cancelAlertAction)
-    self.presentViewController(alertController, animated: true, completion: nil)
+    presentViewController(alertController, animated: true, completion: nil)
   }
   
   func showImagePicker(sourceType: UIImagePickerControllerSourceType) {
@@ -211,18 +211,18 @@ class RecipeDetailViewController: UIViewController {
       let imagePickerController = UIImagePickerController()
       imagePickerController.delegate = self
       imagePickerController.sourceType = sourceType
-      self.presentViewController(imagePickerController, animated: true, completion: nil)
+      presentViewController(imagePickerController, animated: true, completion: nil)
     }
   }
   
   // MARK: IBAction
   @IBAction func editButtonDidPress(sender: AnyObject) {
-    self.setEditing(true, animated: true)
+    setEditing(true, animated: true)
   }
   
   @IBAction func deleteButtonDidPress(sender: AnyObject) {
-    if let visibleItemIndexPath = self.collectionView.indexPathsForVisibleItems().first {
-      let recipe = self.recipes[visibleItemIndexPath.row]
+    if let visibleItemIndexPath = collectionView.indexPathsForVisibleItems().first {
+      let recipe = recipes[visibleItemIndexPath.row]
       let alertController = UIAlertController(title: "Delete \"\(recipe.name)\"", message: "Are you sure ?", preferredStyle: UIAlertControllerStyle.ActionSheet)
       let yesAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.Destructive, handler: { alertAction in
         recipe.deleteUnderlyingRecipe()
@@ -240,28 +240,17 @@ class RecipeDetailViewController: UIViewController {
       let noAction = UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel, handler: nil)
       alertController.addAction(yesAction)
       alertController.addAction(noAction)
-      self.presentViewController(alertController, animated: true, completion: nil)
+      presentViewController(alertController, animated: true, completion: nil)
     }
   }
   
   @IBAction func doneButtonDidPress(sender: AnyObject) {
-    self.setEditing(false, animated: true)
+    setEditing(false, animated: true)
     CoreDataStack.defaultStack.saveContext()
   }
   
   // MARK: Status Bar
   override func prefersStatusBarHidden() -> Bool {
     return true
-  }
-  
-  /*
-  // MARK: - Navigation
-  
-  // In a storyboard-based application, you will often want to do a little preparation before navigation
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-  // Get the new view controller using segue.destinationViewController.
-  // Pass the selected object to the new view controller.
-  }
-  */
-  
+  }  
 }
